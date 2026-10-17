@@ -344,8 +344,46 @@ export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
 
+  const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
+    Government: {
+      government: { x: 360, y: 20 },
+      cm: { x: 80, y: 220 },
+      tvk: { x: 640, y: 220 },
+      "cm-admin": { x: -100, y: 450 },
+      "cm-home": { x: 150, y: 450 },
+      "cm-special": { x: 400, y: 450 },
+      "cm-other": { x: 650, y: 450 },
+    },
+    Ministers: {
+      cm: { x: 560, y: 20 },
+      anand: { x: 0, y: 250 },
+      aadhav: { x: 280, y: 250 },
+      arunraj: { x: 560, y: 250 },
+      sengottaiyan: { x: 840, y: 250 },
+      venkataramanan: { x: 1120, y: 250 },
+    },
+    MLAs: { "mla-directory": { x: 300, y: 150 } },
+    "IAS Officers": { ias: { x: 300, y: 150 } },
+    "IPS Officers": {
+      ips: { x: 300, y: 20 },
+      dgp: { x: 0, y: 260 },
+      amalraj: { x: 600, y: 260 },
+    },
+    Departments: { departments: { x: 300, y: 150 } },
+    "Schemes & Projects": {
+      schemes: { x: 300, y: 20 },
+      projects: { x: 300, y: 280 },
+    },
+  };
+
   const visibleNodes = useMemo(
-    () => allNodes.filter((node) => categoryNodes[category].includes(node.id)),
+    () =>
+      allNodes
+        .filter((node) => categoryNodes[category].includes(node.id))
+        .map((node) => ({
+          ...node,
+          position: layoutPositions[category][node.id] ?? node.position,
+        })),
     [category]
   );
   const visibleIds = useMemo(
