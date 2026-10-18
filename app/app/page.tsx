@@ -346,13 +346,13 @@ export default function Home() {
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
-      government: { x: 360, y: 20 },
-      cm: { x: 360, y: 200 },
-      tvk: { x: 360, y: 430 },
-      "cm-admin": { x: -120, y: 700 },
-      "cm-home": { x: 140, y: 700 },
-      "cm-special": { x: 400, y: 700 },
-      "cm-other": { x: 660, y: 700 },
+      government: { x: 480, y: 20 },
+      cm: { x: 480, y: 220 },
+      tvk: { x: 480, y: 440 },
+      "cm-admin": { x: -40, y: 760 },
+      "cm-home": { x: 240, y: 760 },
+      "cm-special": { x: 520, y: 760 },
+      "cm-other": { x: 800, y: 760 },
     },
     Ministers: {
       cm: { x: 560, y: 20 },
