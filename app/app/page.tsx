@@ -206,7 +206,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Rural Development and Water Resources",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/024_Anand.png",
-      description: "Portfolio: Rural Development, Panchayats and Panchayat Union, Irrigation. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Rural Development, Panchayats and Panchayat Union, Irrigation, and Irrigation Projects including Small Irrigation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -218,7 +218,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Public Works and Sports Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/014_Aadhav_Arjuna.png",
-      description: "Portfolio: Public Works (Buildings, Highways and Minor Ports), Sports Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Public Works (Buildings, Highways and Minor Ports) and Sports Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -230,7 +230,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Health, Medical Education and Family Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/096_Arunraj.png",
-      description: "Portfolio: Health, Medical Education, Family Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Health, Medical Education and Family Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -242,7 +242,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Revenue and Disaster Management",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/106_Sengottaiyan.png",
-      description: "Portfolio: Revenue, District Revenue Establishment, Disaster Management, Legislative Assembly. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Revenue, District Revenue Establishment, Deputy Collectors, Disaster Management, Boodhan, Gramadhan and Legislative Assembly. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -254,7 +254,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Food and Civil Supplies",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/025_Venkataramanan.png",
-      description: "Portfolio: Food and Civil Supplies, Consumer Protection, Price Control. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Food and Civil Supplies, Consumer Protection and Price Control. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -266,7 +266,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Minorities Welfare and Wakf Board",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/172_Shahjahan.png",
-      description: "Portfolio: Minorities Welfare, Wakf Board. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Minorities Welfare and Wakf Board. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -278,7 +278,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Housing and Urban Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/155_Rajkumar.png",
-      description: "Portfolio: Housing and Urban Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Housing, Rural Housing, Town Planning Projects and Housing Development, Accommodation Control, CMDA, Tamil Nadu Urban Habitat Development Board, Urban Planning and Urban Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -290,7 +290,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Milk and Dairy Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/097_Vijayalakshmi.png",
-      description: "Portfolio: Milk and Dairy Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Milk and Dairy Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -302,7 +302,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Human Resources Management",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/031_Sarathkumar.png",
-      description: "Portfolio: Human Resources Management, Ex-Servicemen Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Human Resources Management and Ex-Servicemen Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -314,7 +314,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Natural Resources",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/184_tk_prabhu.png",
-      description: "Portfolio: Natural Resources. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Minerals and Mines. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -326,7 +326,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Social Welfare and Women Empowerment",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/202_Jegadeshwari.jpeg",
-      description: "Portfolio: Social Welfare, Women Welfare, Social Reforms, Nutritious Meal Programme. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Social Welfare including Women Welfare, Orphanages and Correctional Administration, Beggar Homes, Social Reforms and Nutritious Meal Programme. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -338,7 +338,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Animal Husbandry",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/112_Kamali.png",
-      description: "Portfolio: Animal Husbandry. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Animal Husbandry. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -350,7 +350,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Artificial Intelligence, IT and Digital Services",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/026_Kumar.png",
-      description: "Portfolio: Artificial Intelligence, Information Technology, Digital Services. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Artificial Intelligence, Information Technology and Digital Services. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -362,7 +362,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Commercial Taxes and Registration",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/092_Logesh_Tamilselvan.png",
-      description: "Portfolio: Commercial Taxes, Registration and Stamp Act. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Commercial Taxes, Registration and Stamp Act, Debt Relief including legislation on Money lending, Chits and Registration of Companies. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -374,7 +374,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Handlooms, Textiles and Khadi",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/098_Vijay_Balaji.png",
-      description: "Portfolio: Handlooms, Textiles and Khadi. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Handlooms and Textiles, Khadi and Village Industries Board. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -386,7 +386,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — MSMEs, Rural, Cottage and Small Industries",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/217_Mathan_Raja.png",
-      description: "Portfolio: Micro, Rural, Cottage and Small Industries. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Rural Industries including Cottage Industries and Small Industries. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -398,7 +398,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Labour Welfare and Skill Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/183_Mohamed_Farvas.png",
-      description: "Portfolio: Labour Welfare, Employment and Training, Skill Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Labour Welfare, Population, Employment and Training, Census, Weights and Measures, Urban and Rural Employment and Bonded Labour Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -410,7 +410,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Finance",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/011_Marie_Wilson.png",
-      description: "Portfolio: Finance, Pensions, Planning and Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Finance, Pensions and Pensionary Benefits, Planning and Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -422,7 +422,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Higher Education",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/188_Viswanathan.png",
-      description: "Portfolio: Higher Education. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Higher Education, including Technical Education, Electronics, Science and Technology. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -434,7 +434,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Energy Resources",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/195_Nirmalkumar.png",
-      description: "Portfolio: Energy Resources, Law. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Electricity and Non-Conventional Energy Development, Law, Courts, Prisons and Prevention of Corruption, Governor, Elections and Passports. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -446,7 +446,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Forests",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/037_Ranjithkumar.png",
-      description: "Portfolio: Forests. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Forests. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -458,7 +458,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Environment and Climate Change",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/210_Rajeev.png",
-      description: "Portfolio: Environment, Pollution Control Board, Climate Change. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Environment, Pollution Control Board and Climate Change. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -470,7 +470,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Tourism",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/234_Rajesh_Kumar.png",
-      description: "Portfolio: Tourism. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Tourism and Tourism Development Corporation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -482,7 +482,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — School Education",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/016_Rajmohan.png",
-      description: "Portfolio: School Education. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: School Education, Archaeology, Tamil Official Language and Tamil Culture, Information and Publicity, Film Technology and Cinematograph Act, Newsprint Control, Stationery and Printing, Government Press. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -494,7 +494,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Hindu Religious and Charitable Endowments",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/139_Ramesh.png",
-      description: "Portfolio: Hindu Religious and Charitable Endowments. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Hindu Religious and Charitable Endowments. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -506,7 +506,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Industries",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/205_Keerthana.png",
-      description: "Portfolio: Industries. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Industries and Investment Promotion. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -518,7 +518,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Fisheries and Fishermen Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/214_Srinath.png",
-      description: "Portfolio: Fisheries, Fisheries Development Corporation. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Fisheries and Fisheries Development Corporation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -530,7 +530,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Non-Resident Tamils Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/029_Thennarasu.png",
-      description: "Portfolio: Non-Resident Tamils Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Non-Resident Tamils Welfare, Refugees and evacuees. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -542,7 +542,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Co-operation",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/038_Gandhiraj.png",
-      description: "Portfolio: Co-operation. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Co-operation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -554,7 +554,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Backward Classes Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/118_Sampath_kumar.png",
-      description: "Portfolio: Backward Classes Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Backward Classes Welfare, Most Backward Classes Welfare and De-notified Communities Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -566,7 +566,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Social Justice and Adi Dravidar Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/072_Vanni_Arasu.png",
-      description: "Portfolio: Social Justice, Adi Dravidar Welfare and Hill Tribe. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Adi Dravidar Welfare and Hill Tribes. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -578,7 +578,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Prohibition and Excise",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/122_vignesh.png",
-      description: "Portfolio: Prohibition and Excise. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Prohibition and Excise. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -590,7 +590,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Transport",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/090_Vijay_Tamilan_%20Parthiban.png",
-      description: "Portfolio: Transport. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Motor Vehicle Acts administration, Transport, Nationalised Transport and Motor Vehicles Act. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -602,7 +602,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minister — Agriculture and Farmers Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/171_Vinoth.png",
-      description: "Portfolio: Agriculture, Agricultural Engineering, Horticulture, Sugarcane Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
+      description: "Portfolio: Agriculture, Agricultural Engineering, Agro Service Co-operatives, Horticulture, Sugar, Sugarcane Excise, Sugarcane Development and Waste Land Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
