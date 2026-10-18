@@ -775,7 +775,6 @@ const categoryDescriptions: Record<Category, string> = {
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
-  const [profileAction, setProfileAction] = useState<"none" | "write" | "reviews">("none");
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
@@ -948,15 +947,9 @@ export default function Home() {
               </div>
               <RatingGauge value={null} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 14 }}>
-                <button type="button" onClick={() => setProfileAction("write")} style={{ padding: "10px 8px", borderRadius: 9, border: 0, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>✍ Write a review</button>
-                <button type="button" onClick={() => setProfileAction("reviews")} style={{ padding: "10px 8px", borderRadius: 9, border: "1px solid #cbd5e1", background: "white", color: "#172554", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>See reviews</button>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "10px 8px", borderRadius: 9, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 800 }}>✍ Write a review</a>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "10px 8px", borderRadius: 9, border: "1px solid #cbd5e1", background: "white", color: "#172554", fontSize: 12, fontWeight: 800 }}>See reviews</a>
               </div>
-              {profileAction !== "none" && (
-                <div style={{ marginTop: 12, borderTop: "1px solid #e2e8f0", paddingTop: 12 }}>
-                  <p style={{ fontSize: 12, fontWeight: 800, color: "#334155" }}>{profileAction === "write" ? "Review page — next step" : "Community reviews"}</p>
-                  <p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6, marginTop: 5 }}>{profileAction === "write" ? "The profile design is ready. Next, we can build the separate review page with a post type (Positive, Negative or Request), user name, date and star rating." : "No reviews have been published yet. Reviews will appear here after the review page and storage are implemented."}</p>
-                </div>
-              )}
             </div>
           )}
           <div style={{ marginTop: 18 }}>
