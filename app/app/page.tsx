@@ -217,9 +217,9 @@ const allNodes: Node<Profile>[] = [
       label: "Aadhav Arjuna",
       role: "Minister — Public Works and Sports Development",
       isPerson: true,
+      photoUrl: "https://media.assettype.com/vikatan%2F2024-02%2F0a478b95-1c4b-4828-ade4-75bb2a603971%2F65d5179db69f5.jpg?rect=0%2C0%2C4167%2C2344",
       description: "Portfolio: Public Works (Buildings, Highways and Minor Ports), Sports Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
-      photoUrl: "https://i.pravatar.cc/300?img=2",
   },
   {
     id: "arunraj",
@@ -229,9 +229,9 @@ const allNodes: Node<Profile>[] = [
       label: "Dr. K.G. Arunraj",
       role: "Minister — Health, Medical Education and Family Welfare",
       isPerson: true,
+      photoUrl: "https://media.assettype.com/deccanherald%2F2026-04-21%2F6f5odltt%2F0.jpg?rect=0%2C0%2C714%2C402&auto=format%2Ccompress&fit=max",
       description: "Portfolio: Health, Medical Education, Family Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
-      photoUrl: "https://i.pravatar.cc/300?img=3",
   },
   {
     id: "sengottaiyan",
@@ -241,9 +241,9 @@ const allNodes: Node<Profile>[] = [
       label: "K.A. Sengottaiyan",
       role: "Minister — Revenue and Disaster Management",
       isPerson: true,
+      photoUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4f/K.A._Sengottaiyan.jpg",
       description: "Portfolio: Revenue, District Revenue Establishment, Disaster Management, Legislative Assembly. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
-      photoUrl: "https://i.pravatar.cc/300?img=4",
   },
   {
     id: "venkataramanan",
