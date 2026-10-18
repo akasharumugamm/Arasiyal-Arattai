@@ -72,42 +72,42 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
 
 
 function RatingGauge({ value }: { value: number | null }) {
-  const centerX = 160;
-  const centerY = 140;
-  const radius = 112;
+  const cx = 160;
+  const cy = 158;
+  const radius = 132;
   const point = (angle: number, r: number) => ({
-    x: centerX + r * Math.cos((angle * Math.PI) / 180),
-    y: centerY - r * Math.sin((angle * Math.PI) / 180),
+    x: cx + r * Math.cos((angle * Math.PI) / 180),
+    y: cy + r * Math.sin((angle * Math.PI) / 180),
   });
   const segments = [
-    { start: 180, end: 144, color: "#ff503f", face: "☹" },
-    { start: 144, end: 108, color: "#ff962e", face: "☹" },
-    { start: 108, end: 72, color: "#ffdc36", face: "😐" },
-    { start: 72, end: 36, color: "#a6e65b", face: "☺" },
-    { start: 36, end: 0, color: "#1bc96b", face: "☺" },
+    { start: 180, end: 216, color: "#ff533d", face: "☹" },
+    { start: 216, end: 252, color: "#ff922b", face: "☹" },
+    { start: 252, end: 288, color: "#ffe52e", face: "😐" },
+    { start: 288, end: 324, color: "#a5ed50", face: "☺" },
+    { start: 324, end: 360, color: "#13c967", face: "☺" },
   ];
-  const arcPath = (start: number, end: number) => {
+  const sectorPath = (start: number, end: number) => {
     const a = point(start, radius);
     const b = point(end, radius);
-    return `M ${a.x} ${a.y} A ${radius} ${radius} 0 0 0 ${b.x} ${b.y} L ${centerX} ${centerY} Z`;
+    return `M ${cx} ${cy} L ${a.x} ${a.y} A ${radius} ${radius} 0 0 1 ${b.x} ${b.y} Z`;
   };
-  const needleAngle = value === null ? null : 180 - (Math.max(0, Math.min(100, value)) / 100) * 180;
-  const needleTip = needleAngle === null ? null : point(needleAngle, 91);
+  const needleAngle = value === null ? null : 180 + (Math.max(0, Math.min(100, value)) / 100) * 180;
+  const needleTip = needleAngle === null ? null : point(needleAngle, 102);
   return (
-    <div style={{ width: "100%", maxWidth: 270, margin: "12px auto 0" }}>
-      <svg viewBox="0 0 320 166" role="img" aria-label={value === null ? "Rating gauge; no public ratings yet" : `Average public rating ${value} out of 100`} style={{ width: "100%", display: "block" }}>
+    <div style={{ width: "100%", maxWidth: 320, margin: "8px auto 0" }}>
+      <svg viewBox="0 0 320 180" role="img" aria-label={value === null ? "Rating gauge; no public ratings yet" : `Average public rating ${value} out of 100`} style={{ width: "100%", display: "block" }}>
         {segments.map((segment) => (
-          <path key={segment.start} d={arcPath(segment.start, segment.end)} fill={segment.color} stroke="white" strokeWidth="2.5" strokeLinejoin="round" />
+          <path key={segment.start} d={sectorPath(segment.start, segment.end)} fill={segment.color} stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
         ))}
         {segments.map((segment) => {
           const angle = (segment.start + segment.end) / 2;
-          const p = point(angle, 76);
-          return <text key={`face-${segment.start}`} x={p.x} y={p.y + 7} textAnchor="middle" fontSize="20" fontWeight="700" fill="#7c392c">{segment.face}</text>;
+          const p = point(angle, 88);
+          return <text key={`face-${segment.start}`} x={p.x} y={p.y + 7} textAnchor="middle" fontSize="23" fontWeight="700" fill={segment.start === 252 ? "#b88600" : segment.start > 288 ? "#178b43" : "#b83224"}>{segment.face}</text>;
         })}
-        {needleTip && <path d={`M ${centerX} ${centerY} L ${needleTip.x} ${needleTip.y}`} stroke="#10294f" strokeWidth="5" strokeLinecap="round" />}
-        <circle cx={centerX} cy={centerY} r="10" fill="#10294f" />
+        {needleTip && <path d={`M ${cx} ${cy} L ${needleTip.x} ${needleTip.y}`} stroke="#10294f" strokeWidth="5" strokeLinecap="round" />}
+        <circle cx={cx} cy={cy} r="11" fill="#10294f" />
       </svg>
-      <div style={{ textAlign: "center", marginTop: -5 }}>
+      <div style={{ textAlign: "center", marginTop: -1 }}>
         <div style={{ fontSize: 27, lineHeight: 1.15, fontWeight: 900, color: "#0f172a" }}>{value === null ? "—" : Math.round(value)}<span style={{ fontSize: 13, color: "#64748b", fontWeight: 700 }}> / 100</span></div>
         <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{value === null ? "No public ratings yet" : "Average public rating"}</div>
       </div>
