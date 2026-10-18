@@ -49,12 +49,13 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
           src={data.photoUrl}
           alt="Placeholder profile"
           style={{
-            width: 70,
-            height: 70,
-            borderRadius: "50%",
+            width: 84,
+            height: 84,
+            borderRadius: 22,
             objectFit: "cover",
+            objectPosition: "center",
             margin: "0 auto 10px",
-            border: "2px solid #2563eb",
+            border: "6px solid #e5e7eb",
           }}
         />
       )}
@@ -454,7 +455,7 @@ export default function Home() {
             Selected profile
           </span>
           {selected.photoUrl && (
-            <img src={selected.photoUrl} alt="Profile placeholder" style={{ width: 90, height: 90, borderRadius: "50%", objectFit: "cover", margin: "14px 0", border: "2px solid #2563eb" }} />
+            <img src={selected.photoUrl} alt="Profile placeholder" style={{ width: 112, height: 112, borderRadius: 26, objectFit: "cover", objectPosition: "center", margin: "14px 0", border: "6px solid #e5e7eb" }} />
           )}
           <h2 style={{ fontSize: 21, fontWeight: 700, marginTop: 8 }}>{selected.label}</h2>
           <p style={{ color: "#64748b", fontSize: 13 }}>{selected.role}</p>
