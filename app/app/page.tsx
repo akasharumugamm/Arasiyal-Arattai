@@ -489,15 +489,15 @@ export default function Home() {
                 <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
                 <span style={{ fontSize: 11, color: "#64748b" }}>Average</span>
               </div>
-              <div aria-label="Average rating: no reviews yet" style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 8 }}>
-                {[1, 2, 3, 4, 5].map((star) => <span key={star} style={{ color: "#cbd5e1", fontSize: 23 }}>★</span>)}
-                <span style={{ marginLeft: 6, fontSize: 13, color: "#64748b" }}>— / 5</span>
+              <div aria-label="Average rating: no reviews yet" style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 8 }}>
+                <span style={{ fontSize: 30, fontWeight: 900, color: "#0f172a" }}>—</span>
+                <span style={{ fontSize: 13, color: "#64748b" }}>/ 100</span>
               </div>
-              <p style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>No published reviews yet</p>
-              <div style={{ marginTop: 12, fontSize: 12, color: "#334155", fontWeight: 700 }}>Your rating</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 5 }} aria-label="Rate this person from one to five stars">
-                {[1, 2, 3, 4, 5].map((star) => <button key={star} type="button" onClick={() => setMyRating(star)} aria-label={`Rate ${star} stars`} style={{ padding: 0, border: 0, background: "transparent", cursor: "pointer", color: star <= myRating ? "#f59e0b" : "#cbd5e1", fontSize: 28, lineHeight: 1 }}>★</button>)}
-                <span style={{ fontSize: 12, color: "#64748b", marginLeft: 4 }}>{myRating ? `${myRating}/5 selected` : "Select a rating"}</span>
+              <p style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>No published ratings yet</p>
+              <div style={{ marginTop: 12, fontSize: 12, color: "#334155", fontWeight: 700 }}>Your rating (out of 100)</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
+                <input type="range" min={0} max={100} value={myRating} onChange={(e) => setMyRating(Number(e.target.value))} aria-label="Rate this person from zero to one hundred" style={{ width: "100%", accentColor: "#2563eb", cursor: "pointer" }} />
+                <span style={{ minWidth: 48, textAlign: "right", fontSize: 20, fontWeight: 900, color: "#1d4ed8" }}>{myRating}<span style={{ fontSize: 11, color: "#64748b" }}>/100</span></span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 14 }}>
                 <button type="button" onClick={() => setProfileAction("write")} style={{ padding: "10px 8px", borderRadius: 9, border: 0, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>✍ Write a review</button>
