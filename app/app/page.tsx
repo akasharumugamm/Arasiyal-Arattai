@@ -65,7 +65,7 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
             height: 84,
             borderRadius: 22,
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition: "center 25%",
             margin: "0 auto 10px",
             border: "6px solid #e5e7eb",
           }}
