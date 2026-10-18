@@ -104,7 +104,7 @@ const allNodes: Node<Profile>[] = [
       role: "Political party affiliation",
       description:
         "Tamilaga Vettri Kazhagam (TVK). This is a political-party connection, not a government department.",
-      photoUrl: "https://i.pravatar.cc/150?img=33",
+      photoUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Tamilaga_Vettri_Kazhagam_%28TVK%29_Flag.png?utm_source=hi.wikipedia.org&utm_campaign=index&utm_content=original",
     },
   },
   {
