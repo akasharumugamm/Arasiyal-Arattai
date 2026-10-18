@@ -92,6 +92,8 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "C. Joseph Vijay",
       role: "Chief Minister",
+      isPerson: true,
+      xHandle: "https://x.com/CMOTamilnadu",
       description:
         "Profile overview. Add verified biography, official orders, current portfolio allocations and source links here.",
       photoUrl: "https://i.ibb.co/0Rv80BLn/HR-9-Y6yb0-AAzx-FY.jpg",
@@ -104,6 +106,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "TVK",
       role: "Political party affiliation",
+      xHandle: "https://x.com/TVKPartyHQ?s=20",
       description:
         "Tamilaga Vettri Kazhagam (TVK). This is a political-party connection, not a government department.",
       photoUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Tamilaga_Vettri_Kazhagam_%28TVK%29_Flag.png?utm_source=hi.wikipedia.org&utm_campaign=index&utm_content=original",
