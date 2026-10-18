@@ -294,7 +294,7 @@ const allNodes: Node<Profile>[] = [
 
 const allEdges: Edge[] = [
   { id: "g1", source: "government", target: "cm", label: "State leadership" },
-  { id: "g2", source: "government", target: "tvk", label: "Party link" },
+  { id: "g2", source: "cm", target: "tvk", label: "Party leader" },
   { id: "g3", source: "cm", target: "cm-admin", label: "Portfolio to verify" },
   { id: "g4", source: "cm", target: "cm-home", label: "Portfolio to verify" },
   { id: "g5", source: "cm", target: "cm-special", label: "Portfolio to verify" },
@@ -347,12 +347,12 @@ export default function Home() {
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
       government: { x: 360, y: 20 },
-      cm: { x: 80, y: 220 },
-      tvk: { x: 80, y: 450 },
-      "cm-admin": { x: -100, y: 650 },
-      "cm-home": { x: 150, y: 650 },
-      "cm-special": { x: 400, y: 650 },
-      "cm-other": { x: 650, y: 650 },
+      cm: { x: 360, y: 200 },
+      tvk: { x: 360, y: 430 },
+      "cm-admin": { x: -120, y: 700 },
+      "cm-home": { x: 140, y: 700 },
+      "cm-special": { x: 400, y: 700 },
+      "cm-other": { x: 660, y: 700 },
     },
     Ministers: {
       cm: { x: 560, y: 20 },
