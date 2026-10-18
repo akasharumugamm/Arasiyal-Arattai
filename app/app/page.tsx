@@ -503,6 +503,7 @@ const allNodes: Node<Profile>[] = [
       label: "Ramesh",
       role: "Minister — Hindu Religious and Charitable Endowments",
       isPerson: true,
+      xHandle: "https://x.com/RameshOffcl",
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/139_Ramesh.png",
       description: "Hindu Religious and Charitable Endowments. Source: Government of Tamil Nadu minister directory.",
     },
