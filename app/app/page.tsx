@@ -207,6 +207,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Rural Development, Panchayats and Panchayat Union, Irrigation. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=1",
   },
   {
     id: "aadhav",
@@ -218,6 +219,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Public Works (Buildings, Highways and Minor Ports), Sports Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=2",
   },
   {
     id: "arunraj",
@@ -229,6 +231,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Health, Medical Education, Family Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=3",
   },
   {
     id: "sengottaiyan",
@@ -240,6 +243,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Revenue, District Revenue Establishment, Disaster Management, Legislative Assembly. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=4",
   },
   {
     id: "venkataramanan",
@@ -251,6 +255,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Food and Civil Supplies, Consumer Protection, Price Control. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=5",
   },
   {
     id: "shahjahan",
@@ -262,6 +267,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Minorities Welfare, Wakf Board. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=6",
   },
   {
     id: "rajkumar",
@@ -273,6 +279,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Housing and Urban Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=7",
   },
   {
     id: "vijayalakshmi",
@@ -284,6 +291,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Milk and Dairy Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=8",
   },
   {
     id: "sarathkumar",
@@ -295,6 +303,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Human Resources Management, Ex-Servicemen Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=9",
   },
   {
     id: "prabhu",
@@ -306,6 +315,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Natural Resources. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=10",
   },
   {
     id: "jegadeshwari",
@@ -317,6 +327,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Social Welfare, Women Welfare, Social Reforms, Nutritious Meal Programme. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=11",
   },
   {
     id: "kamali",
@@ -328,6 +339,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Animal Husbandry. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=12",
   },
   {
     id: "kumar",
@@ -339,6 +351,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Artificial Intelligence, Information Technology, Digital Services. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=13",
   },
   {
     id: "logesh",
@@ -350,6 +363,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Commercial Taxes, Registration and Stamp Act. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=14",
   },
   {
     id: "vijaybalaji",
@@ -361,6 +375,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Handlooms, Textiles and Khadi. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=15",
   },
   {
     id: "mathanraja",
@@ -372,6 +387,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Micro, Rural, Cottage and Small Industries. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=16",
   },
   {
     id: "farvas",
@@ -383,6 +399,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Labour Welfare, Employment and Training, Skill Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=17",
   },
   {
     id: "mariewilson",
@@ -394,6 +411,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Finance, Pensions, Planning and Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=18",
   },
   {
     id: "viswanathan",
@@ -405,6 +423,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Higher Education. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=19",
   },
   {
     id: "nirmalkumar",
@@ -416,6 +435,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Energy Resources, Law. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=20",
   },
   {
     id: "ranjithkumar",
@@ -427,6 +447,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Forests. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=21",
   },
   {
     id: "rajeev",
@@ -438,6 +459,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Environment, Pollution Control Board, Climate Change. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=22",
   },
   {
     id: "rajeshkumar",
@@ -449,6 +471,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Tourism. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=23",
   },
   {
     id: "rajmohan",
@@ -460,6 +483,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: School Education. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=24",
   },
   {
     id: "ramesh",
@@ -471,6 +495,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Hindu Religious and Charitable Endowments. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=25",
   },
   {
     id: "keerthana",
@@ -482,6 +507,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Industries. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=26",
   },
   {
     id: "srinath",
@@ -493,6 +519,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Fisheries, Fisheries Development Corporation. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=27",
   },
   {
     id: "thennarasu",
@@ -504,6 +531,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Non-Resident Tamils Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=28",
   },
   {
     id: "gandhiraj",
@@ -515,6 +543,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Co-operation. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=29",
   },
   {
     id: "sampathkumar",
@@ -526,6 +555,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Backward Classes Welfare. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=30",
   },
   {
     id: "vanniarasu",
@@ -537,6 +567,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Social Justice, Adi Dravidar Welfare and Hill Tribe. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=31",
   },
   {
     id: "vignesh",
@@ -548,6 +579,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Prohibition and Excise. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=32",
   },
   {
     id: "vijaytamilan",
@@ -559,6 +591,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Transport. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=33",
   },
   {
     id: "vinoth",
@@ -570,6 +603,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       description: "Portfolio: Agriculture, Agricultural Engineering, Horticulture, Sugarcane Development. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
+      photoUrl: "https://i.pravatar.cc/300?img=34",
   },
   {
     id: "mla-directory",
