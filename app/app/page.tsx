@@ -27,6 +27,8 @@ type Profile = {
   role: string;
   description: string;
   photoUrl?: string;
+  isPerson?: boolean;
+  xHandle?: string;
 };
 
 function InfoNode({ data }: NodeProps<Node<Profile>>) {
@@ -343,6 +345,8 @@ const categoryDescriptions: Record<Category, string> = {
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
+  const [myRating, setMyRating] = useState(0);
+  const [profileAction, setProfileAction] = useState<"none" | "write" | "reviews">("none");
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
@@ -397,9 +401,19 @@ export default function Home() {
 
   function changeCategory(next: Category) {
     setCategory(next);
+    setProfileAction("none");
+    setMyRating(0);
     const firstNode = allNodes.find((node) => categoryNodes[next].includes(node.id));
     if (firstNode) setSelected(firstNode.data);
   }
+
+  function selectProfile(profile: Profile) {
+    setSelected(profile);
+    setMyRating(0);
+    setProfileAction("none");
+  }
+
+  const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
   return (
     <main style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
@@ -443,31 +457,70 @@ export default function Home() {
             fitViewOptions={{ padding: 0.2 }}
             minZoom={0.15}
             maxZoom={1.5}
-            onNodeClick={(_, node) => setSelected(node.data as Profile)}
+            onNodeClick={(_, node) => selectProfile(node.data as Profile)}
           >
             <Background />
             <Controls />
           </ReactFlow>
         </div>
 
-        <aside style={{ width: 280, flexShrink: 0, padding: 18, border: "1px solid #cbd5e1", borderRadius: 12, background: "white", alignSelf: "flex-start" }}>
-          <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 700, textTransform: "uppercase" }}>
-            Selected profile
-          </span>
-          {selected.photoUrl && (
-            <img src={selected.photoUrl} alt="Profile placeholder" style={{ width: 112, height: 112, borderRadius: 26, objectFit: "cover", objectPosition: "center", margin: "14px 0", border: "6px solid #e5e7eb" }} />
+        <aside style={{ width: 320, flexShrink: 0, padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", alignSelf: "flex-start", boxShadow: "0 8px 24px #0f172a0a" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>Selected profile</span>
+            <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "5px 8px", borderRadius: 999 }}>{isPerson ? "PERSON" : "PUBLIC RECORD"}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 18 }}>
+            {selected.photoUrl ? (
+              <img src={selected.photoUrl} alt={selected.label} style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, objectFit: "cover", objectPosition: "center", border: "4px solid #e2e8f0" }} />
+            ) : (
+              <div style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, background: "#eff6ff", display: "grid", placeItems: "center", color: "#2563eb", fontSize: 28, fontWeight: 800 }}>{selected.label.slice(0, 1)}</div>
+            )}
+            <div style={{ minWidth: 0 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.25 }}>{selected.label}</h2>
+              <p style={{ color: "#64748b", fontSize: 13, marginTop: 5 }}>{selected.role}</p>
+              {isPerson && (selected.xHandle ? (
+                <a href={selected.xHandle.startsWith("http") ? selected.xHandle : `https://x.com/${selected.xHandle.replace(/^@/, "")}`} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, color: "#2563eb", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>𝕏 View X profile ↗</a>
+              ) : <span style={{ display: "block", marginTop: 8, color: "#94a3b8", fontSize: 12 }}>𝕏 Handle not added</span>)}
+            </div>
+          </div>
+          {isPerson && (
+            <div style={{ marginTop: 18, padding: 14, borderRadius: 12, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
+                <span style={{ fontSize: 11, color: "#64748b" }}>Average</span>
+              </div>
+              <div aria-label="Average rating: no reviews yet" style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 8 }}>
+                {[1, 2, 3, 4, 5].map((star) => <span key={star} style={{ color: "#cbd5e1", fontSize: 23 }}>★</span>)}
+                <span style={{ marginLeft: 6, fontSize: 13, color: "#64748b" }}>— / 5</span>
+              </div>
+              <p style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>No published reviews yet</p>
+              <div style={{ marginTop: 12, fontSize: 12, color: "#334155", fontWeight: 700 }}>Your rating</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 5 }} aria-label="Rate this person from one to five stars">
+                {[1, 2, 3, 4, 5].map((star) => <button key={star} type="button" onClick={() => setMyRating(star)} aria-label={`Rate ${star} stars`} style={{ padding: 0, border: 0, background: "transparent", cursor: "pointer", color: star <= myRating ? "#f59e0b" : "#cbd5e1", fontSize: 28, lineHeight: 1 }}>★</button>)}
+                <span style={{ fontSize: 12, color: "#64748b", marginLeft: 4 }}>{myRating ? `${myRating}/5 selected` : "Select a rating"}</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 14 }}>
+                <button type="button" onClick={() => setProfileAction("write")} style={{ padding: "10px 8px", borderRadius: 9, border: 0, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>✍ Write a review</button>
+                <button type="button" onClick={() => setProfileAction("reviews")} style={{ padding: "10px 8px", borderRadius: 9, border: "1px solid #cbd5e1", background: "white", color: "#172554", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>See reviews</button>
+              </div>
+              {profileAction !== "none" && (
+                <div style={{ marginTop: 12, borderTop: "1px solid #e2e8f0", paddingTop: 12 }}>
+                  <p style={{ fontSize: 12, fontWeight: 800, color: "#334155" }}>{profileAction === "write" ? "Review page — next step" : "Community reviews"}</p>
+                  <p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6, marginTop: 5 }}>{profileAction === "write" ? "The profile design is ready. Next, we can build the separate review page with a post type (Positive, Negative or Request), user name, date and star rating." : "No reviews have been published yet. Reviews will appear here after the review page and storage are implemented."}</p>
+                </div>
+              )}
+            </div>
           )}
-          <h2 style={{ fontSize: 21, fontWeight: 700, marginTop: 8 }}>{selected.label}</h2>
-          <p style={{ color: "#64748b", fontSize: 13 }}>{selected.role}</p>
-          <hr style={{ margin: "16px 0", borderColor: "#e2e8f0" }} />
-          <p style={{ fontSize: 14, lineHeight: 1.7 }}>{selected.description}</p>
-          <h3 style={{ fontWeight: 700, marginTop: 20 }}>Profile information</h3>
-          <ul style={{ paddingLeft: 18, fontSize: 13, lineHeight: 2 }}>
+          <div style={{ marginTop: 18 }}>
+            <h3 style={{ fontWeight: 800, fontSize: 14 }}>About this profile</h3>
+            <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
+          </div>
+          <h3 style={{ fontWeight: 800, fontSize: 14, marginTop: 18 }}>Profile information</h3>
+          <ul style={{ paddingLeft: 18, fontSize: 12, lineHeight: 1.9, color: "#475569", marginTop: 7 }}>
             <li>Biography and photo source</li>
             <li>Responsibilities and appointments</li>
             <li>Previous postings and decisions</li>
             <li>Performance and outcome evidence</li>
-            <li>Allegations and case status</li>
             <li>Sources and verification dates</li>
           </ul>
         </aside>
