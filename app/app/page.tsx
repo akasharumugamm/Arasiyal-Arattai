@@ -22,6 +22,8 @@ type Category =
   | "Departments"
   | "Schemes & Projects";
 
+type MainView = Category | "Public Contributions & Ratings" | "Allegations & Investigations";
+
 type Profile = {
   label: string;
   role: string;
@@ -342,7 +344,11 @@ const categoryDescriptions: Record<Category, string> = {
 
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
+  const [mainView, setMainView] = useState<MainView>("Government");
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
+  const [contribution, setContribution] = useState({ person: "", title: "", details: "", source: "" });
+  const [allegation, setAllegation] = useState({ person: "", title: "", details: "", source: "" });
+  const [demoMessage, setDemoMessage] = useState("");
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
@@ -396,6 +402,8 @@ export default function Home() {
   );
 
   function changeCategory(next: Category) {
+    setMainView(next);
+    setDemoMessage("");
     setCategory(next);
     const firstNode = allNodes.find((node) => categoryNodes[next].includes(node.id));
     if (firstNode) setSelected(firstNode.data);
@@ -428,6 +436,69 @@ export default function Home() {
         ))}
       </nav>
 
+      <nav aria-label="Public records" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18, padding: 12, border: "1px solid #cbd5e1", borderRadius: 12, background: "white" }}>
+        <span style={{ alignSelf: "center", fontSize: 12, color: "#64748b", fontWeight: 700, marginRight: 4 }}>SEPARATE PUBLIC SECTIONS</span>
+        {(["Public Contributions & Ratings", "Allegations & Investigations"] as MainView[]).map((item) => (
+          <button key={item} onClick={() => { setMainView(item); setDemoMessage(""); }} style={{ padding: "10px 14px", borderRadius: 9, border: mainView === item ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: mainView === item ? "#1d4ed8" : "white", color: mainView === item ? "white" : "#172554", fontWeight: 700, cursor: "pointer" }}>
+            {item}
+          </button>
+        ))}
+      </nav>
+
+      {mainView === "Public Contributions & Ratings" ? (
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
+          <div style={{ padding: 22, border: "1px solid #cbd5e1", borderRadius: 14, background: "white" }}>
+            <h2 style={{ fontSize: 22, fontWeight: 800 }}>Public Contributions & Ratings</h2>
+            <p style={{ marginTop: 8, color: "#64748b", lineHeight: 1.6 }}>Share documented public work, service improvements or constituency-level outcomes. Keep this section separate from allegations.</p>
+            <form onSubmit={(event) => { event.preventDefault(); setDemoMessage("Contribution draft captured in this page demo only. It has not been published or saved to a server."); }} style={{ display: "grid", gap: 12, marginTop: 18 }}>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Minister / MLA / public official<input required value={contribution.person} onChange={(e) => setContribution({ ...contribution, person: e.target.value })} placeholder="Name and constituency/role" style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Contribution title<input required value={contribution.title} onChange={(e) => setContribution({ ...contribution, title: e.target.value })} placeholder="e.g. Road repair completed" style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Details and outcome<textarea required value={contribution.details} onChange={(e) => setContribution({ ...contribution, details: e.target.value })} rows={4} placeholder="Describe what happened, where, and when" style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Evidence / source URL<input required type="url" value={contribution.source} onChange={(e) => setContribution({ ...contribution, source: e.target.value })} placeholder="https://official-source-or-reliable-report..." style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <button type="submit" style={{ padding: 11, borderRadius: 8, border: 0, background: "#1d4ed8", color: "white", fontWeight: 700, cursor: "pointer" }}>Submit contribution draft</button>
+            </form>
+          </div>
+          <div style={{ padding: 22, border: "1px solid #cbd5e1", borderRadius: 14, background: "white" }}>
+            <h3 style={{ fontSize: 19, fontWeight: 800 }}>Community rating guidelines</h3>
+            <p style={{ color: "#64748b", lineHeight: 1.7, marginTop: 8 }}>Ratings should reflect public service and documented outcomes—not party loyalty, personal attacks or unverified claims.</p>
+            <ul style={{ paddingLeft: 20, lineHeight: 2, marginTop: 12 }}>
+              <li>Use one rating per person per review period once accounts are implemented.</li>
+              <li>Explain the reason for a rating.</li>
+              <li>Require moderation and abuse prevention before publishing.</li>
+              <li>Display the number of ratings and date range alongside any score.</li>
+              <li>Label community ratings as opinions, not official government assessments.</li>
+            </ul>
+            <div style={{ marginTop: 18, padding: 12, borderRadius: 8, background: "#eff6ff", color: "#1e40af", fontSize: 13 }}>Prototype note: submissions currently stay in the browser page state only. A database, authentication and moderation workflow are needed for real public submissions and ratings.</div>
+          </div>
+        </section>
+      ) : mainView === "Allegations & Investigations" ? (
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
+          <div style={{ padding: 22, border: "1px solid #cbd5e1", borderRadius: 14, background: "white" }}>
+            <h2 style={{ fontSize: 22, fontWeight: 800 }}>Allegations & Investigations</h2>
+            <p style={{ marginTop: 8, color: "#64748b", lineHeight: 1.6 }}>Record a claim only with a credible source. An allegation is not proof of wrongdoing; status and any official response must be clearly shown.</p>
+            <form onSubmit={(event) => { event.preventDefault(); setDemoMessage("Allegation record draft captured in this page demo only. It has not been published or saved to a server."); }} style={{ display: "grid", gap: 12, marginTop: 18 }}>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Person / office concerned<input required value={allegation.person} onChange={(e) => setAllegation({ ...allegation, person: e.target.value })} placeholder="Name and public role" style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Record title<input required value={allegation.title} onChange={(e) => setAllegation({ ...allegation, title: e.target.value })} placeholder="Neutral, factual title" style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Summary and current status<textarea required value={allegation.details} onChange={(e) => setAllegation({ ...allegation, details: e.target.value })} rows={4} placeholder="State what is alleged, who reported it, date, and whether it is alleged/reported, under investigation, charged, dismissed, or concluded" style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <label style={{ display: "grid", gap: 6, fontSize: 13, fontWeight: 700 }}>Credible source / official case URL<input required type="url" value={allegation.source} onChange={(e) => setAllegation({ ...allegation, source: e.target.value })} placeholder="https://..." style={{ padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontWeight: 400 }} /></label>
+              <button type="submit" style={{ padding: 11, borderRadius: 8, border: 0, background: "#b91c1c", color: "white", fontWeight: 700, cursor: "pointer" }}>Save allegation draft</button>
+            </form>
+          </div>
+          <div style={{ padding: 22, border: "1px solid #cbd5e1", borderRadius: 14, background: "white" }}>
+            <h3 style={{ fontSize: 19, fontWeight: 800 }}>Publication safeguards</h3>
+            <ul style={{ paddingLeft: 20, lineHeight: 1.9, marginTop: 12 }}>
+              <li>Use neutral language and link to reliable reporting or official documents.</li>
+              <li>Separate allegations from established findings and convictions.</li>
+              <li>Show the latest known status, date checked and source.</li>
+              <li>Include the person's official response or a note when no response is available.</li>
+              <li>Require human review before anything is published.</li>
+              <li>Correct or remove records when reliable updates change the status.</li>
+            </ul>
+            <div style={{ marginTop: 18, padding: 12, borderRadius: 8, background: "#fff1f2", color: "#9f1239", fontSize: 13 }}>Prototype note: this is a draft form, not a public accusation feed. Records are not published or stored on a server.</div>
+          </div>
+        </section>
+      ) : (
+        <>
       <p style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>
         {categoryDescriptions[category]}
       </p>
@@ -472,6 +543,10 @@ export default function Home() {
           </ul>
         </aside>
       </div>
+        </>
+      )}
+
+      {demoMessage && <p role="status" style={{ marginTop: 16, padding: 12, borderRadius: 8, background: "#fef3c7", color: "#92400e" }}>{demoMessage}</p>}
     </main>
   );
 }
