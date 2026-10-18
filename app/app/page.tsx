@@ -205,9 +205,9 @@ const allNodes: Node<Profile>[] = [
       label: "N. Anand",
       role: "Minister — Rural Development and Water Resources",
       isPerson: true,
+      photoUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Tvk-23.jpg",
       description: "Portfolio: Rural Development, Panchayats and Panchayat Union, Irrigation. Verify current details and view the public directory profile at https://www.tamilnaduportal.com/directory/cabinet.",
     },
-      photoUrl: "https://i.pravatar.cc/300?img=1",
   },
   {
     id: "aadhav",
