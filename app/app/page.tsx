@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ReactFlow,
   Background,
@@ -775,6 +775,19 @@ const categoryDescriptions: Record<Category, string> = {
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
+  const [reviewScore, setReviewScore] = useState<number | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
+      const reviews = saved ? JSON.parse(saved) as Array<{ profile: string; type: string }> : [];
+      const relevant = reviews.filter((review) => review.profile === selected.label && (review.type === "Positive" || review.type === "Negative"));
+      const positive = relevant.filter((review) => review.type === "Positive").length;
+      setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
+    } catch {
+      setReviewScore(null);
+    }
+  }, [selected.label]);
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
@@ -945,7 +958,7 @@ export default function Home() {
                 <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
                 <span style={{ fontSize: 11, color: "#64748b" }}>Average</span>
               </div>
-              <RatingGauge value={null} />
+              <RatingGauge value={reviewScore} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 14 }}>
                 <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "10px 8px", borderRadius: 9, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 800 }}>✍ Write a review</a>
                 <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "10px 8px", borderRadius: 9, border: "1px solid #cbd5e1", background: "white", color: "#172554", fontSize: 12, fontWeight: 800 }}>See reviews</a>
