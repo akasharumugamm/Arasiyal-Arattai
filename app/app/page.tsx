@@ -5,7 +5,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   Handle,
   Position,
   type Node,
@@ -447,7 +446,6 @@ export default function Home() {
           >
             <Background />
             <Controls />
-            <MiniMap />
           </ReactFlow>
         </div>
 
