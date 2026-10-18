@@ -986,18 +986,10 @@ export default function Home() {
             <h3 style={{ fontWeight: 800, fontSize: 14 }}>About this profile</h3>
             <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
           </div>
-          <h3 style={{ fontWeight: 800, fontSize: 14, marginTop: 18 }}>Profile information</h3>
-          <ul style={{ paddingLeft: 18, fontSize: 12, lineHeight: 1.9, color: "#475569", marginTop: 7 }}>
-            <li>Biography and photo source</li>
-            <li>Responsibilities and appointments</li>
-            <li>Previous postings and decisions</li>
-            <li>Performance and outcome evidence</li>
-            <li>Sources and verification dates</li>
-          </ul>
         </aside>
       </div>
 
-      <section style={{ maxWidth: 1280, margin: "28px auto 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+      <section style={{ width: "100%", boxSizing: "border-box", margin: "28px auto 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
