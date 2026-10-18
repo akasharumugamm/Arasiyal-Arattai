@@ -31,6 +31,16 @@ type Profile = {
   xHandle?: string;
 };
 
+type ReviewSummary = {
+  id: string;
+  profile: string;
+  name: string;
+  type: "Positive" | "Negative" | "Request";
+  title: string;
+  body: string;
+  date: string;
+};
+
 function InfoNode({ data }: NodeProps<Node<Profile>>) {
   return (
     <div
@@ -776,17 +786,25 @@ export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
+  const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
-      const reviews = saved ? JSON.parse(saved) as Array<{ profile: string; type: string }> : [];
-      const relevant = reviews.filter((review) => review.profile === selected.label && (review.type === "Positive" || review.type === "Negative"));
-      const positive = relevant.filter((review) => review.type === "Positive").length;
-      setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
-    } catch {
-      setReviewScore(null);
-    }
+    const loadReviews = () => {
+      try {
+        const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
+        const reviews = saved ? JSON.parse(saved) as ReviewSummary[] : [];
+        setRecentReviews(reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5));
+        const relevant = reviews.filter((review) => review.profile === selected.label && (review.type === "Positive" || review.type === "Negative"));
+        const positive = relevant.filter((review) => review.type === "Positive").length;
+        setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
+      } catch {
+        setRecentReviews([]);
+        setReviewScore(null);
+      }
+    };
+    loadReviews();
+    window.addEventListener("storage", loadReviews);
+    return () => window.removeEventListener("storage", loadReviews);
   }, [selected.label]);
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
@@ -978,6 +996,47 @@ export default function Home() {
           </ul>
         </aside>
       </div>
+
+      <section style={{ maxWidth: 1280, margin: "28px auto 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <div>
+            <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
+            <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added reviews</h2>
+            <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>The latest community feedback submitted through this browser.</p>
+          </div>
+          <a href="/reviews" style={{ textDecoration: "none", borderRadius: 9, background: "#1d4ed8", color: "white", padding: "10px 14px", fontSize: 12, fontWeight: 800 }}>View all reviews ↗</a>
+        </div>
+        {recentReviews.length === 0 ? (
+          <div style={{ border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
+            <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No reviews added yet</p>
+            <p style={{ margin: "6px 0 14px", color: "#64748b", fontSize: 13 }}>Be the first to share a constructive review.</p>
+            <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>Write a review →</a>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
+            {recentReviews.map((review) => {
+              const style = review.type === "Positive"
+                ? { color: "#166534", background: "#dcfce7" }
+                : review.type === "Negative"
+                  ? { color: "#991b1b", background: "#fee2e2" }
+                  : { color: "#1d4ed8", background: "#dbeafe" };
+              return (
+                <article key={review.id} style={{ border: "1px solid #e2e8f0", borderRadius: 12, padding: 15, minWidth: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 11, fontWeight: 900, color: style.color, background: style.background, borderRadius: 999, padding: "5px 9px" }}>{review.type}</span>
+                    <span style={{ color: "#64748b", fontSize: 11 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
+                  </div>
+                  <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 900 }}>{review.title}</h3>
+                  <p style={{ margin: "0 0 8px", color: "#475569", fontSize: 13, lineHeight: 1.6, overflowWrap: "anywhere" }}>{review.body.length > 150 ? review.body.slice(0, 150) + "…" : review.body}</p>
+                  <p style={{ margin: 0, color: "#64748b", fontSize: 11 }}>By <strong>{review.name}</strong> · {review.profile}</p>
+                  <a href={`/reviews?profile=${encodeURIComponent(review.profile)}`} style={{ display: "inline-block", marginTop: 12, color: "#1d4ed8", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>Read reviews →</a>
+                </article>
+              );
+            })}
+          </div>
+        )}
+        <p style={{ margin: "14px 0 0", fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>Prototype limitation: reviews are currently saved in local browser storage, so this section is not yet shared across different visitors. Shared public reviews need a server database.</p>
+      </section>
     </main>
   );
 }
