@@ -878,7 +878,6 @@ export default function Home() {
 
   function selectProfile(profile: Profile) {
     setSelected(profile);
-    setMyRating(0);
     setProfileAction("none");
   }
 
