@@ -80,7 +80,7 @@ const allNodes: Node<Profile>[] = [
       role: "Fort St. George, Chennai",
       description:
         "Tamil Nadu's state government and Secretariat are associated with Fort St. George in Chennai. This view shows a high-level overview; verify office responsibilities and portfolio allocations against current official orders.",
-      photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Fort_St_George%2C_Chennai.jpg/640px-Fort_St_George%2C_Chennai.jpg",
+      photoUrl: "https://cf-images.assettype.com/thenewsminute/2026-05-30/0mplww47/Secretariat.jpeg?w=1200&h=1200&auto=format%2Ccompress&fit=max&enlarge=true",
     },
   },
   {
