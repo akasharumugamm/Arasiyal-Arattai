@@ -8,7 +8,6 @@ type Review = {
   profile: string;
   name: string;
   type: ReviewType;
-  rating: number;
   title: string;
   body: string;
   date: string;
@@ -59,18 +58,6 @@ const typeStyles: Record<ReviewType, { color: string; background: string; descri
   Request: { color: "#1d4ed8", background: "#dbeafe", description: "Suggest an action or ask for a response" },
 };
 
-function Stars({ value, onChange, size = 28 }: { value: number; onChange?: (n: number) => void; size?: number }) {
-  return (
-    <div role={onChange ? "radiogroup" : "img"} aria-label={`${value} out of 5 stars`} style={{ display: "flex", gap: 3, alignItems: "center" }}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <button key={n} type="button" disabled={!onChange} onClick={() => onChange?.(n)} aria-label={`${n} star`} aria-pressed={onChange ? value === n : undefined} style={{ cursor: onChange ? "pointer" : "default", padding: 0, border: 0, background: "transparent", color: n <= value ? "#f59e0b" : "#cbd5e1", fontSize: size, lineHeight: 1 }}>
-          ★
-        </button>
-      ))}
-    </div>
-  );
-}
-
 function RatingGauge({ value }: { value: number | null }) {
   const cx = 150, cy = 140, r = 112;
   const point = (angle: number, radius: number) => ({ x: cx + radius * Math.cos((angle * Math.PI) / 180), y: cy + radius * Math.sin((angle * Math.PI) / 180) });
@@ -104,7 +91,6 @@ export default function ReviewsPage() {
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [name, setName] = useState("");
   const [type, setType] = useState<ReviewType>("Positive");
-  const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [notice, setNotice] = useState("");
@@ -123,8 +109,13 @@ export default function ReviewsPage() {
 
   const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
   const visibleReviews = useMemo(() => profileReviews.filter((review) => filter === "All" || review.type === filter), [profileReviews, filter]);
-  const average = profileReviews.length ? profileReviews.reduce((sum, review) => sum + review.rating, 0) / profileReviews.length : null;
-  const overallAverage = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : null;
+  const scoredReviews = profileReviews.filter((review) => review.type !== "Request");
+  const positiveCount = scoredReviews.filter((review) => review.type === "Positive").length;
+  const negativeCount = scoredReviews.filter((review) => review.type === "Negative").length;
+  const score = scoredReviews.length ? (positiveCount / scoredReviews.length) * 100 : null;
+  const overallScoredReviews = reviews.filter((review) => review.type !== "Request");
+  const overallPositive = overallScoredReviews.filter((review) => review.type === "Positive").length;
+  const overallScore = overallScoredReviews.length ? (overallPositive / overallScoredReviews.length) * 100 : null;
 
   function submitReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -134,13 +125,13 @@ export default function ReviewsPage() {
     }
     const next: Review = {
       id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
-      profile, name: name.trim(), type, rating, title: title.trim(), body: body.trim(),
+      profile, name: name.trim(), type, title: title.trim(), body: body.trim(),
       date: new Date().toISOString(),
     };
     const updated = [next, ...reviews];
     setReviews(updated);
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { /* The current session still works if storage is unavailable. */ }
-    setName(""); setTitle(""); setBody(""); setRating(5); setNotice("Your review has been added on this browser."); setFilter("All"); setShowForm(false);
+    setName(""); setTitle(""); setBody(""); setNotice("Your review has been added on this browser."); setFilter("All"); setShowForm(false);
   }
 
   function removeReview(id: string) {
@@ -173,11 +164,13 @@ export default function ReviewsPage() {
               <select id="profile-select" value={profile} onChange={(e) => { setProfile(e.target.value); setFilter("All"); setNotice(""); }} style={input}>{PROFILES.map((p) => <option key={p}>{p}</option>)}</select>
               <p style={{ color: "#64748b", fontSize: 11, margin: "8px 0 0" }}>Reviews and scores are shown separately for each profile.</p>
             </div>
-            <RatingGauge value={average === null ? null : (average / 5) * 100} />
+            <RatingGauge value={score} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.length}</div><div style={{ color: "#64748b", fontSize: 12 }}>Reviews for this profile</div></div>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{average === null ? "—" : average.toFixed(1)}<span style={{ fontSize: 12, color: "#64748b" }}>/5</span></div><div style={{ color: "#64748b", fontSize: 12 }}>Average stars</div></div>
-              <div style={{ gridColumn: "1 / -1", color: "#64748b", fontSize: 11 }}>Explorer-wide: {overallAverage === null ? "No ratings yet" : `${overallAverage.toFixed(1)} / 5 from ${reviews.length} review(s)`}</div>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.length}</div><div style={{ color: "#64748b", fontSize: 12 }}>Total reviews</div></div>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{positiveCount}</div><div style={{ color: "#166534", fontSize: 12 }}>Positive reviews</div></div>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{negativeCount}</div><div style={{ color: "#991b1b", fontSize: 12 }}>Negative reviews</div></div>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.filter((review) => review.type === "Request").length}</div><div style={{ color: "#1d4ed8", fontSize: 12 }}>Requests</div></div>
+              <div style={{ gridColumn: "1 / -1", color: "#64748b", fontSize: 11 }}>Explorer-wide review score: {overallScore === null ? "Not enough positive/negative reviews yet" : `${Math.round(overallScore)} / 100 from ${overallScoredReviews.length} positive/negative review(s)`}. Requests are counted separately and do not change the score.</div>
             </div>
           </div>
         </section>
@@ -190,8 +183,7 @@ export default function ReviewsPage() {
               <div><label style={label} htmlFor="review-name">Your display name</label><input id="review-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter a name" maxLength={60} style={input} required /></div>
               <div><label style={label} htmlFor="review-type">Review type</label><select id="review-type" value={type} onChange={(e) => setType(e.target.value as ReviewType)} style={input}>{(["Positive", "Negative", "Request"] as ReviewType[]).map((t) => <option key={t} value={t}>{t} — {typeStyles[t].description}</option>)}</select></div>
             </div>
-            <div style={{ marginTop: 18 }}><label style={label}>Your rating</label><Stars value={rating} onChange={setRating} /><div style={{ fontSize: 11, color: "#64748b", marginTop: 7 }}>{rating} out of 5 stars</div></div>
-            <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-title">Review headline</label><input id="review-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Summarise your point" maxLength={100} style={input} required /></div>
+                        <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-title">Review headline</label><input id="review-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Summarise your point" maxLength={100} style={input} required /></div>
             <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-body">Details and evidence</label><textarea id="review-body" value={body} onChange={(e) => setBody(e.target.value)} placeholder="Explain the experience, outcome, source or action requested..." minLength={10} maxLength={1500} rows={5} style={{ ...input, resize: "vertical" }} required /></div>
             <p style={{ fontSize: 11, color: "#64748b", lineHeight: 1.6 }}>Do not post private information, threats, or unverified allegations as established facts. Clearly identify claims as allegations and include public sources where possible.</p>
             {notice && <p role="status" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
@@ -210,7 +202,7 @@ export default function ReviewsPage() {
               <div style={{ display: "flex", gap: 12, alignItems: "center" }}><div style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "#e2e8f0", color: "#334155", fontWeight: 900 }}>{review.name.slice(0, 1).toUpperCase()}</div><div><div style={{ fontWeight: 850 }}>{review.name}</div><div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · {review.profile}</div></div></div>
               <span style={{ borderRadius: 999, padding: "6px 10px", fontSize: 11, fontWeight: 900, color: typeStyles[review.type].color, background: typeStyles[review.type].background }}>{review.type}</span>
             </div>
-            <div style={{ marginTop: 15 }}><Stars value={review.rating} size={19} /><h3 style={{ margin: "7px 0", fontSize: 17, fontWeight: 900 }}>{review.title}</h3><p style={{ margin: 0, color: "#475569", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{review.body}</p></div>
+            <div style={{ marginTop: 15 }}><h3 style={{ margin: "7px 0", fontSize: 17, fontWeight: 900 }}>{review.title}</h3><p style={{ margin: 0, color: "#475569", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{review.body}</p></div>
             <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 15, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><span style={{ fontSize: 11, color: "#64748b" }}>Community-submitted · not independently verified</span><button onClick={() => removeReview(review.id)} style={{ border: "1px solid #cbd5e1", background: "white", color: "#64748b", borderRadius: 8, padding: "6px 9px", fontSize: 11, cursor: "pointer" }}>Remove from this browser</button></div>
           </article>)}</div>}
         </section>
