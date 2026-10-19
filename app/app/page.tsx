@@ -1014,10 +1014,13 @@ export default function Home() {
       </div>
 
       <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
-        <div style={{ marginBottom: 14 }}>
-          <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
-          <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added feedback</h2>
-          <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Browse community feedback.</p>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
+          <div>
+            <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
+            <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added feedback</h2>
+            <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Browse community feedback.</p>
+          </div>
+          <a href="/reviews?action=write" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 15px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 850, textDecoration: "none", whiteSpace: "nowrap", boxShadow: "0 2px 5px #1d4ed822" }}>＋ Share feedback</a>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 14, padding: 12, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
