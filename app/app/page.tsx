@@ -164,6 +164,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 360, y: 200 },
     data: {
+      photoUrl: "https://cms.tn.gov.in/cms_migrated/document/governor/governor_tn_new.png",
       label: "Honourable Governor",
       role: "Constitutional head of Tamil Nadu",
       description:
@@ -175,6 +176,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 940, y: 280 },
     data: {
+      photoUrl: "https://cms.tn.gov.in/cms_migrated/document/governor/cj_new.png",
       label: "Thiru Sushrut Arvind Dharmadhikari",
       role: "Chief Justice, Madras High Court",
       isPerson: true,
