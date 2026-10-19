@@ -788,13 +788,16 @@ export default function Home() {
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
+  const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Negative" | "Request">("All");
+  const [homeReviewName, setHomeReviewName] = useState("");
+  const [homeReviewDateOrder, setHomeReviewDateOrder] = useState<"Newest first" | "Oldest first">("Newest first");
 
   useEffect(() => {
     const loadReviews = () => {
       try {
         const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
         const reviews = saved ? JSON.parse(saved) as ReviewSummary[] : [];
-        setRecentReviews(reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5));
+        setRecentReviews(reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
         const relevant = reviews.filter((review) => review.profile === selected.label && (review.type === "Positive" || review.type === "Negative"));
         const positive = relevant.filter((review) => review.type === "Positive").length;
         setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
@@ -902,6 +905,13 @@ export default function Home() {
 
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
+  const filteredHomeReviews = recentReviews
+    .filter((review) => homeReviewType === "All" || review.type === homeReviewType)
+    .filter((review) => !homeReviewName.trim() || review.name.toLowerCase().includes(homeReviewName.trim().toLowerCase()))
+    .sort((a, b) => homeReviewDateOrder === "Newest first"
+      ? new Date(b.date).getTime() - new Date(a.date).getTime()
+      : new Date(a.date).getTime() - new Date(b.date).getTime());
+
   return (
     <main style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
       <h1 style={{ fontSize: 28, fontWeight: 800 }}>Tamil Nadu Government Explorer</h1>
@@ -990,14 +1000,22 @@ export default function Home() {
         </aside>
       </div>
 
-      <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "28px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }}>
-          <div>
-            <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
-            <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added reviews</h2>
-            <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>The latest community feedback submitted through this browser.</p>
+      <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "8px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+        <div style={{ marginBottom: 14 }}>
+          <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
+          <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added reviews</h2>
+          <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Browse community feedback, newest first.</p>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 14, padding: 12, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {(["All", "Positive", "Negative", "Request"] as const).map((type) => (
+              <button key={type} onClick={() => setHomeReviewType(type)} style={{ border: homeReviewType === type ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: homeReviewType === type ? "#dbeafe" : "white", color: homeReviewType === type ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 850, cursor: "pointer" }}>{type}</button>
+            ))}
           </div>
-          <a href="/reviews" style={{ textDecoration: "none", borderRadius: 9, background: "#1d4ed8", color: "white", padding: "10px 14px", fontSize: 12, fontWeight: 800 }}>View all reviews ↗</a>
+          <input aria-label="Filter reviews by reviewer name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search reviewer name" style={{ flex: "1 1 160px", minWidth: 140, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", font: "inherit", fontSize: 12, background: "white", color: "#0f172a" }} />
+          <select aria-label="Sort reviews by date" value={homeReviewDateOrder} onChange={(e) => setHomeReviewDateOrder(e.target.value as "Newest first" | "Oldest first")} style={{ border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontSize: 12, background: "white", color: "#334155" }}>
+            <option>Newest first</option><option>Oldest first</option>
+          </select>
         </div>
         {recentReviews.length === 0 ? (
           <div style={{ border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
@@ -1005,30 +1023,31 @@ export default function Home() {
             <p style={{ margin: "6px 0 14px", color: "#64748b", fontSize: 13 }}>Be the first to share a constructive review.</p>
             <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>Write a review →</a>
           </div>
+        ) : filteredHomeReviews.length === 0 ? (
+          <p style={{ padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No reviews match these filters.</p>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-            {recentReviews.map((review) => {
+          <div style={{ display: "grid", gap: 12, maxHeight: 620, overflowY: "auto", paddingRight: 5, overscrollBehavior: "contain" }}>
+            {filteredHomeReviews.map((review) => {
               const style = review.type === "Positive"
                 ? { color: "#166534", background: "#dcfce7" }
                 : review.type === "Negative"
                   ? { color: "#991b1b", background: "#fee2e2" }
                   : { color: "#1d4ed8", background: "#dbeafe" };
               return (
-                <article key={review.id} style={{ border: "1px solid #e2e8f0", borderRadius: 12, padding: 15, minWidth: 0 }}>
+                <article key={review.id} style={{ border: "1px solid #e2e8f0", borderRadius: 12, padding: 15, minWidth: 0, background: "white" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                     <span style={{ fontSize: 11, fontWeight: 900, color: style.color, background: style.background, borderRadius: 999, padding: "5px 9px" }}>{review.type}</span>
                     <span style={{ color: "#64748b", fontSize: 11 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
                   </div>
                   <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 900 }}>{review.title}</h3>
-                  <p style={{ margin: "0 0 8px", color: "#475569", fontSize: 13, lineHeight: 1.6, overflowWrap: "anywhere" }}>{review.body.length > 150 ? review.body.slice(0, 150) + "…" : review.body}</p>
+                  <p style={{ margin: "0 0 8px", color: "#475569", fontSize: 13, lineHeight: 1.6, overflowWrap: "anywhere" }}>{review.body}</p>
                   <p style={{ margin: 0, color: "#64748b", fontSize: 11 }}>By <strong>{review.name}</strong> · {review.profile}</p>
-                  <a href={`/reviews?profile=${encodeURIComponent(review.profile)}`} style={{ display: "inline-block", marginTop: 12, color: "#1d4ed8", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>Read reviews →</a>
                 </article>
               );
             })}
           </div>
         )}
-        <p style={{ margin: "14px 0 0", fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>Prototype limitation: reviews are currently saved in local browser storage, so this section is not yet shared across different visitors. Shared public reviews need a server database.</p>
+        <p style={{ margin: "14px 0 0", fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>Reviews are currently saved in this browser only. A shared public feed needs a server database.</p>
       </section>
     </main>
   );
