@@ -12,6 +12,7 @@ import {
   type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import mlaDirectory from "@/data/tn-mlas.json";
 
 type Category =
   | "Government"
@@ -29,6 +30,10 @@ type Profile = {
   photoUrl?: string;
   isPerson?: boolean;
   xHandle?: string;
+  mlaNumber?: number;
+  mlaParty?: string;
+  mlaEmail?: string;
+  mlaStatus?: string;
 };
 
 type ReviewSummary = {
@@ -855,7 +860,7 @@ const categories: Category[] = [
 const categoryDescriptions: Record<Category, string> = {
   Government: "Governor, Chief Minister, Council of Ministers and the state executive structure.",
   Ministers: "Meet the Chief Minister and ministers, and explore their portfolios and profiles.",
-  MLAs: "Explore elected representatives and constituencies.",
+  MLAs: "Explore all 234 Assembly constituencies. Select a party group to expand its member profiles; search by name or constituency.",
   "IAS Officers": "Explore administrative officers and postings.",
   "IPS Officers": "Explore police leadership and IPS officer profiles.",
   Departments: "Explore department structures and responsibilities.",
@@ -864,6 +869,9 @@ const categoryDescriptions: Record<Category, string> = {
 
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
+  const [expandedMlaParty, setExpandedMlaParty] = useState<string | null>(null);
+  const [mlaSearch, setMlaSearch] = useState("");
+  const [mlaPartyFilter, setMlaPartyFilter] = useState("All parties");
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
@@ -958,27 +966,145 @@ export default function Home() {
     },
   };
 
+  const mlaRecords = mlaDirectory.members as Array<{
+    number: number;
+    constituency: string;
+    name: string;
+    party: string;
+    email: string;
+    status: string;
+    source: string;
+  }>;
+  const mlaParties = useMemo(
+    () => [...new Set(mlaRecords.map((member) => member.party || "Vacant"))].sort((a, b) => {
+      const order = ["TVK", "DMK", "AIADMK", "INC", "PMK", "VCK", "IUML", "CPI", "CPI (M)", "BJP", "DMDK", "AMMK", "Vacant"];
+      return (order.indexOf(a) < 0 ? 999 : order.indexOf(a)) - (order.indexOf(b) < 0 ? 999 : order.indexOf(b)) || a.localeCompare(b);
+    }),
+    []
+  );
+  const filteredMlaRecords = useMemo(() => {
+    const query = mlaSearch.trim().toLowerCase();
+    return mlaRecords.filter((member) => {
+      const matchesSearch = !query || member.name.toLowerCase().includes(query) || member.constituency.toLowerCase().includes(query) || String(member.number) === query;
+      const matchesParty = mlaPartyFilter === "All parties" || (member.party || "Vacant") === mlaPartyFilter;
+      return matchesSearch && matchesParty;
+    });
+  }, [mlaSearch, mlaPartyFilter]);
+  const mlaGraphNodes = useMemo((): Node<Profile>[] => {
+    const groupNodes: Node<Profile>[] = [];
+    const memberNodes: Node<Profile>[] = [];
+    const showSearchResults = Boolean(mlaSearch.trim()) || mlaPartyFilter !== "All parties";
+    if (showSearchResults) {
+      const results = filteredMlaRecords;
+      results.forEach((member, index) => {
+        const vacant = member.status === "Vacant";
+        memberNodes.push({
+          id: `mla-${member.number}`,
+          type: "info",
+          position: { x: (index % 4) * 245, y: 100 + Math.floor(index / 4) * 185 },
+          data: {
+            label: vacant ? `${member.constituency} — Vacant` : member.name,
+            role: `Constituency ${member.number} · ${member.constituency} · ${member.party || "No party listed"}`,
+            description: vacant
+              ? `Constituency: ${member.constituency}. The Assembly directory marks this seat as vacant. Verify current vacancy status before publication. Source: ${member.source}`
+              : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}. This dataset transcribes the Assembly directory; verify changes against the official source. Source: ${member.source}`,
+            isPerson: !vacant,
+            mlaNumber: member.number,
+            mlaParty: member.party,
+            mlaEmail: member.email,
+            mlaStatus: member.status,
+          },
+        });
+      });
+      return memberNodes;
+    }
+    const partyCount = new Map<string, number>();
+    mlaRecords.forEach((member) => {
+      const party = member.party || "Vacant";
+      partyCount.set(party, (partyCount.get(party) ?? 0) + 1);
+    });
+    const cols = 3;
+    const groupWidth = 360;
+    const groupHeight = 230;
+    mlaParties.forEach((party, index) => {
+      const x = (index % cols) * groupWidth;
+      const y = Math.floor(index / cols) * groupHeight;
+      const expanded = expandedMlaParty === party;
+      groupNodes.push({
+        id: `mla-party-${party.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+        type: "info",
+        position: { x, y },
+        data: {
+          label: party === "Vacant" ? "Vacant seat" : party,
+          role: `${partyCount.get(party) ?? 0} constituency ${(partyCount.get(party) ?? 0) === 1 ? "entry" : "entries"} · ${expanded ? "Click to collapse" : "Click to expand"}`,
+          description: `${party === "Vacant" ? "Vacant constituencies" : party + " members"} in the Assembly directory provided for this project. Select this group to explore the listed constituencies and member profiles. Source: ${mlaDirectory.sourceUrl}`,
+          mlaParty: party,
+        },
+      });
+    });
+    if (expandedMlaParty) {
+      const groupIndex = mlaParties.indexOf(expandedMlaParty);
+      const groupX = (groupIndex % cols) * groupWidth;
+      const groupY = Math.floor(groupIndex / cols) * groupHeight;
+      const members = mlaRecords.filter((member) => (member.party || "Vacant") === expandedMlaParty);
+      members.forEach((member, index) => {
+        const vacant = member.status === "Vacant";
+        memberNodes.push({
+          id: `mla-${member.number}`,
+          type: "info",
+          position: { x: groupX + (index % 3) * 245, y: groupY + 130 + Math.floor(index / 3) * 185 },
+          data: {
+            label: vacant ? `${member.constituency} — Vacant` : member.name,
+            role: `#${member.number} · ${member.constituency} · ${member.party || "No party listed"}`,
+            description: vacant
+              ? `Constituency: ${member.constituency}. The Assembly directory marks this seat as vacant. Verify current vacancy status before publication. Source: ${member.source}`
+              : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}. This dataset transcribes the Assembly directory; verify changes against the official source. Source: ${member.source}`,
+            isPerson: !vacant,
+            mlaNumber: member.number,
+            mlaParty: member.party,
+            mlaEmail: member.email,
+            mlaStatus: member.status,
+          },
+        });
+      });
+    }
+    return [...groupNodes, ...memberNodes];
+  }, [mlaRecords, mlaParties, expandedMlaParty, mlaSearch, mlaPartyFilter, filteredMlaRecords]);
+
   const visibleNodes = useMemo(
-    () =>
-      allNodes
-        .filter((node) => categoryNodes[category].includes(node.id))
-        .map((node) => ({
-          ...node,
-          position: layoutPositions[category][node.id] ?? node.position,
-        })),
-    [category]
+    () => category === "MLAs"
+      ? mlaGraphNodes
+      : allNodes
+          .filter((node) => categoryNodes[category].includes(node.id))
+          .map((node) => ({
+            ...node,
+            position: layoutPositions[category][node.id] ?? node.position,
+          })),
+    [category, mlaGraphNodes]
   );
   const visibleIds = useMemo(
     () => new Set(visibleNodes.map((node) => node.id)),
     [visibleNodes]
   );
-  const visibleEdges = useMemo(
-    () => allEdges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target)),
-    [visibleIds]
-  );
+  const visibleEdges = useMemo(() => {
+    if (category === "MLAs") {
+      const edges: Edge[] = [];
+      const showSearchResults = Boolean(mlaSearch.trim()) || mlaPartyFilter !== "All parties";
+      if (!showSearchResults && expandedMlaParty) {
+        const groupIndex = mlaParties.indexOf(expandedMlaParty);
+        const groupId = `mla-party-${expandedMlaParty.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+        mlaRecords.filter((member) => (member.party || "Vacant") === expandedMlaParty).forEach((member) => {
+          edges.push({ id: `mla-edge-${member.number}`, source: groupId, target: `mla-${member.number}`, type: "smoothstep" });
+        });
+      }
+      return edges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target));
+    }
+    return allEdges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target));
+  }, [category, visibleIds, expandedMlaParty, mlaParties, mlaRecords, mlaSearch, mlaPartyFilter]);
 
   function changeCategory(next: Category) {
     setCategory(next);
+    if (next !== "MLAs") { setExpandedMlaParty(null); setMlaSearch(""); setMlaPartyFilter("All parties"); }
     const firstNode = allNodes.find((node) => categoryNodes[next].includes(node.id));
     if (firstNode) setSelected(firstNode.data);
   }
@@ -1066,7 +1192,16 @@ export default function Home() {
             fitViewOptions={{ padding: 0.12, minZoom: 0.28, maxZoom: 0.9 }}
             minZoom={0.15}
             maxZoom={1.5}
-            onNodeClick={(_, node) => node.id === "council-summary" ? changeCategory("Ministers") : selectProfile(node.data as Profile)}
+            onNodeClick={(_, node) => {
+              if (node.id === "council-summary") { changeCategory("Ministers"); return; }
+              if (category === "MLAs" && node.id.startsWith("mla-party-")) {
+                const party = (node.data as Profile).mlaParty ?? null;
+                setExpandedMlaParty((current) => current === party ? null : party);
+                setSelected(node.data as Profile);
+                return;
+              }
+              selectProfile(node.data as Profile);
+            }}
           >
             <Background />
             <Controls />
