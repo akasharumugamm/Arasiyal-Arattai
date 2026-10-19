@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-type ReviewType = "Positive" | "Negative" | "Request";
+type ReviewType = "Positive" | "Negative" | "Allegation" | "Request";
 type Review = {
   id: string;
   profile: string;
@@ -58,6 +58,7 @@ const PROFILES = [
 const typeStyles: Record<ReviewType, { color: string; background: string; description: string }> = {
   Positive: { color: "#166534", background: "#dcfce7", description: "Share a positive observation or outcome" },
   Negative: { color: "#991b1b", background: "#fee2e2", description: "Describe a concern or poor outcome" },
+  Allegation: { color: "#991b1b", background: "#fee2e2", description: "State a claim clearly as an allegation and include evidence or sources" },
   Request: { color: "#1d4ed8", background: "#dbeafe", description: "Suggest an action or ask for a response" },
 };
 
@@ -109,7 +110,7 @@ export default function ReviewsPage() {
 
   const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
   const visibleReviews = useMemo(() => profileReviews
-    .filter((review) => filter === "All" || review.type === filter)
+    .filter((review) => filter === "All" || (filter === "Negative" ? review.type === "Negative" || review.type === "Allegation" : review.type === filter))
     .sort((a, b) => {
       if (sortOrder === "Highest upvotes") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
       if (sortOrder === "Highest downvotes") return (b.votes?.down ?? 0) - (a.votes?.down ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -117,7 +118,7 @@ export default function ReviewsPage() {
     }), [profileReviews, filter, sortOrder]);
   const scoredReviews = profileReviews.filter((review) => review.type !== "Request");
   const positiveCount = scoredReviews.filter((review) => review.type === "Positive").length;
-  const negativeCount = scoredReviews.filter((review) => review.type === "Negative").length;
+  const negativeCount = scoredReviews.filter((review) => review.type === "Negative" || review.type === "Allegation").length;
   const score = scoredReviews.length ? (positiveCount / scoredReviews.length) * 100 : null;
   const overallScoredReviews = reviews.filter((review) => review.type !== "Request");
   const overallPositive = overallScoredReviews.filter((review) => review.type === "Positive").length;
@@ -126,7 +127,7 @@ export default function ReviewsPage() {
   function submitReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!name.trim() || !title.trim() || !body.trim()) {
-      setNotice("Please fill in your name, review title and review details.");
+      setNotice("Please fill in your name, feedback headline and details.");
       return;
     }
     const next: Review = {
@@ -181,10 +182,10 @@ export default function ReviewsPage() {
         <header style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 20, marginBottom: 24 }}>
           <div>
             <div style={{ color: "#64748b", fontSize: 11, fontWeight: 900, letterSpacing: 2, textTransform: "uppercase" }}>Public voice · Accountability</div>
-            <h1 style={{ fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.1, letterSpacing: -1.5, margin: "9px 0", fontWeight: 900 }}>Community Reviews</h1>
+            <h1 style={{ fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.1, letterSpacing: -1.5, margin: "9px 0", fontWeight: 900 }}>Public Feedback</h1>
             <p style={{ maxWidth: 650, color: "#64748b", lineHeight: 1.65, margin: 0 }}>Share a public assessment, raise a concern, or request action about a government representative. Keep comments specific, respectful and evidence-based.</p>
           </div>
-          <button onClick={() => { setShowForm((v) => !v); setNotice(""); }} style={{ border: 0, borderRadius: 11, background: "#1d4ed8", color: "white", padding: "13px 18px", fontWeight: 850, cursor: "pointer" }}>{showForm ? "Close form" : "✍ Write a review"}</button>
+          <button onClick={() => { setShowForm((v) => !v); setNotice(""); }} style={{ border: 0, borderRadius: 11, background: "#1d4ed8", color: "white", padding: "13px 18px", fontWeight: 850, cursor: "pointer" }}>{showForm ? "Close form" : "✍ Share feedback"}</button>
         </header>
 
         <section style={{ ...panel, marginBottom: 20 }}>
@@ -196,22 +197,22 @@ export default function ReviewsPage() {
             </div>
             <RatingGauge value={score} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.length}</div><div style={{ color: "#64748b", fontSize: 12 }}>Total reviews</div></div>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{positiveCount}</div><div style={{ color: "#166534", fontSize: 12 }}>Positive reviews</div></div>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{negativeCount}</div><div style={{ color: "#991b1b", fontSize: 12 }}>Negative reviews</div></div>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.length}</div><div style={{ color: "#64748b", fontSize: 12 }}>Total feedback</div></div>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{positiveCount}</div><div style={{ color: "#166534", fontSize: 12 }}>Positive feedback</div></div>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{negativeCount}</div><div style={{ color: "#991b1b", fontSize: 12 }}>Negative feedback</div></div>
               <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.filter((review) => review.type === "Request").length}</div><div style={{ color: "#1d4ed8", fontSize: 12 }}>Requests</div></div>
-              <div style={{ gridColumn: "1 / -1", color: "#64748b", fontSize: 11 }}>Explorer-wide review score: {overallScore === null ? "Not enough positive/negative reviews yet" : `${Math.round(overallScore)} / 100 from ${overallScoredReviews.length} positive/negative review(s)`}. Requests are counted separately and do not change the score.</div>
+              <div style={{ gridColumn: "1 / -1", color: "#64748b", fontSize: 11 }}>Explorer-wide feedback score: {overallScore === null ? "Not enough positive/negative reviews yet" : `${Math.round(overallScore)} / 100 from ${overallScoredReviews.length} positive/negative submission(s)`}. Requests are counted separately and do not change the score.</div>
             </div>
           </div>
         </section>
 
         {showForm && <section style={{ ...panel, marginBottom: 20 }}>
-          <h2 style={{ margin: "0 0 5px", fontSize: 21, fontWeight: 900 }}>Write your review</h2>
+          <h2 style={{ margin: "0 0 5px", fontSize: 21, fontWeight: 900 }}>Share your feedback</h2>
           <p style={{ margin: "0 0 20px", color: "#64748b", fontSize: 13 }}>You can submit more than one review, including multiple reviews for the same person.</p>
           <form onSubmit={submitReview}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
               <div><label style={label} htmlFor="review-name">Your display name</label><input id="review-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter a name" maxLength={60} style={input} required /></div>
-              <div><label style={label} htmlFor="review-type">Review type</label><select id="review-type" value={type} onChange={(e) => setType(e.target.value as ReviewType)} style={input}>{(["Positive", "Negative", "Request"] as ReviewType[]).map((t) => <option key={t} value={t}>{t} — {typeStyles[t].description}</option>)}</select></div>
+              <div><label style={label} htmlFor="review-type">Feedback type</label><select id="review-type" value={type} onChange={(e) => setType(e.target.value as ReviewType)} style={input}>{(["Positive", "Negative", "Allegation", "Request"] as ReviewType[]).map((t) => <option key={t} value={t}>{t} — {typeStyles[t].description}</option>)}</select></div>
             </div>
                         <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-title">Review headline</label><input id="review-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Summarise your point" maxLength={100} style={input} required /></div>
             <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-body">Details and evidence</label><textarea id="review-body" value={body} onChange={(e) => setBody(e.target.value)} placeholder="Explain the experience, outcome, source or action requested..." minLength={10} maxLength={1500} rows={5} style={{ ...input, resize: "vertical" }} required /></div>
@@ -231,18 +232,18 @@ export default function ReviewsPage() {
             </div>
             <p style={{ fontSize: 11, color: "#64748b", lineHeight: 1.6 }}>Do not post private information, threats, or unverified allegations as established facts. Clearly identify claims as allegations and include public sources where possible.</p>
             {notice && <p role="status" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
-            <button type="submit" style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "12px 18px", fontWeight: 850, cursor: "pointer" }}>Publish review</button>
+            <button type="submit" style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "12px 18px", fontWeight: 850, cursor: "pointer" }}>Publish feedback</button>
           </form>
         </section>}
 
         <section>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 14, marginBottom: 14 }}>
-            <div><h2 style={{ margin: 0, fontSize: 23, fontWeight: 900 }}>Public reviews</h2><p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 12 }}>{sortOrder} · {visibleReviews.length} shown</p></div>
+            <div><h2 style={{ margin: 0, fontSize: 23, fontWeight: 900 }}>Public feedback</h2><p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 12 }}>{sortOrder} · {visibleReviews.length} shown</p></div>
             <select aria-label="Sort reviews" value={sortOrder} onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)} style={{ border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontSize: 12, background: "white", color: "#334155" }}><option>Newest first</option><option>Oldest first</option><option>Highest upvotes</option><option>Highest downvotes</option></select>
             <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>{(["All", "Positive", "Negative", "Request"] as const).map((t) => <button key={t} onClick={() => setFilter(t)} style={{ border: filter === t ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: filter === t ? "#dbeafe" : "white", color: filter === t ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "8px 13px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>{t}</button>)}</div>
           </div>
           {notice && !showForm && <p role="status" style={{ color: "#166534", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
-          {visibleReviews.length === 0 ? <div style={{ ...panel, textAlign: "center", padding: "42px 20px" }}><div style={{ fontSize: 34 }}>✦</div><h3 style={{ fontSize: 18, fontWeight: 900, margin: "10px 0 6px" }}>No public reviews yet</h3><p style={{ maxWidth: 430, margin: "0 auto 18px", color: "#64748b", fontSize: 13, lineHeight: 1.6 }}>Be the first to share a specific, constructive review of {profile}.</p><button onClick={() => { setShowForm(true); setType("Positive"); }} style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "11px 16px", fontWeight: 850, cursor: "pointer" }}>Write the first review</button></div> : <div style={{ display: "grid", gap: 12 }}>{visibleReviews.map((review) => <article key={review.id} style={panel}>
+          {visibleReviews.length === 0 ? <div style={{ ...panel, textAlign: "center", padding: "42px 20px" }}><div style={{ fontSize: 34 }}>✦</div><h3 style={{ fontSize: 18, fontWeight: 900, margin: "10px 0 6px" }}>No public feedback yet</h3><p style={{ maxWidth: 430, margin: "0 auto 18px", color: "#64748b", fontSize: 13, lineHeight: 1.6 }}>Be the first to share specific, constructive feedback of {profile}.</p><button onClick={() => { setShowForm(true); setType("Positive"); }} style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "11px 16px", fontWeight: 850, cursor: "pointer" }}>Share the first feedback</button></div> : <div style={{ display: "grid", gap: 12 }}>{visibleReviews.map((review) => <article key={review.id} style={panel}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
               <div style={{ display: "flex", gap: 12, alignItems: "center" }}><div style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "#e2e8f0", color: "#334155", fontWeight: 900 }}>{review.name.slice(0, 1).toUpperCase()}</div><div><div style={{ fontWeight: 850 }}>{review.name}</div><div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · {review.profile}</div></div></div>
               <span style={{ borderRadius: 999, padding: "6px 10px", fontSize: 11, fontWeight: 900, color: typeStyles[review.type].color, background: typeStyles[review.type].background }}>{review.type}</span>
