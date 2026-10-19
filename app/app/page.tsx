@@ -45,6 +45,7 @@ type ReviewSummary = {
 
 function InfoNode({ data }: NodeProps<Node<Profile>>) {
   const [imageFailed, setImageFailed] = useState(false);
+  const showAvatar = !["cm-admin", "cm-home", "cm-special", "cm-other", "departments"].includes(data.id);
   const initials = data.label
     .replace(/^(Honourable|Honorable|Thiru|Justice)\s+/i, "")
     .split(/\s+/)
@@ -70,7 +71,7 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      {data.photoUrl && !imageFailed ? (
+      {showAvatar && (data.photoUrl && !imageFailed ? (
         <img
           src={data.photoUrl}
           alt={data.label}
@@ -87,7 +88,7 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
             background: "#f1f5f9",
           }}
         />
-      ) : (
+      ) : showAvatar ? (
         <div
           aria-label={data.label + " profile image unavailable"}
           title="Official profile image unavailable"
@@ -108,7 +109,7 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
         >
           {initials || "TN"}
         </div>
-      )}
+      ) : null)}
       <div style={{ fontWeight: 750, lineHeight: 1.35, overflowWrap: "anywhere" }}>{data.label}</div>
       <div style={{ fontSize: 12, lineHeight: 1.45, marginTop: 6, color: "#64748b" }}>
         {data.role}
