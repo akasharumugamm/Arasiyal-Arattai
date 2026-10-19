@@ -171,7 +171,6 @@ const allNodes: Node<Profile>[] = [
     },
   },
   {
-  {
     id: "chief-justice",
     type: "info",
     position: { x: 940, y: 280 },
@@ -182,6 +181,7 @@ const allNodes: Node<Profile>[] = [
       description: "The Chief Justice leads the Madras High Court, which is part of the independent judiciary. The judiciary is institutionally separate from the state executive and does not report to the Chief Minister. Confirm current judicial office-holders through the Madras High Court's official website.",
     },
   },
+  {
     id: "cm",
     type: "info",
     position: { x: 360, y: 430 },
