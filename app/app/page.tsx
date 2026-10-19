@@ -72,23 +72,33 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
     >
       <Handle type="target" position={Position.Top} />
       {showAvatar && (data.photoUrl && !imageFailed ? (
-        <img
-          src={data.photoUrl}
-          alt={data.label}
-          onError={() => setImageFailed(true)}
-          style={{
-            display: "block",
-            width: 88,
-            height: 88,
-            borderRadius: 20,
-            objectFit: "cover",
-            objectPosition: "center 25%",
-            transform: ["governor", "chief-justice"].includes(id) ? "scale(1.12)" : undefined,
-            margin: "0 auto 10px",
-            border: "4px solid #e5e7eb",
-            background: "#f1f5f9",
-          }}
-        />
+        ["governor", "chief-justice"].includes(id) ? (
+          <div style={{ width: 88, height: 88, overflow: "hidden", borderRadius: 20, margin: "0 auto 10px", background: "#f1f5f9" }}>
+            <img
+              src={data.photoUrl}
+              alt={data.label}
+              onError={() => setImageFailed(true)}
+              style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", transform: "scale(1.3)" }}
+            />
+          </div>
+        ) : (
+          <img
+            src={data.photoUrl}
+            alt={data.label}
+            onError={() => setImageFailed(true)}
+            style={{
+              display: "block",
+              width: 88,
+              height: 88,
+              borderRadius: 20,
+              objectFit: "cover",
+              objectPosition: "center 25%",
+              margin: "0 auto 10px",
+              border: "4px solid #e5e7eb",
+              background: "#f1f5f9",
+            }}
+          />
+        )
       ) : showAvatar ? (
         <div
           aria-label={data.label + " profile image unavailable"}
