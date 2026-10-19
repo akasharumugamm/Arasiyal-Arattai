@@ -195,7 +195,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 0, y: 100 },
     data: {
-      label: "Honourable N. Anand",
+      label: "N. Anand",
       role: "Rural Development and Water Resources",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/024_Anand.png",
@@ -207,7 +207,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 280, y: 100 },
     data: {
-      label: "Honourable Aadhav Arjuna",
+      label: "Aadhav Arjuna",
       role: "Public Works and Sports Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/014_Aadhav_Arjuna.png",
@@ -496,7 +496,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 0, y: 1300 },
     data: {
-      label: "Honourable S. Keerthana",
+      label: "S. Keerthana",
       role: "Industries",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/205_Keerthana.png",
@@ -520,7 +520,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 560, y: 1300 },
     data: {
-      label: "Honourable K. Thennarasu",
+      label: "K. Thennarasu",
       role: "Non-Resident Tamils Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/029_Thennarasu.png",
@@ -532,7 +532,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 840, y: 1300 },
     data: {
-      label: "Honourable V. Gandhiraj",
+      label: "V. Gandhiraj",
       role: "Co-operation",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/038_Gandhiraj.png",
@@ -544,7 +544,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 1120, y: 1300 },
     data: {
-      label: "Honourable V. Sampath Kumar",
+      label: "V. Sampath Kumar",
       role: "Backward Classes Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/118_Sampath_kumar.png",
@@ -556,7 +556,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 0, y: 1540 },
     data: {
-      label: "Honourable Vanni Arasu",
+      label: "Vanni Arasu",
       role: "Social Justice and Adi Dravidar Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/072_Vanni_Arasu.png",
@@ -568,7 +568,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 280, y: 1540 },
     data: {
-      label: "Honourable K. Vignesh",
+      label: "K. Vignesh",
       role: "Prohibition and Excise",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/122_vignesh.png",
@@ -580,7 +580,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 560, y: 1540 },
     data: {
-      label: "Honourable A. Vijay Tamilan Parthiban",
+      label: "A. Vijay Tamilan Parthiban",
       role: "Transport",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/090_Vijay_Tamilan_%20Parthiban.png",
@@ -592,7 +592,7 @@ const allNodes: Node<Profile>[] = [
     type: "info",
     position: { x: 840, y: 1540 },
     data: {
-      label: "Honourable Vinoth",
+      label: "Vinoth",
       role: "Agriculture and Farmers Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/171_Vinoth.png",
