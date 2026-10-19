@@ -1028,7 +1028,7 @@ export default function Home() {
         <h1 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>TVK Government Explorer</h1>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
-        Explore people, departments and documented public records.
+        Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback.
       </p>
 
       <nav style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
