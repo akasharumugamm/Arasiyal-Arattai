@@ -1001,10 +1001,10 @@ export default function Home() {
         memberNodes.push({
           id: `mla-${member.number}`,
           type: "info",
-          position: { x: (index % 4) * 245, y: 100 + Math.floor(index / 4) * 185 },
+          position: { x: (index % 3) * 320, y: 100 + Math.floor(index / 3) * 250 },
           data: {
             label: vacant ? `${member.constituency} — Vacant` : member.name,
-            role: `Constituency ${member.number} · ${member.constituency} · ${member.party || "No party listed"}`,
+            role: `${member.constituency} · ${member.party || "No party listed"}`,
             description: vacant
               ? `Constituency: ${member.constituency}. The Assembly directory marks this seat as vacant. Verify current vacancy status before publication. Source: ${member.source}`
               : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}. This dataset transcribes the Assembly directory; verify changes against the official source. Source: ${member.source}`,
@@ -1053,10 +1053,10 @@ export default function Home() {
         memberNodes.push({
           id: `mla-${member.number}`,
           type: "info",
-          position: { x: groupX + (index % 3) * 245, y: groupY + 190 + Math.floor(index / 3) * 185 },
+          position: { x: groupX + (index % 3) * 320, y: groupY + 210 + Math.floor(index / 3) * 250 },
           data: {
             label: vacant ? `${member.constituency} — Vacant` : member.name,
-            role: `#${member.number} · ${member.constituency} · ${member.party || "No party listed"}`,
+            role: `${member.constituency} · ${member.party || "No party listed"}`,
             description: vacant
               ? `Constituency: ${member.constituency}. The Assembly directory marks this seat as vacant. Verify current vacancy status before publication. Source: ${member.source}`
               : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}. This dataset transcribes the Assembly directory; verify changes against the official source. Source: ${member.source}`,
