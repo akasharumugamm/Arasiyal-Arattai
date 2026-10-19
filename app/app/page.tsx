@@ -119,7 +119,7 @@ const allNodes: Node<Profile>[] = [
       label: "Government of Tamil Nadu",
       role: "Fort St. George, Chennai",
       description:
-        "Tamil Nadu's state government and Secretariat are associated with Fort St. George in Chennai. This view shows a high-level overview; verify office responsibilities and portfolio allocations against current official orders.",
+        "The Government of Tamil Nadu administers the state through the Chief Minister, Council of Ministers, government departments and public services. The Secretariat at Fort St. George, Chennai, supports policy coordination and administration. Explore the directory to view officials, their portfolios and related public feedback; check official government notifications for the latest appointments and responsibilities.",
       photoUrl: "https://cf-images.assettype.com/thenewsminute/2026-05-30/0mplww47/Secretariat.jpeg?w=1200&h=1200&auto=format%2Ccompress&fit=max&enlarge=true",
     },
   },
