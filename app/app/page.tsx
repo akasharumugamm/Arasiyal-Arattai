@@ -893,14 +893,12 @@ export default function Home() {
 
   function changeCategory(next: Category) {
     setCategory(next);
-    setProfileAction("none");
     const firstNode = allNodes.find((node) => categoryNodes[next].includes(node.id));
     if (firstNode) setSelected(firstNode.data);
   }
 
   function selectProfile(profile: Profile) {
     setSelected(profile);
-    setProfileAction("none");
   }
 
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
@@ -961,7 +959,7 @@ export default function Home() {
           </ReactFlow>
         </div>
 
-        <aside style={{ width: 320, flexShrink: 0, height: "75vh", overflowY: "auto", boxSizing: "border-box", padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", alignSelf: "flex-start", boxShadow: "0 8px 24px #0f172a0a" }}>
+        <aside style={{ width: 320, flexShrink: 0, boxSizing: "border-box", padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", alignSelf: "flex-start", boxShadow: "0 8px 24px #0f172a0a" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>Selected profile</span>
             <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "5px 8px", borderRadius: 999 }}>{isPerson ? "PERSON" : "PUBLIC RECORD"}</span>
