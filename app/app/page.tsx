@@ -83,6 +83,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
             borderRadius: 20,
             objectFit: "cover",
             objectPosition: "center 25%",
+            transform: ["governor", "chief-justice"].includes(id) ? "scale(1.12)" : undefined,
             margin: "0 auto 10px",
             border: "4px solid #e5e7eb",
             background: "#f1f5f9",
