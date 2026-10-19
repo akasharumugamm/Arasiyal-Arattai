@@ -44,11 +44,23 @@ type ReviewSummary = {
 };
 
 function InfoNode({ data }: NodeProps<Node<Profile>>) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const initials = data.label
+    .replace(/^(Honourable|Honorable|Thiru|Justice)\s+/i, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+
   return (
     <div
       style={{
-        width: 220,
-        padding: 14,
+        width: 230,
+        minHeight: 150,
+        boxSizing: "border-box",
+        padding: 16,
         border: "1px solid #cbd5e1",
         borderRadius: 12,
         background: "white",
@@ -58,23 +70,47 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      {data.photoUrl && (
+      {data.photoUrl && !imageFailed ? (
         <img
           src={data.photoUrl}
-          alt="Placeholder profile"
+          alt={data.label}
+          onError={() => setImageFailed(true)}
           style={{
-            width: 84,
-            height: 84,
-            borderRadius: 22,
+            display: "block",
+            width: 76,
+            height: 76,
+            borderRadius: 20,
             objectFit: "cover",
             objectPosition: "center 25%",
             margin: "0 auto 10px",
-            border: "6px solid #e5e7eb",
+            border: "4px solid #e5e7eb",
+            background: "#f1f5f9",
           }}
         />
+      ) : (
+        <div
+          aria-label={data.label + " profile image unavailable"}
+          title="Official profile image unavailable"
+          style={{
+            display: "grid",
+            placeItems: "center",
+            width: 76,
+            height: 76,
+            boxSizing: "border-box",
+            borderRadius: 20,
+            margin: "0 auto 10px",
+            border: "4px solid #e5e7eb",
+            background: "linear-gradient(135deg, #dbeafe, #f8fafc)",
+            color: "#1e3a8a",
+            fontSize: 24,
+            fontWeight: 850,
+          }}
+        >
+          {initials || "TN"}
+        </div>
       )}
-      <div style={{ fontWeight: 700 }}>{data.label}</div>
-      <div style={{ fontSize: 12, marginTop: 5, color: "#64748b" }}>
+      <div style={{ fontWeight: 750, lineHeight: 1.35, overflowWrap: "anywhere" }}>{data.label}</div>
+      <div style={{ fontSize: 12, lineHeight: 1.45, marginTop: 6, color: "#64748b" }}>
         {data.role}
       </div>
       <Handle type="source" position={Position.Bottom} />
@@ -132,10 +168,21 @@ const allNodes: Node<Profile>[] = [
       role: "Constitutional head of Tamil Nadu",
       description:
         "The Governor is the constitutional head of the state. The Governor appoints the Chief Minister and appoints other ministers on the Chief Minister's advice. Under the Constitution, the Council of Ministers headed by the Chief Minister aids and advises the Governor, except in matters where the Constitution provides otherwise. See the official Governor profile for the current office-holder.",
-      photoUrl: "https://cms.tn.gov.in/cms_migrated/document/governor/Arlekar.jpg",
+      photoUrl: "https://lokbhavan.tn.gov.in/wp-content/uploads/2026/03/Arlekar.jpg",
     },
   },
   {
+  {
+    id: "chief-justice",
+    type: "info",
+    position: { x: 940, y: 280 },
+    data: {
+      label: "Thiru Sushrut Arvind Dharmadhikari",
+      role: "Chief Justice, Madras High Court",
+      isPerson: true,
+      description: "The Chief Justice leads the Madras High Court, which is part of the independent judiciary. The judiciary is institutionally separate from the state executive and does not report to the Chief Minister. Confirm current judicial office-holders through the Madras High Court's official website.",
+    },
+  },
     id: "cm",
     type: "info",
     position: { x: 360, y: 430 },
@@ -706,13 +753,14 @@ const allNodes: Node<Profile>[] = [
 ];
 
 const allEdges: Edge[] = [
-  { id: "g1", source: "government", target: "governor", label: "State constitutional head" },
-  { id: "g1a", source: "governor", target: "cm", label: "Appoints Chief Minister" },
-  { id: "g2", source: "cm", target: "tvk", label: "Party leader" },
-  { id: "g3", source: "cm", target: "cm-admin", label: "Portfolio to verify" },
-  { id: "g4", source: "cm", target: "cm-home", label: "Portfolio to verify" },
-  { id: "g5", source: "cm", target: "cm-special", label: "Portfolio to verify" },
-  { id: "g6", source: "cm", target: "cm-other", label: "Allocation to verify" },
+  { id: "g1", source: "government", target: "governor", type: "smoothstep" },
+  { id: "g1a", source: "governor", target: "cm", label: "appoints", type: "smoothstep" },
+  { id: "g1b", source: "government", target: "chief-justice", label: "Independent judiciary", type: "smoothstep" },
+  { id: "g2", source: "cm", target: "tvk", label: "Party affiliation", type: "smoothstep" },
+  { id: "g3", source: "cm", target: "cm-admin", type: "smoothstep" },
+  { id: "g4", source: "cm", target: "cm-home", type: "smoothstep" },
+  { id: "g5", source: "cm", target: "cm-special", type: "smoothstep" },
+  { id: "g6", source: "cm", target: "cm-other", type: "smoothstep" },
   { id: "m-anand", source: "cm", target: "anand", label: "Minister" },
   { id: "m-aadhav", source: "cm", target: "aadhav", label: "Minister" },
   { id: "m-arunraj", source: "cm", target: "arunraj", label: "Minister" },
@@ -754,7 +802,7 @@ const allEdges: Edge[] = [
 ];
 
 const categoryNodes: Record<Category, string[]> = {
-  Government: ["government", "governor", "cm", "tvk", "cm-admin", "cm-home", "cm-special", "cm-other"],
+  Government: ["government", "governor", "cm", "chief-justice", "tvk", "cm-admin", "cm-home", "cm-special", "cm-other"],
   Ministers: ["cm", "anand", "aadhav", "arunraj", "sengottaiyan", "venkataramanan", "shahjahan", "rajkumar", "vijayalakshmi", "sarathkumar", "prabhu", "jegadeshwari", "kamali", "kumar", "logesh", "vijaybalaji", "mathanraja", "farvas", "mariewilson", "viswanathan", "nirmalkumar", "ranjithkumar", "rajeev", "rajeshkumar", "rajmohan", "ramesh", "keerthana", "srinath", "thennarasu", "gandhiraj", "sampathkumar", "vanniarasu", "vignesh", "vijaytamilan", "vinoth"],
   MLAs: ["mla-directory"],
   "IAS Officers": ["ias"],
@@ -816,14 +864,15 @@ export default function Home() {
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
-      government: { x: 360, y: 20 },
-      governor: { x: 360, y: 220 },
-      cm: { x: 360, y: 440 },
-      "cm-admin": { x: -40, y: 760 },
-      "cm-home": { x: 220, y: 760 },
-      "cm-special": { x: 480, y: 760 },
-      "cm-other": { x: 740, y: 760 },
-      tvk: { x: 1020, y: 440 },
+      government: { x: 360, y: 0 },
+      governor: { x: 360, y: 250 },
+      cm: { x: 360, y: 540 },
+      "chief-justice": { x: 920, y: 250 },
+      tvk: { x: 920, y: 540 },
+      "cm-admin": { x: -30, y: 880 },
+      "cm-home": { x: 240, y: 880 },
+      "cm-special": { x: 510, y: 880 },
+      "cm-other": { x: 780, y: 880 },
     },
     Ministers: {
       cm: { x: 1375, y: -80 },
@@ -981,7 +1030,7 @@ export default function Home() {
             edges={visibleEdges}
             nodeTypes={nodeTypes}
             fitView
-            fitViewOptions={{ padding: 0.2 }}
+            fitViewOptions={{ padding: 0.12, minZoom: 0.28, maxZoom: 0.9 }}
             minZoom={0.15}
             maxZoom={1.5}
             onNodeClick={(_, node) => selectProfile(node.data as Profile)}
