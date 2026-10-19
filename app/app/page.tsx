@@ -927,7 +927,10 @@ export default function Home() {
 
   return (
     <main style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 800 }}>TVK Government Explorer</h1>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+        <img src="/tvk-logo.png" alt="TVK Government Explorer logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10 }} />
+        <h1 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>TVK Government Explorer</h1>
+      </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
         Explore people, departments and documented public records.
       </p>
