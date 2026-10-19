@@ -39,6 +39,7 @@ type ReviewSummary = {
   title: string;
   body: string;
   image?: string;
+  votes?: { up: number; down: number };
   date: string;
 };
 
@@ -770,6 +771,7 @@ export default function Home() {
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
+  const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Negative" | "Request">("All");
   const [homeReviewName, setHomeReviewName] = useState("");
   const [homeReviewDateOrder, setHomeReviewDateOrder] = useState<"Newest first" | "Oldest first">("Newest first");
@@ -780,6 +782,8 @@ export default function Home() {
         const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
         const reviews = saved ? JSON.parse(saved) as ReviewSummary[] : [];
         setRecentReviews(reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+        const savedVotes = localStorage.getItem("tn-government-explorer-review-votes-v1");
+        setHomeVotes(savedVotes ? JSON.parse(savedVotes) as Record<string, "up" | "down"> : {});
         const relevant = reviews.filter((review) => review.profile === selected.label && (review.type === "Positive" || review.type === "Negative"));
         const positive = relevant.filter((review) => review.type === "Positive").length;
         setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
@@ -884,6 +888,29 @@ export default function Home() {
   }
 
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
+
+  function voteHomeReview(id: string, direction: "up" | "down") {
+    const previous = homeVotes[id];
+    const nextDirection = previous === direction ? undefined : direction;
+    const nextVotes = { ...homeVotes };
+    if (nextDirection) nextVotes[id] = nextDirection;
+    else delete nextVotes[id];
+    const updated = recentReviews.map((review) => {
+      if (review.id !== id) return review;
+      const counts = { up: review.votes?.up ?? 0, down: review.votes?.down ?? 0 };
+      if (previous === "up") counts.up = Math.max(0, counts.up - 1);
+      if (previous === "down") counts.down = Math.max(0, counts.down - 1);
+      if (nextDirection === "up") counts.up += 1;
+      if (nextDirection === "down") counts.down += 1;
+      return { ...review, votes: counts };
+    });
+    setHomeVotes(nextVotes);
+    setRecentReviews(updated);
+    try {
+      localStorage.setItem("tn-government-explorer-review-votes-v1", JSON.stringify(nextVotes));
+      localStorage.setItem("tn-government-explorer-reviews-v1", JSON.stringify(updated));
+    } catch { /* Keep current UI state. */ }
+  }
 
   const filteredHomeReviews = recentReviews
     .filter((review) => homeReviewType === "All" || review.type === homeReviewType)
@@ -1023,6 +1050,10 @@ export default function Home() {
                   <p style={{ margin: "0 0 8px", color: "#475569", fontSize: 13, lineHeight: 1.6, overflowWrap: "anywhere" }}>{review.body}</p>
                   {review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", margin: "10px 0", maxWidth: "100%", maxHeight: 360, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} />}
                   <p style={{ margin: 0, color: "#64748b", fontSize: 11 }}>By <strong>{review.name}</strong> · {review.profile}</p>
+                  <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginTop: 13, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
+                    <button type="button" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: homeVotes[review.id] === "up" ? "1px solid #2563eb" : "1px solid #cbd5e1", background: homeVotes[review.id] === "up" ? "#dbeafe" : "white", color: homeVotes[review.id] === "up" ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}>👍 Helpful <span>{review.votes?.up ?? 0}</span></button>
+                    <button type="button" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: homeVotes[review.id] === "down" ? "1px solid #dc2626" : "1px solid #cbd5e1", background: homeVotes[review.id] === "down" ? "#fee2e2" : "white", color: homeVotes[review.id] === "down" ? "#b91c1c" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}>👎 Not helpful <span>{review.votes?.down ?? 0}</span></button>
+                  </div>
                 </article>
               );
             })}
