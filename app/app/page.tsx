@@ -77,8 +77,8 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
           onError={() => setImageFailed(true)}
           style={{
             display: "block",
-            width: 76,
-            height: 76,
+            width: 88,
+            height: 88,
             borderRadius: 20,
             objectFit: "cover",
             objectPosition: "center 25%",
@@ -94,8 +94,8 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
           style={{
             display: "grid",
             placeItems: "center",
-            width: 76,
-            height: 76,
+            width: 88,
+            height: 88,
             boxSizing: "border-box",
             borderRadius: 20,
             margin: "0 auto 10px",
