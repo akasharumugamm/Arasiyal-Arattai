@@ -622,7 +622,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "MLA Directory",
       role: "Constituencies and elected representatives",
-      description: "Add verified MLA profiles, constituency names, party affiliations and election details with official sources.",
+      description: "This directory is intended to list elected Members of the Tamil Nadu Legislative Assembly, their constituencies and publicly documented affiliations. Verify each member’s name and constituency against the official Assembly directory and election records.",
       photoUrl: "https://i.pravatar.cc/150?img=25",
     },
   },
@@ -633,7 +633,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "IAS Officers",
       role: "Indian Administrative Service",
-      description: "Explore verified IAS officer profiles, department assignments, district postings and transfer orders.",
+      description: "The IAS directory covers civil-service officers serving in state administration, including department and district appointments. Record postings and transfers only when supported by official orders, and include the order date and source.",
       photoUrl: "https://i.pravatar.cc/150?img=21",
     },
   },
@@ -644,7 +644,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "IPS Officers",
       role: "Indian Police Service",
-      description: "Explore verified IPS profiles, police leadership roles, postings and transfer orders.",
+      description: "The IPS directory covers police-service officers and leadership assignments. Use official police and government orders to confirm each officer’s current rank, posting and transfer history.",
       photoUrl: "https://i.pravatar.cc/150?img=22",
     },
   },
@@ -655,7 +655,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Director General of Police",
       role: "DGP — current incumbent to verify",
-      description: "Confirm the current DGP's name, designation and appointment using the latest official government order.",
+      description: "The Director General of Police is the senior-most police leadership role in the state. Confirm the incumbent, appointment date and current responsibilities against the latest official government order before publishing.",
       photoUrl: "https://i.pravatar.cc/150?img=11",
     },
   },
@@ -666,7 +666,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "A. Amalraj",
       role: "IPS officer — current posting to verify",
-      description: "Explore verified service history and postings. Confirm the current designation through an official order before publication.",
+      description: "Use this profile to document A. Amalraj’s verified service details and postings. Confirm the current designation and appointment from an official government order before treating it as current.",
       photoUrl: "https://i.pravatar.cc/150?img=17",
     },
   },
@@ -677,7 +677,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Department Directory",
       role: "Government departments",
-      description: "Explore department responsibilities, reporting structures, ministers and senior officers. Verify each relationship with official sources.",
+      description: "Browse state government departments, their published responsibilities and associated ministerial or administrative leadership. Add reporting relationships only when supported by an official department page or government order.",
       photoUrl: "https://i.pravatar.cc/150?img=30",
     },
   },
@@ -688,7 +688,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Government Schemes",
       role: "Programmes and public projects",
-      description: "Add scheme eligibility, responsible department, official source, implementation status and published outcome evidence.",
+      description: "Use this section to document public schemes with their official description, eligibility, implementing department, application details and published updates. Link to government sources and distinguish announced plans from active schemes.",
       photoUrl: "https://i.pravatar.cc/150?img=31",
     },
   },
@@ -699,7 +699,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Public Projects",
       role: "Projects and outcomes",
-      description: "Document project timelines, budgets where officially published, progress updates and source links.",
+      description: "Use this section to describe public projects with the responsible department, location, announced timeline and publicly released budget or progress information. Cite official sources and label unconfirmed estimates clearly.",
       photoUrl: "https://i.pravatar.cc/150?img=32",
     },
   },
