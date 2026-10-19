@@ -1053,7 +1053,7 @@ export default function Home() {
         memberNodes.push({
           id: `mla-${member.number}`,
           type: "info",
-          position: { x: groupX + (index % 3) * 245, y: groupY + 130 + Math.floor(index / 3) * 185 },
+          position: { x: groupX + (index % 3) * 245, y: groupY + 190 + Math.floor(index / 3) * 185 },
           data: {
             label: vacant ? `${member.constituency} — Vacant` : member.name,
             role: `#${member.number} · ${member.constituency} · ${member.party || "No party listed"}`,
