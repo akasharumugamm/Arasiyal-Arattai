@@ -119,21 +119,33 @@ const allNodes: Node<Profile>[] = [
       label: "Government of Tamil Nadu",
       role: "Fort St. George, Chennai",
       description:
-        "The Government of Tamil Nadu administers the state through the Chief Minister, Council of Ministers, government departments and public services. The Secretariat at Fort St. George, Chennai, supports policy coordination and administration. Explore the directory to view officials, their portfolios and related public feedback; check official government notifications for the latest appointments and responsibilities.",
+        "The Government of Tamil Nadu is the state government responsible for public administration, policy and delivery of public services. Its executive operates through the Governor as constitutional head, the Chief Minister and Council of Ministers, and the government departments and civil services. The Secretariat is located at Fort St. George, Chennai. Use this directory to explore officials, portfolios and departments; confirm current appointments and responsibilities against official notifications.",
       photoUrl: "https://cf-images.assettype.com/thenewsminute/2026-05-30/0mplww47/Secretariat.jpeg?w=1200&h=1200&auto=format%2Ccompress&fit=max&enlarge=true",
+    },
+  },
+  {
+    id: "governor",
+    type: "info",
+    position: { x: 360, y: 200 },
+    data: {
+      label: "Honourable Governor",
+      role: "Constitutional head of Tamil Nadu",
+      description:
+        "The Governor is the constitutional head of the state. The Governor appoints the Chief Minister and appoints other ministers on the Chief Minister's advice. Under the Constitution, the Council of Ministers headed by the Chief Minister aids and advises the Governor, except in matters where the Constitution provides otherwise. See the official Governor profile for the current office-holder.",
+      photoUrl: "https://cms.tn.gov.in/cms_migrated/document/governor/Arlekar.jpg",
     },
   },
   {
     id: "cm",
     type: "info",
-    position: { x: 80, y: 220 },
+    position: { x: 360, y: 430 },
     data: {
       label: "Honourable Thiru C. Joseph Vijay",
       role: "Chief Minister",
       isPerson: true,
       xHandle: "https://x.com/CMOTamilnadu",
       description:
-        "Honourable Chief Minister. Responsible for Public, General Administration, Indian Administrative Service, Indian Police Service, Indian Forest Service, District Revenue Officers, Police, Home, Special Programme Implementation, Special Initiatives, Poverty Alleviation and Rural Indebtedness, Youth Welfare, Welfare of Children, Aged and Differently Abled Persons, Municipal Administration, Urban and Water Supply.",
+        "The Chief Minister heads the elected state government and the Council of Ministers. The Governor appoints the Chief Minister; other ministers are appointed by the Governor on the Chief Minister's advice. The Chief Minister coordinates the Council of Ministers and holds the portfolios allocated in the current official order, including Public, General Administration, IAS, IPS, IFS, Police, Home, Special Programme Implementation, Youth Welfare, Municipal Administration, Urban and Water Supply. Portfolio allocations can change; consult the latest government order for the authoritative list.",
       photoUrl: "https://i.ibb.co/0Rv80BLn/HR-9-Y6yb0-AAzx-FY.jpg",
     },
   },
@@ -157,7 +169,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Public Administration",
       role: "Portfolio / administration",
-      description: "Verify the exact current responsibilities and service-control arrangements against official government orders.",
+      description: "Coordinates general administration and public-service matters assigned to the Chief Minister under the current portfolio allocation. The detailed scope and departmental arrangements should be checked against the latest official government order.",
     },
   },
   {
@@ -167,7 +179,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Home and Police",
       role: "Portfolio area",
-      description: "Verify the current Home and Police portfolio allocation using the latest official order.",
+      description: "Covers Home and Police matters assigned to the Chief Minister, including state policing and internal administration. Consult current government orders for the precise departmental responsibilities and reporting arrangements.",
     },
   },
   {
@@ -177,7 +189,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Special Programme Implementation",
       role: "Portfolio area",
-      description: "Verify current portfolio responsibility and related official records.",
+      description: "A portfolio retained by the Chief Minister for coordinating special programmes and implementation priorities. Refer to the latest official portfolio allocation and programme orders for the current scope.",
     },
   },
   {
@@ -187,7 +199,7 @@ const allNodes: Node<Profile>[] = [
     data: {
       label: "Other retained portfolios",
       role: "To be verified",
-      description: "Add only departments confirmed by the latest official portfolio allocation order.",
+      description: "This node represents any additional portfolios retained by the Chief Minister. The specific departments should be listed only when confirmed by the latest official portfolio allocation order.",
     },
   },
   {
@@ -694,7 +706,8 @@ const allNodes: Node<Profile>[] = [
 ];
 
 const allEdges: Edge[] = [
-  { id: "g1", source: "government", target: "cm", label: "State leadership" },
+  { id: "g1", source: "government", target: "governor", label: "State constitutional head" },
+  { id: "g1a", source: "governor", target: "cm", label: "Appoints Chief Minister" },
   { id: "g2", source: "cm", target: "tvk", label: "Party leader" },
   { id: "g3", source: "cm", target: "cm-admin", label: "Portfolio to verify" },
   { id: "g4", source: "cm", target: "cm-home", label: "Portfolio to verify" },
@@ -741,7 +754,7 @@ const allEdges: Edge[] = [
 ];
 
 const categoryNodes: Record<Category, string[]> = {
-  Government: ["government", "cm", "tvk", "cm-admin", "cm-home", "cm-special", "cm-other"],
+  Government: ["government", "governor", "cm", "tvk", "cm-admin", "cm-home", "cm-special", "cm-other"],
   Ministers: ["cm", "anand", "aadhav", "arunraj", "sengottaiyan", "venkataramanan", "shahjahan", "rajkumar", "vijayalakshmi", "sarathkumar", "prabhu", "jegadeshwari", "kamali", "kumar", "logesh", "vijaybalaji", "mathanraja", "farvas", "mariewilson", "viswanathan", "nirmalkumar", "ranjithkumar", "rajeev", "rajeshkumar", "rajmohan", "ramesh", "keerthana", "srinath", "thennarasu", "gandhiraj", "sampathkumar", "vanniarasu", "vignesh", "vijaytamilan", "vinoth"],
   MLAs: ["mla-directory"],
   "IAS Officers": ["ias"],
@@ -761,7 +774,7 @@ const categories: Category[] = [
 ];
 
 const categoryDescriptions: Record<Category, string> = {
-  Government: "Fort St. George, the Chief Minister, party affiliation and portfolios to verify.",
+  Government: "Governor, Chief Minister, Council of Ministers and the state executive structure.",
   Ministers: "Explore minister profiles separately from the rest of the graph.",
   MLAs: "Explore elected representatives and constituencies.",
   "IAS Officers": "Explore administrative officers and postings.",
@@ -804,12 +817,13 @@ export default function Home() {
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
       government: { x: 360, y: 20 },
-      cm: { x: 360, y: 260 },
-      "cm-admin": { x: -40, y: 650 },
-      "cm-home": { x: 220, y: 650 },
-      "cm-special": { x: 480, y: 650 },
-      "cm-other": { x: 740, y: 650 },
-      tvk: { x: 1020, y: 650 },
+      governor: { x: 360, y: 220 },
+      cm: { x: 360, y: 440 },
+      "cm-admin": { x: -40, y: 760 },
+      "cm-home": { x: 220, y: 760 },
+      "cm-special": { x: 480, y: 760 },
+      "cm-other": { x: 740, y: 760 },
+      tvk: { x: 1020, y: 440 },
     },
     Ministers: {
       cm: { x: 1375, y: -80 },
