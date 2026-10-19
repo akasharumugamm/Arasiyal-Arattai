@@ -1003,7 +1003,7 @@ export default function Home() {
             </div>
           )}
           <div style={{ marginTop: 18 }}>
-            <h3 style={{ fontWeight: 800, fontSize: 14 }}>About this profile</h3>
+            <h3 style={{ fontWeight: 800, fontSize: 14 }}>About</h3>
             <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
           </div>
         </aside>
