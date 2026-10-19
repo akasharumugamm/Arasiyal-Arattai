@@ -11,10 +11,12 @@ type Review = {
   title: string;
   body: string;
   image?: string;
+  votes?: { up: number; down: number };
   date: string;
 };
 
 const STORAGE_KEY = "tn-government-explorer-reviews-v1";
+const VOTES_KEY = "tn-government-explorer-review-votes-v1";
 const PROFILES = [
   "C. Joseph Vijay",
   "N. Anand",
@@ -81,6 +83,7 @@ function RatingGauge({ value }: { value: number | null }) {
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
   const [profile, setProfile] = useState(PROFILES[0]);
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [name, setName] = useState("");
@@ -95,6 +98,8 @@ export default function ReviewsPage() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) setReviews(JSON.parse(saved) as Review[]);
+      const savedVotes = localStorage.getItem(VOTES_KEY);
+      if (savedVotes) setVotes(JSON.parse(savedVotes) as Record<string, "up" | "down">);
     } catch { /* Ignore invalid local browser data. */ }
     const params = new URLSearchParams(window.location.search);
     const requestedProfile = params.get("profile");
@@ -128,6 +133,14 @@ export default function ReviewsPage() {
     setReviews(updated);
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { /* The current session still works if storage is unavailable. */ }
     setName(""); setTitle(""); setBody(""); setImage(null); setNotice("Your review has been added on this browser."); setFilter("All"); setShowForm(false);
+  }
+
+  function voteReview(id: string, direction: "up" | "down") {
+    const nextVotes = { ...votes };
+    if (nextVotes[id] === direction) delete nextVotes[id];
+    else nextVotes[id] = direction;
+    setVotes(nextVotes);
+    try { localStorage.setItem(VOTES_KEY, JSON.stringify(nextVotes)); } catch { /* Keep current UI state. */ }
   }
 
   function removeReview(id: string) {
@@ -213,6 +226,11 @@ export default function ReviewsPage() {
               <span style={{ borderRadius: 999, padding: "6px 10px", fontSize: 11, fontWeight: 900, color: typeStyles[review.type].color, background: typeStyles[review.type].background }}>{review.type}</span>
             </div>
             <div style={{ marginTop: 15 }}><h3 style={{ margin: "7px 0", fontSize: 17, fontWeight: 900 }}>{review.title}</h3><p style={{ margin: 0, color: "#475569", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{review.body}</p>{review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", marginTop: 12, maxWidth: "100%", maxHeight: 440, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} />}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
+              <button type="button" aria-pressed={votes[review.id] === "up"} onClick={() => voteReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", gap: 7, border: votes[review.id] === "up" ? "1px solid #2563eb" : "1px solid #cbd5e1", background: votes[review.id] === "up" ? "#dbeafe" : "white", color: votes[review.id] === "up" ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 12px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>👍 <span>Helpful</span> <span>{review.votes?.up ?? 0}</span></button>
+              <button type="button" aria-pressed={votes[review.id] === "down"} onClick={() => voteReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", gap: 7, border: votes[review.id] === "down" ? "1px solid #dc2626" : "1px solid #cbd5e1", background: votes[review.id] === "down" ? "#fee2e2" : "white", color: votes[review.id] === "down" ? "#b91c1c" : "#475569", borderRadius: 999, padding: "7px 12px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>👎 <span>Not helpful</span> <span>{review.votes?.down ?? 0}</span></button>
+              <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: "auto" }}>Your vote is saved in this browser</span>
+            </div>
             <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 15, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><span style={{ fontSize: 11, color: "#64748b" }}>Community-submitted · not independently verified</span><button onClick={() => removeReview(review.id)} style={{ border: "1px solid #cbd5e1", background: "white", color: "#64748b", borderRadius: 8, padding: "6px 9px", fontSize: 11, cursor: "pointer" }}>Remove from this browser</button></div>
           </article>)}</div>}
         </section>
