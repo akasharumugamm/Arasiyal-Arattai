@@ -1133,13 +1133,13 @@ export default function Home() {
           </select>
         </div>
         {recentReviews.length === 0 ? (
-          <div style={{ border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
+          <div style={{ height: 620, boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center", border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
             <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No feedback added yet</p>
             <p style={{ margin: "6px 0 14px", color: "#64748b", fontSize: 13 }}>Be the first to share a constructive review.</p>
             <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>Share feedback →</a>
           </div>
         ) : filteredHomeReviews.length === 0 ? (
-          <p style={{ padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No feedback matches these filters.</p>
+          <div style={{ height: 620, boxSizing: "border-box", display: "grid", placeItems: "center", padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No feedback matches these filters.</div>
         ) : (
           <div style={{ display: "grid", alignContent: "start", gap: 12, height: 620, overflowY: "auto", paddingRight: 5, overscrollBehavior: "contain", overflowAnchor: "none" }}>
             {filteredHomeReviews.map((review) => {
