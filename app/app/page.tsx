@@ -73,7 +73,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
       <Handle type="target" position={Position.Top} />
       {showAvatar && (data.photoUrl && !imageFailed ? (
         ["governor", "chief-justice"].includes(id) ? (
-          <div style={{ width: 88, height: 88, overflow: "hidden", borderRadius: 20, margin: "0 auto 10px", background: "#f1f5f9" }}>
+          <div style={{ width: 88, height: 88, boxSizing: "border-box", overflow: "hidden", borderRadius: 20, border: "4px solid #e5e7eb", margin: "0 auto 10px", background: "#f1f5f9" }}>
             <img
               src={data.photoUrl}
               alt={data.label}
