@@ -1027,6 +1027,7 @@ export default function Home() {
     const groupWidth = 360;
     const groupHeight = 230;
     mlaParties.forEach((party, index) => {
+      if (expandedMlaParty && party !== expandedMlaParty) return;
       const x = (index % cols) * groupWidth;
       const y = Math.floor(index / cols) * groupHeight;
       const expanded = expandedMlaParty === party;
@@ -1091,7 +1092,6 @@ export default function Home() {
       const edges: Edge[] = [];
       const showSearchResults = Boolean(mlaSearch.trim()) || mlaPartyFilter !== "All parties";
       if (!showSearchResults && expandedMlaParty) {
-        const groupIndex = mlaParties.indexOf(expandedMlaParty);
         const groupId = `mla-party-${expandedMlaParty.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
         mlaRecords.filter((member) => (member.party || "Vacant") === expandedMlaParty).forEach((member) => {
           edges.push({ id: `mla-edge-${member.number}`, source: groupId, target: `mla-${member.number}`, type: "smoothstep" });
@@ -1180,6 +1180,39 @@ export default function Home() {
       <p style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>
         {categoryDescriptions[category]}
       </p>
+
+      {category === "MLAs" && (
+        <section aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
+          <input
+            aria-label="Search MLA name or constituency"
+            value={mlaSearch}
+            onChange={(event) => { setMlaSearch(event.target.value); setExpandedMlaParty(null); }}
+            placeholder="Search MLA or constituency…"
+            style={{ flex: "1 1 240px", minWidth: 180, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 9, background: "white", color: "#172554", font: "inherit", fontSize: 13 }}
+          />
+          <select
+            aria-label="Filter MLAs by party"
+            value={mlaPartyFilter}
+            onChange={(event) => { setMlaPartyFilter(event.target.value); setExpandedMlaParty(null); }}
+            style={{ flex: "0 1 200px", minWidth: 160, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 9, background: "white", color: "#172554", fontSize: 13 }}
+          >
+            <option>All parties</option>
+            {mlaParties.map((party) => <option key={party} value={party}>{party}</option>)}
+          </select>
+          <button
+            type="button"
+            onClick={() => { setMlaSearch(""); setMlaPartyFilter("All parties"); setExpandedMlaParty(null); }}
+            style={{ padding: "10px 13px", border: "1px solid #cbd5e1", borderRadius: 9, background: "#f8fafc", color: "#172554", fontWeight: 750, cursor: "pointer" }}
+          >Reset graph</button>
+          <span style={{ color: "#64748b", fontSize: 12, flexBasis: "100%" }}>
+            {mlaSearch.trim() || mlaPartyFilter !== "All parties"
+              ? `${filteredMlaRecords.length} matching constituency entries`
+              : expandedMlaParty
+                ? `Showing ${expandedMlaParty} entries. Click the group heading to collapse it.`
+                : `234 constituency entries · ${mlaParties.length} party/status groups · select a group to expand`}
+          </span>
+        </section>
+      )}
 
       <div style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
         <div style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
