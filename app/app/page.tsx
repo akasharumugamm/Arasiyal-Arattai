@@ -82,45 +82,26 @@ function InfoNode({ data }: NodeProps<Node<Profile>>) {
 
 
 function RatingGauge({ value }: { value: number | null }) {
-  const cx = 160;
-  const cy = 158;
-  const radius = 132;
-  const point = (angle: number, r: number) => ({
-    x: cx + r * Math.cos((angle * Math.PI) / 180),
-    y: cy + r * Math.sin((angle * Math.PI) / 180),
-  });
-  const segments = [
-    { start: 180, end: 216, color: "#ff533d", face: "☹" },
-    { start: 216, end: 252, color: "#ff922b", face: "☹" },
-    { start: 252, end: 288, color: "#ffe52e", face: "😐" },
-    { start: 288, end: 324, color: "#a5ed50", face: "☺" },
-    { start: 324, end: 360, color: "#13c967", face: "☺" },
-  ];
-  const sectorPath = (start: number, end: number) => {
-    const a = point(start, radius);
-    const b = point(end, radius);
-    return `M ${cx} ${cy} L ${a.x} ${a.y} A ${radius} ${radius} 0 0 1 ${b.x} ${b.y} Z`;
-  };
-  const needleAngle = value === null ? null : 180 + (Math.max(0, Math.min(100, value)) / 100) * 180;
-  const needleTip = needleAngle === null ? null : point(needleAngle, 102);
+  const score = value === null ? null : Math.max(0, Math.min(100, Math.round(value)));
+  const sentiment = score === null ? "Awaiting feedback" : score >= 70 ? "Mostly positive" : score >= 45 ? "Mixed feedback" : "Needs improvement";
+  const sentimentColor = score === null ? "#64748b" : score >= 70 ? "#15803d" : score >= 45 ? "#b45309" : "#b91c1c";
+  const sentimentBg = score === null ? "#f1f5f9" : score >= 70 ? "#dcfce7" : score >= 45 ? "#fef3c7" : "#fee2e2";
   return (
-    <div style={{ width: "100%", maxWidth: 320, margin: "8px auto 0" }}>
-      <svg viewBox="0 0 320 180" role="img" aria-label={value === null ? "Rating gauge; no public ratings yet" : `Average public rating ${value} out of 100`} style={{ width: "100%", display: "block" }}>
-        {segments.map((segment) => (
-          <path key={segment.start} d={sectorPath(segment.start, segment.end)} fill={segment.color} stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
-        ))}
-        {segments.map((segment) => {
-          const angle = (segment.start + segment.end) / 2;
-          const p = point(angle, 88);
-          return <text key={`face-${segment.start}`} x={p.x} y={p.y + 7} textAnchor="middle" fontSize="23" fontWeight="700" fill={segment.start === 252 ? "#b88600" : segment.start > 288 ? "#178b43" : "#b83224"}>{segment.face}</text>;
-        })}
-        {needleTip && <path d={`M ${cx} ${cy} L ${needleTip.x} ${needleTip.y}`} stroke="#10294f" strokeWidth="5" strokeLinecap="round" />}
-        <circle cx={cx} cy={cy} r="11" fill="#10294f" />
-      </svg>
-      <div style={{ textAlign: "center", marginTop: -1 }}>
-        <div style={{ fontSize: 27, lineHeight: 1.15, fontWeight: 900, color: "#0f172a" }}>{value === null ? "—" : Math.round(value)}<span style={{ fontSize: 13, color: "#64748b", fontWeight: 700 }}> / 100</span></div>
-        <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{value === null ? "No public ratings yet" : "Average public rating"}</div>
+    <div style={{ marginTop: 12, padding: 14, borderRadius: 12, border: "1px solid #e2e8f0", background: "white" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+        <div>
+          <div style={{ fontSize: 11, color: "#64748b", fontWeight: 750, letterSpacing: 0.4, textTransform: "uppercase" }}>Public sentiment</div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 3 }}>
+            <span style={{ fontSize: 30, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>{score === null ? "—" : score}</span>
+            <span style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>/ 100</span>
+          </div>
+        </div>
+        <span style={{ padding: "6px 9px", borderRadius: 999, background: sentimentBg, color: sentimentColor, fontSize: 10, fontWeight: 850, whiteSpace: "nowrap" }}>{sentiment}</span>
       </div>
+      <div role="progressbar" aria-label="Positive public sentiment score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? 0} style={{ height: 8, borderRadius: 999, overflow: "hidden", background: "#e2e8f0", marginTop: 12 }}>
+        <div style={{ width: `${score ?? 0}%`, height: "100%", borderRadius: 999, background: score === null ? "#cbd5e1" : score >= 70 ? "#16a34a" : score >= 45 ? "#f59e0b" : "#ef4444", transition: "width 220ms ease" }} />
+      </div>
+      <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 11, lineHeight: 1.5 }}>{score === null ? "No positive or negative reviews yet." : "Calculated from positive and negative reviews only."}</p>
     </div>
   );
 }
@@ -985,9 +966,9 @@ export default function Home() {
                 <span style={{ fontSize: 11, color: "#64748b" }}>Average</span>
               </div>
               <RatingGauge value={reviewScore} />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 14 }}>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "10px 8px", borderRadius: 9, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 800 }}>✍ Write a review</a>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "10px 8px", borderRadius: 9, border: "1px solid #cbd5e1", background: "white", color: "#172554", fontSize: 12, fontWeight: 800 }}>See reviews</a>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 11, lineHeight: 1.3, fontWeight: 850, boxShadow: "0 2px 5px #1d4ed822" }}><span aria-hidden="true">＋</span> Write review</a>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#f8fafc", color: "#172554", fontSize: 11, lineHeight: 1.3, fontWeight: 850 }}><span aria-hidden="true">☰</span> Browse reviews</a>
               </div>
             </div>
           )}
