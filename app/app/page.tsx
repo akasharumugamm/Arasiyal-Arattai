@@ -35,7 +35,7 @@ type ReviewSummary = {
   id: string;
   profile: string;
   name: string;
-  type: "Positive" | "Negative" | "Request";
+  type: "Positive" | "Negative" | "Allegation" | "Request";
   title: string;
   body: string;
   image?: string;
@@ -917,7 +917,7 @@ export default function Home() {
   }
 
   const filteredHomeReviews = recentReviews
-    .filter((review) => homeReviewType === "All" || review.type === homeReviewType)
+    .filter((review) => homeReviewType === "All" || (homeReviewType === "Negative" ? review.type === "Negative" || review.type === "Allegation" : review.type === homeReviewType))
     .filter((review) => !homeReviewName.trim() || review.profile.toLowerCase().includes(homeReviewName.trim().toLowerCase()))
     .sort((a, b) => {
       if (homeReviewDateOrder === "Highest upvotes") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -1001,8 +1001,8 @@ export default function Home() {
               </div>
               <RatingGauge value={reviewScore} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 11, lineHeight: 1.3, fontWeight: 850, boxShadow: "0 2px 5px #1d4ed822" }}><span aria-hidden="true">＋</span> Write review</a>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#f8fafc", color: "#172554", fontSize: 11, lineHeight: 1.3, fontWeight: 850 }}><span aria-hidden="true">☰</span> Browse reviews</a>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 11, lineHeight: 1.3, fontWeight: 850, boxShadow: "0 2px 5px #1d4ed822" }}><span aria-hidden="true">＋</span> Share feedback</a>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#f8fafc", color: "#172554", fontSize: 11, lineHeight: 1.3, fontWeight: 850 }}><span aria-hidden="true">☰</span> Browse feedback</a>
               </div>
             </div>
           )}
@@ -1016,12 +1016,12 @@ export default function Home() {
       <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ marginBottom: 14 }}>
           <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
-          <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added reviews</h2>
-          <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Browse community feedback, newest first.</p>
+          <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added feedback</h2>
+          <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Browse community feedback.</p>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 14, padding: 12, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {(["All", "Positive", "Negative", "Request"] as const).map((type) => (
+            {(["All", "Positive", "Negative", "Allegation", "Request"] as const).map((type) => (
               <button key={type} onClick={() => setHomeReviewType(type)} style={{ border: homeReviewType === type ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: homeReviewType === type ? "#dbeafe" : "white", color: homeReviewType === type ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 850, cursor: "pointer" }}>{type}</button>
             ))}
           </div>
@@ -1032,12 +1032,12 @@ export default function Home() {
         </div>
         {recentReviews.length === 0 ? (
           <div style={{ border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
-            <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No reviews added yet</p>
+            <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No feedback added yet</p>
             <p style={{ margin: "6px 0 14px", color: "#64748b", fontSize: 13 }}>Be the first to share a constructive review.</p>
-            <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>Write a review →</a>
+            <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>Share feedback →</a>
           </div>
         ) : filteredHomeReviews.length === 0 ? (
-          <p style={{ padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No reviews match these filters.</p>
+          <p style={{ padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No feedback matches these filters.</p>
         ) : (
           <div style={{ display: "grid", gap: 12, maxHeight: 620, overflowY: "auto", paddingRight: 5, overscrollBehavior: "contain" }}>
             {filteredHomeReviews.map((review) => {
