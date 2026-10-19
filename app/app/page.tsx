@@ -133,7 +133,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       xHandle: "https://x.com/CMOTamilnadu",
       description:
-        "Honourable Chief Minister. Responsible for Public, General Administration, Indian Administrative Service, Indian Police Service, Indian Forest Service, District Revenue Officers, Police, Home, Special Programme Implementation, Special Initiatives, Poverty Alleviation and Rural Indebtedness, Youth Welfare, Welfare of Children, Aged and Differently Abled Persons, Municipal Administration, Urban and Water Supply."
+        "Honourable Chief Minister. Responsible for Public, General Administration, Indian Administrative Service, Indian Police Service, Indian Forest Service, District Revenue Officers, Police, Home, Special Programme Implementation, Special Initiatives, Poverty Alleviation and Rural Indebtedness, Youth Welfare, Welfare of Children, Aged and Differently Abled Persons, Municipal Administration, Urban and Water Supply.",
       photoUrl: "https://i.ibb.co/0Rv80BLn/HR-9-Y6yb0-AAzx-FY.jpg",
     },
   },
