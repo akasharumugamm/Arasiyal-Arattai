@@ -108,7 +108,13 @@ export default function ReviewsPage() {
   }, []);
 
   const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
-  const visibleReviews = useMemo(() => profileReviews.filter((review) => filter === "All" || review.type === filter), [profileReviews, filter]);
+  const visibleReviews = useMemo(() => profileReviews
+    .filter((review) => filter === "All" || review.type === filter)
+    .sort((a, b) => {
+      if (sortOrder === "Highest upvotes") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (sortOrder === "Highest downvotes") return (b.votes?.down ?? 0) - (a.votes?.down ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
+      return sortOrder === "Newest first" ? new Date(b.date).getTime() - new Date(a.date).getTime() : new Date(a.date).getTime() - new Date(b.date).getTime();
+    }), [profileReviews, filter, sortOrder]);
   const scoredReviews = profileReviews.filter((review) => review.type !== "Request");
   const positiveCount = scoredReviews.filter((review) => review.type === "Positive").length;
   const negativeCount = scoredReviews.filter((review) => review.type === "Negative").length;
@@ -231,7 +237,8 @@ export default function ReviewsPage() {
 
         <section>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 14, marginBottom: 14 }}>
-            <div><h2 style={{ margin: 0, fontSize: 23, fontWeight: 900 }}>Public reviews</h2><p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 12 }}>Newest first · {visibleReviews.length} shown</p></div>
+            <div><h2 style={{ margin: 0, fontSize: 23, fontWeight: 900 }}>Public reviews</h2><p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 12 }}>{sortOrder} · {visibleReviews.length} shown</p></div>
+            <select aria-label="Sort reviews" value={sortOrder} onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)} style={{ border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontSize: 12, background: "white", color: "#334155" }}><option>Newest first</option><option>Oldest first</option><option>Highest upvotes</option><option>Highest downvotes</option></select>
             <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>{(["All", "Positive", "Negative", "Request"] as const).map((t) => <button key={t} onClick={() => setFilter(t)} style={{ border: filter === t ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: filter === t ? "#dbeafe" : "white", color: filter === t ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "8px 13px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>{t}</button>)}</div>
           </div>
           {notice && !showForm && <p role="status" style={{ color: "#166534", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
@@ -242,8 +249,12 @@ export default function ReviewsPage() {
             </div>
             <div style={{ marginTop: 15 }}><h3 style={{ margin: "7px 0", fontSize: 17, fontWeight: 900 }}>{review.title}</h3><p style={{ margin: 0, color: "#475569", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{review.body}</p>{review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", marginTop: 12, maxWidth: "100%", maxHeight: 440, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} />}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
-              <button type="button" aria-pressed={votes[review.id] === "up"} onClick={() => voteReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", gap: 7, border: votes[review.id] === "up" ? "1px solid #2563eb" : "1px solid #cbd5e1", background: votes[review.id] === "up" ? "#dbeafe" : "white", color: votes[review.id] === "up" ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 12px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>👍 <span>Helpful</span> <span>{review.votes?.up ?? 0}</span></button>
-              <button type="button" aria-pressed={votes[review.id] === "down"} onClick={() => voteReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", gap: 7, border: votes[review.id] === "down" ? "1px solid #dc2626" : "1px solid #cbd5e1", background: votes[review.id] === "down" ? "#fee2e2" : "white", color: votes[review.id] === "down" ? "#b91c1c" : "#475569", borderRadius: 999, padding: "7px 12px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>👎 <span>Not helpful</span> <span>{review.votes?.down ?? 0}</span></button>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 10px", border: "1px solid #e2e8f0", borderRadius: 999, background: "#f8fafc" }}>
+                <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={votes[review.id] === "up"} onClick={() => voteReview(review.id, "up")} style={{ border: 0, background: "transparent", color: votes[review.id] === "up" ? "#f97316" : "#64748b", fontSize: 19, fontWeight: 900, lineHeight: 1, cursor: "pointer", padding: 0 }}>▲</button>
+                <span aria-label="Net vote score" style={{ minWidth: 20, textAlign: "center", fontSize: 13, fontWeight: 900, color: votes[review.id] === "up" ? "#ea580c" : votes[review.id] === "down" ? "#2563eb" : "#334155" }}>{(review.votes?.up ?? 0) - (review.votes?.down ?? 0)}</span>
+                <button type="button" aria-label="Downvote review" title="Downvote" aria-pressed={votes[review.id] === "down"} onClick={() => voteReview(review.id, "down")} style={{ border: 0, background: "transparent", color: votes[review.id] === "down" ? "#2563eb" : "#64748b", fontSize: 19, fontWeight: 900, lineHeight: 1, cursor: "pointer", padding: 0 }}>▼</button>
+                <span style={{ fontSize: 10, color: "#64748b", borderLeft: "1px solid #cbd5e1", paddingLeft: 8 }}>↑ {review.votes?.up ?? 0} · ↓ {review.votes?.down ?? 0}</span>
+              </div>
               <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: "auto" }}>Your vote is saved in this browser</span>
             </div>
             <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 15, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><span style={{ fontSize: 11, color: "#64748b" }}>Community-submitted · not independently verified</span><button onClick={() => removeReview(review.id)} style={{ border: "1px solid #cbd5e1", background: "white", color: "#64748b", borderRadius: 8, padding: "6px 9px", fontSize: 11, cursor: "pointer" }}>Remove from this browser</button></div>
