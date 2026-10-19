@@ -893,7 +893,7 @@ export default function Home() {
 
   return (
     <main style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 800 }}>Tamil Nadu Government Explorer</h1>
+      <h1 style={{ fontSize: 28, fontWeight: 800 }}>TVK Government Explorer</h1>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
         Explore people, departments and documented public records.
       </p>
