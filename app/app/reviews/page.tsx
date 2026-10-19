@@ -136,11 +136,26 @@ export default function ReviewsPage() {
   }
 
   function voteReview(id: string, direction: "up" | "down") {
+    const previous = votes[id];
+    const nextDirection = previous === direction ? undefined : direction;
     const nextVotes = { ...votes };
-    if (nextVotes[id] === direction) delete nextVotes[id];
-    else nextVotes[id] = direction;
+    if (nextDirection) nextVotes[id] = nextDirection;
+    else delete nextVotes[id];
+    const updated = reviews.map((review) => {
+      if (review.id !== id) return review;
+      const counts = { up: review.votes?.up ?? 0, down: review.votes?.down ?? 0 };
+      if (previous === "up") counts.up = Math.max(0, counts.up - 1);
+      if (previous === "down") counts.down = Math.max(0, counts.down - 1);
+      if (nextDirection === "up") counts.up += 1;
+      if (nextDirection === "down") counts.down += 1;
+      return { ...review, votes: counts };
+    });
     setVotes(nextVotes);
-    try { localStorage.setItem(VOTES_KEY, JSON.stringify(nextVotes)); } catch { /* Keep current UI state. */ }
+    setReviews(updated);
+    try {
+      localStorage.setItem(VOTES_KEY, JSON.stringify(nextVotes));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch { /* Keep current UI state. */ }
   }
 
   function removeReview(id: string) {
