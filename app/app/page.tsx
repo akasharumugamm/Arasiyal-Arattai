@@ -43,9 +43,9 @@ type ReviewSummary = {
   date: string;
 };
 
-function InfoNode({ data }: NodeProps<Node<Profile>>) {
+function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
   const [imageFailed, setImageFailed] = useState(false);
-  const showAvatar = !["cm-admin", "cm-home", "cm-special", "cm-other", "departments"].includes(data.id);
+  const showAvatar = !["cm-admin", "cm-home", "cm-special", "cm-other", "council-summary", "mla-summary", "departments", "schemes", "projects"].includes(id);
   const initials = data.label
     .replace(/^(Honourable|Honorable|Thiru|Justice)\s+/i, "")
     .split(/\s+/)
