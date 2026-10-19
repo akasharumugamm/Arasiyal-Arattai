@@ -87,6 +87,7 @@ export default function ReviewsPage() {
   const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
   const [profile, setProfile] = useState(PROFILES[0]);
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
+  const [sortOrder, setSortOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
   const [name, setName] = useState("");
   const [type, setType] = useState<ReviewType>("Positive");
   const [title, setTitle] = useState("");
