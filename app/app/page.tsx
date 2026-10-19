@@ -1217,7 +1217,7 @@ export default function Home() {
       <div style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
         <div style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
           <ReactFlow
-            key={category}
+            key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
             nodes={visibleNodes}
             edges={visibleEdges}
             nodeTypes={nodeTypes}
