@@ -59,9 +59,9 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
     <div
       style={{
         width: 230,
-        minHeight: 150,
+        minHeight: showAvatar ? 150 : 0,
         boxSizing: "border-box",
-        padding: 16,
+        padding: showAvatar ? 16 : "10px 12px",
         border: "1px solid #cbd5e1",
         borderRadius: 12,
         background: "white",
