@@ -199,7 +199,7 @@ const allNodes: Node<Profile>[] = [
       role: "Rural Development and Water Resources",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/024_Anand.png",
-      description: "Rural Development, Panchayats and Panchayat Union, Irrigation, and Irrigation Projects including Small Irrigation. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Rural Development, Panchayats and Panchayat Union, Irrigation, and Irrigation Projects including Small Irrigation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -211,7 +211,7 @@ const allNodes: Node<Profile>[] = [
       role: "Public Works and Sports Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/014_Aadhav_Arjuna.png",
-      description: "Public Works (Buildings, Highways and Minor Ports) and Sports Development. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Public Works (Buildings, Highways and Minor Ports) and Sports Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -223,7 +223,7 @@ const allNodes: Node<Profile>[] = [
       role: "Health, Medical Education and Family Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/096_Arunraj.png",
-      description: "Health, Medical Education and Family Welfare. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Health, Medical Education and Family Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -235,7 +235,7 @@ const allNodes: Node<Profile>[] = [
       role: "Revenue and Disaster Management",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/106_Sengottaiyan.png",
-      description: "Revenue, District Revenue Establishment, Deputy Collectors, Disaster Management, Boodhan, Gramadhan and Legislative Assembly. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Revenue, District Revenue Establishment, Deputy Collectors, Disaster Management, Boodhan, Gramadhan and Legislative Assembly. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -247,7 +247,7 @@ const allNodes: Node<Profile>[] = [
       role: "Food and Civil Supplies",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/025_Venkataramanan.png",
-      description: "Food and Civil Supplies, Consumer Protection and Price Control. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Food and Civil Supplies, Consumer Protection and Price Control. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -259,7 +259,7 @@ const allNodes: Node<Profile>[] = [
       role: "Minorities Welfare and Wakf Board",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/172_Shahjahan.png",
-      description: "Minorities Welfare and Wakf Board. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Minorities Welfare and Wakf Board. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -271,7 +271,7 @@ const allNodes: Node<Profile>[] = [
       role: "Housing and Urban Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/155_Rajkumar.png",
-      description: "Housing, Rural Housing, Town Planning Projects and Housing Development, Accommodation Control, CMDA, Tamil Nadu Urban Habitat Development Board, Urban Planning and Urban Development. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Housing, Rural Housing, Town Planning Projects and Housing Development, Accommodation Control, CMDA, Tamil Nadu Urban Habitat Development Board, Urban Planning and Urban Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -283,7 +283,7 @@ const allNodes: Node<Profile>[] = [
       role: "Milk and Dairy Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/097_Vijayalakshmi.png",
-      description: "Milk and Dairy Development. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Milk and Dairy Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -295,7 +295,7 @@ const allNodes: Node<Profile>[] = [
       role: "Human Resources Management",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/031_Sarathkumar.png",
-      description: "Human Resources Management and Ex-Servicemen Welfare. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Human Resources Management and Ex-Servicemen Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -307,7 +307,7 @@ const allNodes: Node<Profile>[] = [
       role: "Natural Resources",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/184_tk_prabhu.png",
-      description: "Minerals and Mines. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Minerals and Mines. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -319,7 +319,7 @@ const allNodes: Node<Profile>[] = [
       role: "Social Welfare and Women Empowerment",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/202_Jegadeshwari.jpeg",
-      description: "Social Welfare including Women Welfare, Orphanages and Correctional Administration, Beggar Homes, Social Reforms and Nutritious Meal Programme. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Social Welfare including Women Welfare, Orphanages and Correctional Administration, Beggar Homes, Social Reforms and Nutritious Meal Programme. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -331,7 +331,7 @@ const allNodes: Node<Profile>[] = [
       role: "Animal Husbandry",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/112_Kamali.png",
-      description: "Animal Husbandry. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Animal Husbandry. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -343,7 +343,7 @@ const allNodes: Node<Profile>[] = [
       role: "Artificial Intelligence, IT and Digital Services",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/026_Kumar.png",
-      description: "Artificial Intelligence, Information Technology and Digital Services. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Artificial Intelligence, Information Technology and Digital Services. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -355,7 +355,7 @@ const allNodes: Node<Profile>[] = [
       role: "Commercial Taxes and Registration",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/092_Logesh_Tamilselvan.png",
-      description: "Commercial Taxes, Registration and Stamp Act, Debt Relief including legislation on Money lending, Chits and Registration of Companies. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Commercial Taxes, Registration and Stamp Act, Debt Relief including legislation on Money lending, Chits and Registration of Companies. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -367,7 +367,7 @@ const allNodes: Node<Profile>[] = [
       role: "Handlooms, Textiles and Khadi",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/098_Vijay_Balaji.png",
-      description: "Handlooms and Textiles, Khadi and Village Industries Board. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Handlooms and Textiles, Khadi and Village Industries Board. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -379,7 +379,7 @@ const allNodes: Node<Profile>[] = [
       role: "MSMEs, Rural, Cottage and Small Industries",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/217_Mathan_Raja.png",
-      description: "Rural Industries including Cottage Industries and Small Industries. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Rural Industries including Cottage Industries and Small Industries. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -391,7 +391,7 @@ const allNodes: Node<Profile>[] = [
       role: "Labour Welfare and Skill Development",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/183_Mohamed_Farvas.png",
-      description: "Labour Welfare, Population, Employment and Training, Census, Weights and Measures, Urban and Rural Employment and Bonded Labour Welfare. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Labour Welfare, Population, Employment and Training, Census, Weights and Measures, Urban and Rural Employment and Bonded Labour Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -403,7 +403,7 @@ const allNodes: Node<Profile>[] = [
       role: "Finance",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/011_Marie_Wilson.png",
-      description: "Finance, Pensions and Pensionary Benefits, Planning and Development. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Finance, Pensions and Pensionary Benefits, Planning and Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -415,7 +415,7 @@ const allNodes: Node<Profile>[] = [
       role: "Higher Education",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/188_Viswanathan.png",
-      description: "Higher Education, including Technical Education, Electronics, Science and Technology. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Higher Education, including Technical Education, Electronics, Science and Technology. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -427,7 +427,7 @@ const allNodes: Node<Profile>[] = [
       role: "Energy Resources",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/195_Nirmalkumar.png",
-      description: "Electricity and Non-Conventional Energy Development, Law, Courts, Prisons and Prevention of Corruption, Governor, Elections and Passports. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Electricity and Non-Conventional Energy Development, Law, Courts, Prisons and Prevention of Corruption, Governor, Elections and Passports. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -439,7 +439,7 @@ const allNodes: Node<Profile>[] = [
       role: "Forests",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/037_Ranjithkumar.png",
-      description: "Forests. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Forests. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -451,7 +451,7 @@ const allNodes: Node<Profile>[] = [
       role: "Environment and Climate Change",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/210_Rajeev.png",
-      description: "Environment, Pollution Control Board and Climate Change. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Environment, Pollution Control Board and Climate Change. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -463,7 +463,7 @@ const allNodes: Node<Profile>[] = [
       role: "Tourism",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/234_Rajesh_Kumar.png",
-      description: "Tourism and Tourism Development Corporation. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Tourism and Tourism Development Corporation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -475,7 +475,7 @@ const allNodes: Node<Profile>[] = [
       role: "School Education",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/016_Rajmohan.png",
-      description: "School Education, Archaeology, Tamil Official Language and Tamil Culture, Information and Publicity, Film Technology and Cinematograph Act, Newsprint Control, Stationery and Printing, Government Press. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for School Education, Archaeology, Tamil Official Language and Tamil Culture, Information and Publicity, Film Technology and Cinematograph Act, Newsprint Control, Stationery and Printing, Government Press. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -488,7 +488,7 @@ const allNodes: Node<Profile>[] = [
       isPerson: true,
       xHandle: "https://x.com/RameshOffcl",
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/139_Ramesh.png",
-      description: "Hindu Religious and Charitable Endowments. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Hindu Religious and Charitable Endowments. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -500,7 +500,7 @@ const allNodes: Node<Profile>[] = [
       role: "Industries",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/205_Keerthana.png",
-      description: "Industries and Investment Promotion. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Industries and Investment Promotion. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -512,7 +512,7 @@ const allNodes: Node<Profile>[] = [
       role: "Fisheries and Fishermen Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/214_Srinath.png",
-      description: "Fisheries and Fisheries Development Corporation. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Fisheries and Fisheries Development Corporation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -524,7 +524,7 @@ const allNodes: Node<Profile>[] = [
       role: "Non-Resident Tamils Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/029_Thennarasu.png",
-      description: "Non-Resident Tamils Welfare, Refugees and evacuees. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Non-Resident Tamils Welfare, Refugees and evacuees. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -536,7 +536,7 @@ const allNodes: Node<Profile>[] = [
       role: "Co-operation",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/038_Gandhiraj.png",
-      description: "Co-operation. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Co-operation. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -548,7 +548,7 @@ const allNodes: Node<Profile>[] = [
       role: "Backward Classes Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/118_Sampath_kumar.png",
-      description: "Backward Classes Welfare, Most Backward Classes Welfare and De-notified Communities Welfare. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Backward Classes Welfare, Most Backward Classes Welfare and De-notified Communities Welfare. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -560,7 +560,7 @@ const allNodes: Node<Profile>[] = [
       role: "Social Justice and Adi Dravidar Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/072_Vanni_Arasu.png",
-      description: "Adi Dravidar Welfare and Hill Tribes. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Adi Dravidar Welfare and Hill Tribes. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -572,7 +572,7 @@ const allNodes: Node<Profile>[] = [
       role: "Prohibition and Excise",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/122_vignesh.png",
-      description: "Prohibition and Excise. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Prohibition and Excise. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -584,7 +584,7 @@ const allNodes: Node<Profile>[] = [
       role: "Transport",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/090_Vijay_Tamilan_%20Parthiban.png",
-      description: "Motor Vehicle Acts administration, Transport, Nationalised Transport and Motor Vehicles Act. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Motor Vehicle Acts administration, Transport, Nationalised Transport and Motor Vehicles Act. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
@@ -596,7 +596,7 @@ const allNodes: Node<Profile>[] = [
       role: "Agriculture and Farmers Welfare",
       isPerson: true,
       photoUrl: "https://cms.tn.gov.in/cms_migrated/document/ministers_list/171_Vinoth.png",
-      description: "Agriculture, Agricultural Engineering, Agro Service Co-operatives, Horticulture, Sugar, Sugarcane Excise, Sugarcane Development and Waste Land Development. Source: Government of Tamil Nadu minister directory.",
+      description: "Minister for Agriculture, Agricultural Engineering, Agro Service Co-operatives, Horticulture, Sugar, Sugarcane Excise, Sugarcane Development and Waste Land Development. Source: Government of Tamil Nadu minister directory.",
     },
   },
   {
