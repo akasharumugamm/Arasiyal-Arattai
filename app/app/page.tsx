@@ -1001,7 +1001,7 @@ export default function Home() {
         memberNodes.push({
           id: `mla-${member.number}`,
           type: "info",
-          position: { x: (index % 3) * 320, y: 100 + Math.floor(index / 3) * 250 },
+          position: { x: (index % 6) * 320, y: 100 + Math.floor(index / 6) * 250 },
           data: {
             label: vacant ? `${member.constituency} — Vacant` : member.name,
             role: `${member.constituency} · ${member.party || "No party listed"}`,
@@ -1023,7 +1023,7 @@ export default function Home() {
       const party = member.party || "Vacant";
       partyCount.set(party, (partyCount.get(party) ?? 0) + 1);
     });
-    const cols = 3;
+    const cols = 6;
     const groupWidth = 360;
     const groupHeight = 230;
     mlaParties.forEach((party, index) => {
@@ -1053,7 +1053,7 @@ export default function Home() {
         memberNodes.push({
           id: `mla-${member.number}`,
           type: "info",
-          position: { x: groupX + (index % 3) * 320, y: groupY + 210 + Math.floor(index / 3) * 250 },
+          position: { x: groupX + (index % 6) * 320, y: groupY + 210 + Math.floor(index / 6) * 250 },
           data: {
             label: vacant ? `${member.constituency} — Vacant` : member.name,
             role: `${member.constituency} · ${member.party || "No party listed"}`,
@@ -1089,15 +1089,8 @@ export default function Home() {
   );
   const visibleEdges = useMemo(() => {
     if (category === "MLAs") {
-      const edges: Edge[] = [];
-      const showSearchResults = Boolean(mlaSearch.trim()) || mlaPartyFilter !== "All parties";
-      if (!showSearchResults && expandedMlaParty) {
-        const groupId = `mla-party-${expandedMlaParty.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-        mlaRecords.filter((member) => (member.party || "Vacant") === expandedMlaParty).forEach((member) => {
-          edges.push({ id: `mla-edge-${member.number}`, source: groupId, target: `mla-${member.number}`, type: "smoothstep" });
-        });
-      }
-      return edges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target));
+      // Keep MLA cards independent; do not draw connecting edges in this view.
+      return [];
     }
     return allEdges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target));
   }, [category, visibleIds, expandedMlaParty, mlaParties, mlaRecords, mlaSearch, mlaPartyFilter]);
