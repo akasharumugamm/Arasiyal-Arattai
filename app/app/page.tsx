@@ -198,6 +198,26 @@ const allNodes: Node<Profile>[] = [
     },
   },
   {
+    id: "council-summary",
+    type: "info",
+    position: { x: 1020, y: 800 },
+    data: {
+      label: "Council of Ministers",
+      role: "34 ministers + Chief Minister",
+      description: "The Council of Ministers is headed by the Chief Minister. The Governor appoints ministers on the Chief Minister's advice. This summary represents the Council without duplicating every minister in the Government view; open the Ministers tab for individual profiles and portfolios. Count checked against the Tamil Nadu Legislative Assembly ministers directory in October 2026.",
+    },
+  },
+  {
+    id: "mla-summary",
+    type: "info",
+    position: { x: -300, y: 250 },
+    data: {
+      label: "Tamil Nadu Legislative Assembly",
+      role: "234 seats · 227 sitting members · 7 vacant",
+      description: "MLAs are elected members of the Tamil Nadu Legislative Assembly, not officials who report to the Chief Minister. The Assembly includes members from the governing party and opposition. The state has 234 seats; the cited October 2026 directory lists 227 sitting members and 7 vacant seats. Open the MLAs tab for individual constituency profiles.",
+    },
+  },
+  {
     id: "tvk",
     type: "info",
     position: { x: 640, y: 220 },
@@ -726,7 +746,6 @@ const allNodes: Node<Profile>[] = [
       label: "Department Directory",
       role: "Government departments",
       description: "Browse state government departments, their published responsibilities and associated ministerial or administrative leadership. Add reporting relationships only when supported by an official department page or government order.",
-      photoUrl: "https://i.pravatar.cc/150?img=30",
     },
   },
   {
@@ -737,7 +756,6 @@ const allNodes: Node<Profile>[] = [
       label: "Government Schemes",
       role: "Programmes and public projects",
       description: "Use this section to document public schemes with their official description, eligibility, implementing department, application details and published updates. Link to government sources and distinguish announced plans from active schemes.",
-      photoUrl: "https://i.pravatar.cc/150?img=31",
     },
   },
   {
@@ -748,7 +766,6 @@ const allNodes: Node<Profile>[] = [
       label: "Public Projects",
       role: "Projects and outcomes",
       description: "Use this section to describe public projects with the responsible department, location, announced timeline and publicly released budget or progress information. Cite official sources and label unconfirmed estimates clearly.",
-      photoUrl: "https://i.pravatar.cc/150?img=32",
     },
   },
 ];
@@ -757,6 +774,8 @@ const allEdges: Edge[] = [
   { id: "g1", source: "government", target: "governor", type: "smoothstep" },
   { id: "g1a", source: "governor", target: "cm", label: "appoints", type: "smoothstep" },
   { id: "g2", source: "cm", target: "tvk", label: "Party affiliation", type: "smoothstep" },
+  { id: "g2a", source: "cm", target: "council-summary", label: "Heads", type: "smoothstep" },
+  { id: "g2b", source: "government", target: "mla-summary", label: "Legislature", type: "smoothstep" },
   { id: "g3", source: "cm", target: "cm-admin", type: "smoothstep" },
   { id: "g4", source: "cm", target: "cm-home", type: "smoothstep" },
   { id: "g5", source: "cm", target: "cm-special", type: "smoothstep" },
@@ -802,7 +821,7 @@ const allEdges: Edge[] = [
 ];
 
 const categoryNodes: Record<Category, string[]> = {
-  Government: ["government", "governor", "cm", "chief-justice", "tvk", "cm-admin", "cm-home", "cm-special", "cm-other"],
+  Government: ["government", "governor", "cm", "chief-justice", "tvk", "council-summary", "mla-summary", "cm-admin", "cm-home", "cm-special", "cm-other"],
   Ministers: ["cm", "anand", "aadhav", "arunraj", "sengottaiyan", "venkataramanan", "shahjahan", "rajkumar", "vijayalakshmi", "sarathkumar", "prabhu", "jegadeshwari", "kamali", "kumar", "logesh", "vijaybalaji", "mathanraja", "farvas", "mariewilson", "viswanathan", "nirmalkumar", "ranjithkumar", "rajeev", "rajeshkumar", "rajmohan", "ramesh", "keerthana", "srinath", "thennarasu", "gandhiraj", "sampathkumar", "vanniarasu", "vignesh", "vijaytamilan", "vinoth"],
   MLAs: ["mla-directory"],
   "IAS Officers": ["ias"],
@@ -865,14 +884,16 @@ export default function Home() {
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
       government: { x: 360, y: 0 },
-      governor: { x: 360, y: 250 },
-      cm: { x: 360, y: 540 },
-      "chief-justice": { x: 920, y: 250 },
-      tvk: { x: 920, y: 540 },
-      "cm-admin": { x: -30, y: 880 },
-      "cm-home": { x: 240, y: 880 },
-      "cm-special": { x: 510, y: 880 },
-      "cm-other": { x: 780, y: 880 },
+      "mla-summary": { x: -320, y: 240 },
+      governor: { x: 360, y: 260 },
+      "chief-justice": { x: 980, y: 260 },
+      cm: { x: 360, y: 560 },
+      tvk: { x: 980, y: 560 },
+      "cm-admin": { x: -80, y: 900 },
+      "cm-home": { x: 190, y: 900 },
+      "cm-special": { x: 460, y: 900 },
+      "cm-other": { x: 730, y: 900 },
+      "council-summary": { x: 1000, y: 900 },
     },
     Ministers: {
       cm: { x: 1375, y: -80 },
