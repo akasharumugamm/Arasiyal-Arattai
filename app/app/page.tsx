@@ -914,7 +914,7 @@ export default function Home() {
 
   const filteredHomeReviews = recentReviews
     .filter((review) => homeReviewType === "All" || review.type === homeReviewType)
-    .filter((review) => !homeReviewName.trim() || review.name.toLowerCase().includes(homeReviewName.trim().toLowerCase()))
+    .filter((review) => !homeReviewName.trim() || review.profile.toLowerCase().includes(homeReviewName.trim().toLowerCase()))
     .sort((a, b) => {
       if (homeReviewDateOrder === "Highest upvotes") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
       if (homeReviewDateOrder === "Highest downvotes") return (b.votes?.down ?? 0) - (a.votes?.down ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -1021,7 +1021,7 @@ export default function Home() {
               <button key={type} onClick={() => setHomeReviewType(type)} style={{ border: homeReviewType === type ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: homeReviewType === type ? "#dbeafe" : "white", color: homeReviewType === type ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 850, cursor: "pointer" }}>{type}</button>
             ))}
           </div>
-          <input aria-label="Filter reviews by reviewer name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search reviewer name" style={{ flex: "1 1 160px", minWidth: 140, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", font: "inherit", fontSize: 12, background: "white", color: "#0f172a" }} />
+          <input aria-label="Filter reviews by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name" style={{ flex: "1 1 160px", minWidth: 140, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", font: "inherit", fontSize: 12, background: "white", color: "#0f172a" }} />
           <select aria-label="Sort reviews by date" value={homeReviewDateOrder} onChange={(e) => setHomeReviewDateOrder(e.target.value as "Newest first" | "Oldest first")} style={{ border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontSize: 12, background: "white", color: "#334155" }}>
             <option>Newest first</option><option>Oldest first</option><option>Highest upvotes</option><option>Highest downvotes</option>
           </select>
