@@ -10,6 +10,7 @@ type Review = {
   type: ReviewType;
   title: string;
   body: string;
+  image?: string;
   date: string;
 };
 
@@ -86,6 +87,7 @@ export default function ReviewsPage() {
   const [type, setType] = useState<ReviewType>("Positive");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
   const [showForm, setShowForm] = useState(false);
 
@@ -119,12 +121,13 @@ export default function ReviewsPage() {
     const next: Review = {
       id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
       profile, name: name.trim(), type, title: title.trim(), body: body.trim(),
+      ...(image ? { image } : {}),
       date: new Date().toISOString(),
     };
     const updated = [next, ...reviews];
     setReviews(updated);
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { /* The current session still works if storage is unavailable. */ }
-    setName(""); setTitle(""); setBody(""); setNotice("Your review has been added on this browser."); setFilter("All"); setShowForm(false);
+    setName(""); setTitle(""); setBody(""); setImage(null); setNotice("Your review has been added on this browser."); setFilter("All"); setShowForm(false);
   }
 
   function removeReview(id: string) {
@@ -178,6 +181,20 @@ export default function ReviewsPage() {
             </div>
                         <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-title">Review headline</label><input id="review-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Summarise your point" maxLength={100} style={input} required /></div>
             <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-body">Details and evidence</label><textarea id="review-body" value={body} onChange={(e) => setBody(e.target.value)} placeholder="Explain the experience, outcome, source or action requested..." minLength={10} maxLength={1500} rows={5} style={{ ...input, resize: "vertical" }} required /></div>
+            <div style={{ marginTop: 18 }}>
+              <label style={label} htmlFor="review-image">Attach an image (optional)</label>
+              <input id="review-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) { setImage(null); return; }
+                if (file.size > 2 * 1024 * 1024) { setNotice("Please choose an image smaller than 2 MB."); e.target.value = ""; setImage(null); return; }
+                const reader = new FileReader();
+                reader.onload = () => { if (typeof reader.result === "string") { setImage(reader.result); setNotice(""); } };
+                reader.onerror = () => setNotice("Could not read this image. Please try another file.");
+                reader.readAsDataURL(file);
+              }} style={{ ...input, padding: 9 }} />
+              <p style={{ margin: "6px 0 0", fontSize: 11, color: "#64748b" }}>JPG, PNG, WEBP or GIF · maximum 2 MB. Images are saved with this browser's review data for this prototype.</p>
+              {image && <div style={{ marginTop: 10 }}><img src={image} alt="Review attachment preview" style={{ display: "block", maxWidth: "100%", maxHeight: 260, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} /><button type="button" onClick={() => setImage(null)} style={{ marginTop: 7, border: "1px solid #cbd5e1", borderRadius: 8, background: "white", padding: "6px 10px", cursor: "pointer", fontSize: 12 }}>Remove image</button></div>}
+            </div>
             <p style={{ fontSize: 11, color: "#64748b", lineHeight: 1.6 }}>Do not post private information, threats, or unverified allegations as established facts. Clearly identify claims as allegations and include public sources where possible.</p>
             {notice && <p role="status" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
             <button type="submit" style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "12px 18px", fontWeight: 850, cursor: "pointer" }}>Publish review</button>
@@ -195,7 +212,7 @@ export default function ReviewsPage() {
               <div style={{ display: "flex", gap: 12, alignItems: "center" }}><div style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "#e2e8f0", color: "#334155", fontWeight: 900 }}>{review.name.slice(0, 1).toUpperCase()}</div><div><div style={{ fontWeight: 850 }}>{review.name}</div><div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · {review.profile}</div></div></div>
               <span style={{ borderRadius: 999, padding: "6px 10px", fontSize: 11, fontWeight: 900, color: typeStyles[review.type].color, background: typeStyles[review.type].background }}>{review.type}</span>
             </div>
-            <div style={{ marginTop: 15 }}><h3 style={{ margin: "7px 0", fontSize: 17, fontWeight: 900 }}>{review.title}</h3><p style={{ margin: 0, color: "#475569", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{review.body}</p></div>
+            <div style={{ marginTop: 15 }}><h3 style={{ margin: "7px 0", fontSize: 17, fontWeight: 900 }}>{review.title}</h3><p style={{ margin: 0, color: "#475569", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{review.body}</p>{review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", marginTop: 12, maxWidth: "100%", maxHeight: 440, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} />}</div>
             <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 15, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><span style={{ fontSize: 11, color: "#64748b" }}>Community-submitted · not independently verified</span><button onClick={() => removeReview(review.id)} style={{ border: "1px solid #cbd5e1", background: "white", color: "#64748b", borderRadius: 8, padding: "6px 9px", fontSize: 11, cursor: "pointer" }}>Remove from this browser</button></div>
           </article>)}</div>}
         </section>
