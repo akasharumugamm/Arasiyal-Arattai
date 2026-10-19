@@ -854,7 +854,7 @@ const categories: Category[] = [
 
 const categoryDescriptions: Record<Category, string> = {
   Government: "Governor, Chief Minister, Council of Ministers and the state executive structure.",
-  Ministers: "Explore minister profiles separately from the rest of the graph.",
+  Ministers: "Meet the Chief Minister and ministers, and explore their portfolios and profiles.",
   MLAs: "Explore elected representatives and constituencies.",
   "IAS Officers": "Explore administrative officers and postings.",
   "IPS Officers": "Explore police leadership and IPS officer profiles.",
