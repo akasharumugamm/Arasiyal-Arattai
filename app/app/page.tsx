@@ -168,7 +168,6 @@ const allNodes: Node<Profile>[] = [
       role: "Constitutional head of Tamil Nadu",
       description:
         "The Governor is the constitutional head of the state. The Governor appoints the Chief Minister and appoints other ministers on the Chief Minister's advice. Under the Constitution, the Council of Ministers headed by the Chief Minister aids and advises the Governor, except in matters where the Constitution provides otherwise. See the official Governor profile for the current office-holder.",
-      photoUrl: "https://lokbhavan.tn.gov.in/wp-content/uploads/2026/03/Arlekar.jpg",
     },
   },
   {
@@ -755,7 +754,6 @@ const allNodes: Node<Profile>[] = [
 const allEdges: Edge[] = [
   { id: "g1", source: "government", target: "governor", type: "smoothstep" },
   { id: "g1a", source: "governor", target: "cm", label: "appoints", type: "smoothstep" },
-  { id: "g1b", source: "government", target: "chief-justice", label: "Independent judiciary", type: "smoothstep" },
   { id: "g2", source: "cm", target: "tvk", label: "Party affiliation", type: "smoothstep" },
   { id: "g3", source: "cm", target: "cm-admin", type: "smoothstep" },
   { id: "g4", source: "cm", target: "cm-home", type: "smoothstep" },
