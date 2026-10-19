@@ -59,28 +59,21 @@ const typeStyles: Record<ReviewType, { color: string; background: string; descri
 };
 
 function RatingGauge({ value }: { value: number | null }) {
-  const cx = 150, cy = 140, r = 112;
-  const point = (angle: number, radius: number) => ({ x: cx + radius * Math.cos((angle * Math.PI) / 180), y: cy + radius * Math.sin((angle * Math.PI) / 180) });
-  const colors = ["#ff533d", "#ff922b", "#ffe52e", "#a5ed50", "#13c967"];
-  const faces = ["☹", "☹", "😐", "☺", "☺"];
-  const path = (start: number, end: number) => {
-    const a = point(start, r), b = point(end, r);
-    return `M ${cx} ${cy} L ${a.x} ${a.y} A ${r} ${r} 0 0 1 ${b.x} ${b.y} Z`;
-  };
-  const angle = value === null ? null : 180 + Math.max(0, Math.min(100, value)) * 1.8;
-  const tip = angle === null ? null : point(angle, 86);
+  const score = value === null ? null : Math.max(0, Math.min(100, Math.round(value)));
+  const sentiment = score === null ? "Awaiting feedback" : score >= 70 ? "Mostly positive" : score >= 45 ? "Mixed feedback" : "Needs improvement";
+  const color = score === null ? "#64748b" : score >= 70 ? "#15803d" : score >= 45 ? "#b45309" : "#b91c1c";
+  const background = score === null ? "#f1f5f9" : score >= 70 ? "#dcfce7" : score >= 45 ? "#fef3c7" : "#fee2e2";
   return (
-    <div style={{ maxWidth: 300, margin: "0 auto" }}>
-      <svg viewBox="0 0 300 160" style={{ width: "100%", display: "block" }} role="img" aria-label={value === null ? "No public ratings yet" : `Average rating ${Math.round(value)} out of 100`}>
-        {colors.map((color, i) => <path key={color} d={path(180 + i * 36, 216 + i * 36)} fill={color} stroke="white" strokeWidth="1.5" />)}
-        {faces.map((face, i) => { const p = point(198 + i * 36, 74); return <text key={i} x={p.x} y={p.y + 6} textAnchor="middle" fontSize="20" fill={i < 2 ? "#a83224" : i === 2 ? "#997600" : "#178b43"}>{face}</text>; })}
-        {tip && <path d={`M ${cx} ${cy} L ${tip.x} ${tip.y}`} stroke="#10294f" strokeWidth="5" strokeLinecap="round" />}
-        <circle cx={cx} cy={cy} r="9" fill="#10294f" />
-      </svg>
-      <div style={{ textAlign: "center", marginTop: -1 }}>
-        <div style={{ fontSize: 27, fontWeight: 900, color: "#0f172a" }}>{value === null ? "—" : Math.round(value)}<span style={{ fontSize: 13, color: "#64748b" }}> / 100</span></div>
-        <div style={{ fontSize: 11, color: "#64748b" }}>{value === null ? "No public ratings yet" : "Community average"}</div>
+    <div style={{ width: "100%", maxWidth: 300, margin: "0 auto", padding: 18, boxSizing: "border-box", border: "1px solid #e2e8f0", borderRadius: 16, background: "white" }}>
+      <div style={{ fontSize: 11, color: "#64748b", fontWeight: 800, letterSpacing: 0.5, textTransform: "uppercase" }}>Public sentiment</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginTop: 6 }}>
+        <div><span style={{ fontSize: 32, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>{score === null ? "—" : score}</span><span style={{ fontSize: 13, color: "#64748b", fontWeight: 700 }}> / 100</span></div>
+        <span style={{ padding: "6px 9px", borderRadius: 999, background, color, fontSize: 10, fontWeight: 850, whiteSpace: "nowrap" }}>{sentiment}</span>
       </div>
+      <div role="progressbar" aria-label="Positive public sentiment score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? 0} style={{ height: 9, borderRadius: 999, overflow: "hidden", background: "#e2e8f0", marginTop: 14 }}>
+        <div style={{ width: `${score ?? 0}%`, height: "100%", borderRadius: 999, background: score === null ? "#cbd5e1" : score >= 70 ? "#16a34a" : score >= 45 ? "#f59e0b" : "#ef4444", transition: "width 220ms ease" }} />
+      </div>
+      <p style={{ margin: "9px 0 0", fontSize: 11, color: "#64748b", lineHeight: 1.5 }}>{score === null ? "No positive or negative reviews yet." : "Based on positive and negative reviews only."}</p>
     </div>
   );
 }
