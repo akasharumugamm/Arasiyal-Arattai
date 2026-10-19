@@ -38,6 +38,7 @@ type ReviewSummary = {
   type: "Positive" | "Negative" | "Request";
   title: string;
   body: string;
+  image?: string;
   date: string;
 };
 
@@ -1020,6 +1021,7 @@ export default function Home() {
                   </div>
                   <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 900 }}>{review.title}</h3>
                   <p style={{ margin: "0 0 8px", color: "#475569", fontSize: 13, lineHeight: 1.6, overflowWrap: "anywhere" }}>{review.body}</p>
+                  {review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", margin: "10px 0", maxWidth: "100%", maxHeight: 360, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} />}
                   <p style={{ margin: 0, color: "#64748b", fontSize: 11 }}>By <strong>{review.name}</strong> · {review.profile}</p>
                 </article>
               );
