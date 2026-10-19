@@ -1000,7 +1000,7 @@ export default function Home() {
         </aside>
       </div>
 
-      <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "8px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+      <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ marginBottom: 14 }}>
           <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
           <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added reviews</h2>
