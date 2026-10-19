@@ -1066,7 +1066,7 @@ export default function Home() {
             fitViewOptions={{ padding: 0.12, minZoom: 0.28, maxZoom: 0.9 }}
             minZoom={0.15}
             maxZoom={1.5}
-            onNodeClick={(_, node) => selectProfile(node.data as Profile)}
+            onNodeClick={(_, node) => node.id === "council-summary" ? changeCategory("Ministers") : selectProfile(node.data as Profile)}
           >
             <Background />
             <Controls />
