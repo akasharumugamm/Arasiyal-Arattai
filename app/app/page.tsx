@@ -983,7 +983,7 @@ export default function Home() {
             )}
             <div style={{ minWidth: 0 }}>
               <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.25 }}>{selected.label}</h2>
-              <p style={{ color: "#64748b", fontSize: 13, marginTop: 5 }}>{selected.role}</p>
+              <p style={{ color: "#64748b", fontSize: 13, marginTop: 5 }}>{selected.description?.startsWith("Minister for ") ? "Minister" : selected.role}</p>
               {isPerson && (selected.xHandle ? (
                 <a href={selected.xHandle.startsWith("http") ? selected.xHandle : `https://x.com/${selected.xHandle.replace(/^@/, "")}`} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, color: "#2563eb", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>View 𝕏 profile ↗</a>
               ) : <span style={{ display: "block", marginTop: 8, color: "#94a3b8", fontSize: 12 }}>𝕏 Handle not added</span>)}
