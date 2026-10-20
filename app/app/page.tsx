@@ -1195,7 +1195,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => { setMlaSearch(""); setMlaPartyFilter("All parties"); setExpandedMlaParty(null); }}
-            style={{ padding: "10px 13px", border: "1px solid #cbd5e1", borderRadius: 9, background: "#f8fafc", color: "#172554", fontWeight: 750, cursor: "pointer" }}
+            style={{ padding: "10px 13px", border: "1px solid #cbd5e1", borderRadius: 9, background: "#f8fafc", color: "#172554", fontWeight: 700, cursor: "pointer" }}
           >Reset graph</button>
           <span style={{ color: "#64748b", fontSize: 12, flexBasis: "100%" }}>
             {mlaSearch.trim() || mlaPartyFilter !== "All parties"
