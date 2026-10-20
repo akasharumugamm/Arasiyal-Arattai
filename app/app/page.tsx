@@ -96,7 +96,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      {showAvatar && (data.partyLogoUrl ? (
+      {showAvatar && (data.partyLogoUrl && !imageFailed ? (
         <img
           src={data.partyLogoUrl}
           alt={data.mlaParty ? `${data.mlaParty} party logo` : `${data.label} party logo`}
@@ -1094,6 +1094,7 @@ export default function Home() {
             mlaParty: member.party,
             mlaEmail: member.email,
             mlaStatus: member.status,
+            partyLogoUrl: getPartyLogoPath(member.party),
           },
         });
       });
