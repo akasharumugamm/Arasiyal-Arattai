@@ -1142,6 +1142,10 @@ export default function Home() {
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
   function voteHomeReview(id: string, direction: "up" | "down") {
+    // Authentication is not wired yet: block voting and direct the visitor to the account menu.
+    setProfileMenuOpen(true);
+    setAuthSetupNotice(true);
+    return;
     const previous = homeVotes[id];
     const nextDirection = previous === direction ? undefined : direction;
     const nextVotes = { ...homeVotes };
