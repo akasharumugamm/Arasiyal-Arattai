@@ -34,6 +34,7 @@ type Profile = {
   mlaParty?: string;
   mlaEmail?: string;
   mlaStatus?: string;
+  partyLogoUrl?: string;
 };
 
 type ReviewSummary = {
@@ -47,6 +48,25 @@ type ReviewSummary = {
   votes?: { up: number; down: number };
   date: string;
 };
+
+const partyLogoPaths: Record<string, string> = {
+  TVK: "/party-logo/tvk.png",
+  DMK: "/party-logo/dmk.png",
+  AIADMK: "/party-logo/aiadmk.png",
+  INC: "/party-logo/inc.png",
+  BJP: "/party-logo/bjp.png",
+  PMK: "/party-logo/pmk.png",
+  VCK: "/party-logo/vck.png",
+  CPI: "/party-logo/cpi.PNG",
+  "CPI(M)": "/party-logo/cpim.png",
+  IUML: "/party-logo/iuml.png",
+  DMDK: "/party-logo/dmdk.PNG",
+  AMMK: "/party-logo/ammk.png",
+};
+
+function getPartyLogoPath(party?: string) {
+  return party ? partyLogoPaths[party] : undefined;
+}
 
 function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
   const [imageFailed, setImageFailed] = useState(false);
@@ -76,7 +96,14 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      {showAvatar && (data.photoUrl && !imageFailed ? (
+      {showAvatar && (data.partyLogoUrl ? (
+        <img
+          src={data.partyLogoUrl}
+          alt={data.mlaParty ? `${data.mlaParty} party logo` : `${data.label} party logo`}
+          onError={() => setImageFailed(true)}
+          style={{ display: "block", width: 88, height: 88, objectFit: "contain", padding: 5, boxSizing: "border-box", borderRadius: 16, margin: "0 auto 10px", border: "1px solid #e2e8f0", background: "white" }}
+        />
+      ) : data.photoUrl && !imageFailed ? (
         ["governor", "chief-justice"].includes(id) ? (
           <div style={{ width: 88, height: 88, boxSizing: "border-box", overflow: "hidden", borderRadius: 20, border: "4px solid #e5e7eb", margin: "0 auto 10px", background: "#f1f5f9" }}>
             <img
@@ -1013,6 +1040,7 @@ export default function Home() {
             mlaParty: member.party,
             mlaEmail: member.email,
             mlaStatus: member.status,
+            partyLogoUrl: getPartyLogoPath(member.party),
           },
         });
       });
@@ -1040,6 +1068,7 @@ export default function Home() {
           role: `${partyCount.get(party) ?? 0} constituency ${(partyCount.get(party) ?? 0) === 1 ? "entry" : "entries"} · ${expanded ? "Click to collapse" : "Click to expand"}`,
           description: `${party === "Vacant" ? "Vacant constituencies" : party + " members"} in the Assembly directory provided for this project. Select this group to explore the listed constituencies and member profiles. Source: ${mlaDirectory.sourceUrl}`,
           mlaParty: party,
+          partyLogoUrl: getPartyLogoPath(party),
         },
       });
     });
