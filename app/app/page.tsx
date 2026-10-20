@@ -48,30 +48,6 @@ type ReviewSummary = {
   date: string;
 };
 
-const partyMark: Record<string, { symbol: string; color: string; background: string }> = {
-  TVK: { symbol: "◉", color: "#9a3412", background: "#ffedd5" },
-  DMK: { symbol: "☀", color: "#b91c1c", background: "#fee2e2" },
-  AIADMK: { symbol: "🍃", color: "#166534", background: "#dcfce7" },
-  INC: { symbol: "✋", color: "#1d4ed8", background: "#dbeafe" },
-  BJP: { symbol: "✿", color: "#c2410c", background: "#ffedd5" },
-  PMK: { symbol: "🥭", color: "#a16207", background: "#fef9c3" },
-  VCK: { symbol: "♙", color: "#7e22ce", background: "#f3e8ff" },
-  CPI: { symbol: "☭", color: "#b91c1c", background: "#fee2e2" },
-  "CPI(M)": { symbol: "⚒", color: "#991b1b", background: "#fee2e2" },
-  IUML: { symbol: "▤", color: "#047857", background: "#d1fae5" },
-  DMDK: { symbol: "◉", color: "#6d28d9", background: "#ede9fe" },
-  AMMK: { symbol: "♨", color: "#c2410c", background: "#ffedd5" },
-  NTK: { symbol: "🎙", color: "#1d4ed8", background: "#dbeafe" },
-  IND: { symbol: "★", color: "#475569", background: "#f1f5f9" },
-  Vacant: { symbol: "—", color: "#475569", background: "#f1f5f9" },
-};
-
-function categoryPartyMark(data: Profile): string | null {
-  if (data.mlaParty) return data.mlaParty;
-  if (data.label === "Vacant seat") return "Vacant";
-  return null;
-}
-
 function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
   const [imageFailed, setImageFailed] = useState(false);
   const showAvatar = !["cm-admin", "cm-home", "cm-special", "cm-other", "council-summary", "mla-summary", "departments", "schemes", "projects"].includes(id);
@@ -100,14 +76,6 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      {categoryPartyMark(data) && (() => {
-        const mark = partyMark[categoryPartyMark(data)] ?? { symbol: categoryPartyMark(data).slice(0, 2), color: "#334155", background: "#f1f5f9" };
-        return (
-          <div title={categoryPartyMark(data) + " party symbol"} aria-label={categoryPartyMark(data) + " party symbol"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 auto 10px", width: 54, height: 54, borderRadius: 16, background: mark.background, color: mark.color, border: "1px solid #cbd5e1", fontSize: 27, fontWeight: 800 }}>
-            {mark.symbol}
-          </div>
-        );
-      })()}
       {showAvatar && (data.photoUrl && !imageFailed ? (
         ["governor", "chief-justice"].includes(id) ? (
           <div style={{ width: 88, height: 88, boxSizing: "border-box", overflow: "hidden", borderRadius: 20, border: "4px solid #e5e7eb", margin: "0 auto 10px", background: "#f1f5f9" }}>
