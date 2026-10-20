@@ -59,6 +59,7 @@ const partyLogoPaths: Record<string, string> = {
   VCK: "/party-logo/vck.png",
   CPI: "/party-logo/cpi.PNG",
   "CPI(M)": "/party-logo/cpim.png",
+  "CPI (M)": "/party-logo/cpim.png",
   IUML: "/party-logo/iuml.png",
   DMDK: "/party-logo/dmdk.PNG",
   AMMK: "/party-logo/ammk.png",
