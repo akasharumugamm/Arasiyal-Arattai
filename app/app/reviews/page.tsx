@@ -106,7 +106,12 @@ export default function ReviewsPage() {
     const params = new URLSearchParams(window.location.search);
     const requestedProfile = params.get("profile");
     if (requestedProfile && PROFILES.includes(requestedProfile)) setProfile(requestedProfile);
-    setShowForm(params.get("action") === "write");
+    if (params.get("action") === "write") {
+      setShowForm(false);
+      setNotice("Please sign in to share feedback. Amazon Cognito sign-in is not connected yet, so submitting feedback is temporarily disabled.");
+    } else {
+      setShowForm(false);
+    }
   }, []);
 
   const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
@@ -189,7 +194,7 @@ export default function ReviewsPage() {
             <h1 style={{ fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.1, letterSpacing: -1.5, margin: "9px 0", fontWeight: 900 }}>Public Feedback</h1>
             <p style={{ maxWidth: 650, color: "#64748b", lineHeight: 1.65, margin: 0 }}>Share a public assessment, raise a concern, or request action about a government representative. Keep comments specific, respectful and evidence-based.</p>
           </div>
-          <button onClick={() => { setShowForm((v) => !v); setNotice(""); }} style={{ border: 0, borderRadius: 11, background: "#1d4ed8", color: "white", padding: "13px 18px", fontWeight: 850, cursor: "pointer" }}>{showForm ? "Close form" : "✍ Share feedback"}</button>
+          <button onClick={() => { setShowForm(false); setNotice("Please sign in to share feedback. Amazon Cognito sign-in is not connected yet, so submitting feedback is temporarily disabled."); }} style={{ border: 0, borderRadius: 11, background: "#1d4ed8", color: "white", padding: "13px 18px", fontWeight: 850, cursor: "pointer" }}>{showForm ? "Close form" : "✍ Share feedback"}</button>
         </header>
 
         <section style={{ ...panel, marginBottom: 20 }}>
@@ -249,7 +254,7 @@ export default function ReviewsPage() {
             </div>
           </div>
           {notice && !showForm && <p role="status" style={{ color: "#166534", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
-          {visibleReviews.length === 0 ? <div style={{ ...panel, textAlign: "center", padding: "42px 20px" }}><div style={{ fontSize: 34 }}>✦</div><h3 style={{ fontSize: 18, fontWeight: 900, margin: "10px 0 6px" }}>No public feedback yet</h3><p style={{ maxWidth: 430, margin: "0 auto 18px", color: "#64748b", fontSize: 13, lineHeight: 1.6 }}>Be the first to share specific, constructive feedback of {profile}.</p><button onClick={() => { setShowForm(true); setType("Positive"); }} style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "11px 16px", fontWeight: 850, cursor: "pointer" }}>Share the first feedback</button></div> : <div style={{ display: "grid", gap: 12 }}>{visibleReviews.map((review) => <article key={review.id} style={panel}>
+          {visibleReviews.length === 0 ? <div style={{ ...panel, textAlign: "center", padding: "42px 20px" }}><div style={{ fontSize: 34 }}>✦</div><h3 style={{ fontSize: 18, fontWeight: 900, margin: "10px 0 6px" }}>No public feedback yet</h3><p style={{ maxWidth: 430, margin: "0 auto 18px", color: "#64748b", fontSize: 13, lineHeight: 1.6 }}>Be the first to share specific, constructive feedback of {profile}.</p><button onClick={() => { setShowForm(false); setType("Positive"); setNotice("Please sign in to share feedback. Amazon Cognito sign-in is not connected yet, so submitting feedback is temporarily disabled."); }} style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "11px 16px", fontWeight: 850, cursor: "pointer" }}>Share the first feedback</button></div> : <div style={{ display: "grid", gap: 12 }}>{visibleReviews.map((review) => <article key={review.id} style={panel}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
               <div style={{ display: "flex", gap: 12, alignItems: "center" }}><div style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "#e2e8f0", color: "#334155", fontWeight: 900 }}>{review.name.slice(0, 1).toUpperCase()}</div><div><div style={{ fontWeight: 850 }}>{review.name}</div><div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · {review.profile}</div></div></div>
               <span style={{ borderRadius: 999, padding: "6px 10px", fontSize: 11, fontWeight: 900, color: typeStyles[review.type].color, background: typeStyles[review.type].background }}>{review.type}</span>
