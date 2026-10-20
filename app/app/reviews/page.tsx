@@ -144,6 +144,9 @@ export default function ReviewsPage() {
   }
 
   function voteReview(id: string, direction: "up" | "down") {
+    // Authentication is not wired yet: voting must wait until the visitor signs in.
+    setNotice("Please sign in to vote. Amazon Cognito sign-in is not connected yet, so voting is temporarily disabled.");
+    return;
     const previous = votes[id];
     const nextDirection = previous === direction ? undefined : direction;
     const nextVotes = { ...votes };
