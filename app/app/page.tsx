@@ -1175,7 +1175,7 @@ export default function Home() {
       </p>
 
       {category === "MLAs" && (
-        <section aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
+        <section aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 336px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
           <input
             aria-label="Search MLA name or constituency"
             value={mlaSearch}
