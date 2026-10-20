@@ -897,6 +897,8 @@ const categoryDescriptions: Record<Category, string> = {
 
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [authSetupNotice, setAuthSetupNotice] = useState(false);
   const [expandedMlaParty, setExpandedMlaParty] = useState<string | null>(null);
   const [mlaSearch, setMlaSearch] = useState("");
   const [mlaPartyFilter, setMlaPartyFilter] = useState("All parties");
@@ -1173,9 +1175,37 @@ export default function Home() {
 
   return (
     <main style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-        <img src="/tvk-logo.png" alt="TVK Government Explorer logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10 }} />
-        <h1 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>TVK Government Explorer</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+          <img src="/tvk-logo.png" alt="TVK Government Explorer logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>TVK Government Explorer</h1>
+        </div>
+        <div style={{ position: "relative", flexShrink: 0 }}>
+          <button
+            type="button"
+            aria-label="Open profile menu"
+            aria-haspopup="menu"
+            aria-expanded={profileMenuOpen}
+            onClick={() => { setProfileMenuOpen((open) => !open); setAuthSetupNotice(false); }}
+            style={{ width: 44, height: 44, display: "grid", placeItems: "center", borderRadius: 999, border: "1px solid #cbd5e1", background: "white", color: "#172554", cursor: "pointer", boxShadow: "0 2px 6px #0f172a0a" }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
+              <path d="M4.8 20c.7-3.4 3.2-5.2 7.2-5.2s6.5 1.8 7.2 5.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </button>
+          {profileMenuOpen && (
+            <div role="menu" aria-label="Profile menu" style={{ position: "absolute", zIndex: 100, top: 52, right: 0, width: 230, padding: 10, border: "1px solid #dbe3ef", borderRadius: 14, background: "white", boxShadow: "0 12px 32px #0f172a1c" }}>
+              <div style={{ padding: "8px 9px 10px", borderBottom: "1px solid #e2e8f0", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 850, color: "#172554" }}>Your account</div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>Sign in to share feedback and vote.</div>
+              </div>
+              <button type="button" role="menuitem" onClick={() => setAuthSetupNotice(true)} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Sign in</button>
+              <button type="button" role="menuitem" onClick={() => setAuthSetupNotice(true)} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Create account</button>
+              {authSetupNotice && <p role="status" style={{ margin: "7px 5px 4px", padding: 9, borderRadius: 8, background: "#eff6ff", color: "#1d4ed8", fontSize: 11, lineHeight: 1.5 }}>Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
+            </div>
+          )}
+        </div>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
         Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback.
