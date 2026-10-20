@@ -899,6 +899,8 @@ export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Sign Up");
   const [expandedMlaParty, setExpandedMlaParty] = useState<string | null>(null);
   const [mlaSearch, setMlaSearch] = useState("");
   const [mlaPartyFilter, setMlaPartyFilter] = useState("All parties");
@@ -1143,8 +1145,9 @@ export default function Home() {
 
   function voteHomeReview(id: string, direction: "up" | "down") {
     // Authentication is not wired yet: block voting and direct the visitor to the account menu.
-    setProfileMenuOpen(true);
-    setAuthSetupNotice(true);
+    setProfileMenuOpen(false);
+    setAuthMode("Log In");
+    setAuthModalOpen(true);
     return;
     const previous = homeVotes[id];
     const nextDirection = previous === direction ? undefined : direction;
@@ -1204,8 +1207,8 @@ export default function Home() {
                 <div style={{ fontSize: 13, fontWeight: 850, color: "#172554" }}>Your account</div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>Sign in to share feedback and vote.</div>
               </div>
-              <button type="button" role="menuitem" onClick={() => setAuthSetupNotice(true)} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Sign in</button>
-              <button type="button" role="menuitem" onClick={() => setAuthSetupNotice(true)} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Create account</button>
+              <button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Sign in</button>
+              <button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Create account</button>
               {authSetupNotice && <p role="status" style={{ margin: "7px 5px 4px", padding: 9, borderRadius: 8, background: "#eff6ff", color: "#1d4ed8", fontSize: 11, lineHeight: 1.5 }}>Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
             </div>
           )}
@@ -1337,6 +1340,8 @@ export default function Home() {
           </div>
         </aside>
       </div>
+
+      {authModalOpen && <div role="presentation" onClick={() => setAuthModalOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 1000, display: "grid", placeItems: "center", padding: 16, background: "#000000b8", backdropFilter: "blur(5px)" }}><section role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" onClick={(event) => event.stopPropagation()} style={{ position: "relative", width: "min(100%, 478px)", minHeight: 540, boxSizing: "border-box", padding: "64px  min(15%, 72px) 24px", borderRadius: 16, background: "#191f21", color: "#f8fafc", boxShadow: "0 24px 80px #0008" }}><button type="button" aria-label="Close sign in" onClick={() => setAuthModalOpen(false)} style={{ position: "absolute", top: 20, right: 20, width: 30, height: 30, border: 0, borderRadius: 999, background: "#30383b", color: "#e2e8f0", fontSize: 20, cursor: "pointer" }}>×</button><h2 id="auth-modal-title" style={{ margin: "0 0 10px", textAlign: "center", fontSize: 22, fontWeight: 850 }}>{authMode}</h2><p style={{ margin: "0 0 18px", textAlign: "center", color: "#b9c8d2", fontSize: 12, lineHeight: 1.5 }}>Sign in to share feedback and vote. By continuing, you agree to our <span style={{ color: "#7aa7ff" }}>User Agreement</span> and acknowledge our <span style={{ color: "#7aa7ff" }}>Privacy Policy</span>.</p><div style={{ display: "grid", gap: 8 }}><button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, borderRadius: 999, padding: "11px 12px", background: "white", color: "#111827", fontSize: 12, cursor: "pointer" }}>▯　 Continue with Phone Number</button><button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, borderRadius: 999, padding: "11px 12px", background: "white", color: "#111827", fontSize: 12, cursor: "pointer" }}>🌐　 Continue with Google</button><button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, borderRadius: 999, padding: "11px 12px", background: "white", color: "#111827", fontSize: 12, cursor: "pointer" }}>●　 Continue with Apple</button></div><div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0", color: "#8ca0ab", fontSize: 10 }}><span style={{ flex: 1, height: 1, background: "#30383b" }}/>OR<span style={{ flex: 1, height: 1, background: "#30383b" }}/></div><input aria-label="Email address" type="email" placeholder="Email*" style={{ width: "100%", boxSizing: "border-box", padding: "17px 15px", border: 0, borderRadius: 17, outline: "none", background: "#2b3437", color: "white", fontSize: 13 }} /><p style={{ margin: "20px 0 0", color: "#b9c8d2", fontSize: 12 }}>{authMode === "Sign Up" ? "Already have an account?" : "New to TVK Government Explorer?"} <button type="button" onClick={() => { setAuthMode(authMode === "Sign Up" ? "Log In" : "Sign Up"); setAuthSetupNotice(false); }} style={{ border: 0, padding: 0, background: "transparent", color: "#7aa7ff", cursor: "pointer" }}>{authMode === "Sign Up" ? "Log In" : "Sign Up"}</button></p>{authSetupNotice && <p role="status" style={{ color: "#fbbf24", fontSize: 11, lineHeight: 1.5 }}>Authentication provider setup is pending. These options are a visual preview and cannot sign you in yet.</p>}<button type="button" onClick={() => setAuthSetupNotice(true)} style={{ position: "absolute", bottom: 22, left: "15%", width: "70%", border: 0, borderRadius: 999, padding: "14px", background: "#2b3437", color: "#738087", fontWeight: 800, cursor: "pointer" }}>Continue</button></section></div>}
 
       <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
