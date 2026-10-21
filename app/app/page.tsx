@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ReactFlow,
   Background,
@@ -899,6 +899,7 @@ export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Sign Up");
   const [expandedMlaParty, setExpandedMlaParty] = useState<string | null>(null);
@@ -932,6 +933,20 @@ export default function Home() {
     window.addEventListener("storage", loadReviews);
     return () => window.removeEventListener("storage", loadReviews);
   }, [selected.label]);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+
+    const closeMenuOnOutsidePointer = (event: PointerEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+        setAuthSetupNotice(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", closeMenuOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", closeMenuOnOutsidePointer);
+  }, [profileMenuOpen]);
 
   const layoutPositions: Record<Category, Record<string, { x: number; y: number }>> = {
     Government: {
@@ -1187,7 +1202,7 @@ export default function Home() {
           <img src="/tvk-logo.png" alt="TVK Government Explorer logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>TVK Government Explorer</h1>
         </div>
-        <div style={{ position: "relative", flexShrink: 0 }}>
+        <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
             type="button"
             aria-label="Open profile menu"
