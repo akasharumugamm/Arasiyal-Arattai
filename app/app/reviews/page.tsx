@@ -96,7 +96,8 @@ export default function ReviewsPage() {
   const [notice, setNotice] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Sign Up");
+  const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Log In");
+  const [authSetupNotice, setAuthSetupNotice] = useState(false);
 
   useEffect(() => {
     try {
@@ -110,7 +111,8 @@ export default function ReviewsPage() {
     if (requestedProfile && PROFILES.includes(requestedProfile)) setProfile(requestedProfile);
     if (params.get("action") === "write") {
       setShowForm(false);
-      setAuthMode("Sign Up");
+      setAuthMode("Log In");
+      setAuthSetupNotice(false);
       setAuthModalOpen(true);
     } else {
       setShowForm(false);
