@@ -908,7 +908,7 @@ export default function Home() {
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
   const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
-  const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Negative" | "Request">("All");
+  const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Negative" | "Allegation" | "Request">("All");
   const [homeReviewName, setHomeReviewName] = useState("");
   const [homeReviewDateOrder, setHomeReviewDateOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
 
@@ -1172,7 +1172,7 @@ export default function Home() {
   }
 
   const filteredHomeReviews = recentReviews
-    .filter((review) => homeReviewType === "All" || (homeReviewType === "Negative" ? review.type === "Negative" || review.type === "Allegation" : review.type === homeReviewType))
+    .filter((review) => homeReviewType === "All" || (homeReviewType === "Negative" ? review.type === "Negative" : review.type === homeReviewType))
     .filter((review) => !homeReviewName.trim() || review.profile.toLowerCase().includes(homeReviewName.trim().toLowerCase()))
     .sort((a, b) => {
       if (homeReviewDateOrder === "Highest upvotes") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -1338,12 +1338,27 @@ export default function Home() {
             <h3 style={{ fontWeight: 800, fontSize: 14 }}>About</h3>
             <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
           </div>
+          <section aria-label="Feedback boards" style={{ marginTop: 18, border: "1px solid #e5e7eb", borderRadius: 16, padding: 14, background: "#fff", boxShadow: "0 5px 18px #0f172a08" }}>
+            <h3 style={{ margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 850, color: "#172554" }}><span aria-hidden="true">▤</span> Feedback boards</h3>
+            {([
+              { label: "All feedback", type: "All" as const, count: recentReviews.length, dot: "#9ca3af" },
+              { label: "Positive", type: "Positive" as const, count: recentReviews.filter((r) => r.type === "Positive").length, dot: "#45a879" },
+              { label: "Negative", type: "Negative" as const, count: recentReviews.filter((r) => r.type === "Negative").length, dot: "#d96b52" },
+              { label: "Allegations", type: "Allegation" as const, count: recentReviews.filter((r) => r.type === "Allegation").length, dot: "#8b5cf6" },
+              { label: "Requests", type: "Request" as const, count: recentReviews.filter((r) => r.type === "Request").length, dot: "#eabf45" },
+            ]).map((item) => (
+              <button key={item.type} type="button" onClick={() => { setHomeReviewType(item.type); document.getElementById("community-feedback")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 9px", marginTop: 4, border: homeReviewType === item.type ? "1px solid #e5e7eb" : "1px solid transparent", borderRadius: 10, background: homeReviewType === item.type ? "#f8fafc" : "white", color: "#475569", textAlign: "left", cursor: "pointer", fontSize: 12 }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 9 }}><span style={{ width: 7, height: 7, flexShrink: 0, borderRadius: 99, background: item.dot }} />{item.label}</span>
+                <span style={{ minWidth: 30, textAlign: "center", borderRadius: 8, background: "#f3f4f6", color: "#374151", padding: "3px 7px", fontSize: 11, fontWeight: 800 }}>{item.count}</span>
+              </button>
+            ))}
+          </section>
         </aside>
       </div>
 
       {authModalOpen && <div role="presentation" onClick={() => setAuthModalOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 1000, display: "grid", placeItems: "center", padding: 20, background: "#0f172a99", backdropFilter: "blur(4px)", overflowY: "auto" }}><section role="dialog" aria-modal="true" aria-label={authMode === "Log In" ? "Log in" : "Create an account"} onClick={(event) => event.stopPropagation()} style={{ position: "relative", width: "min(100%, 430px)", boxSizing: "border-box", padding: "34px 32px 28px", background: "white", borderRadius: 8, boxShadow: "0 24px 80px #0005" }}><button type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)} style={{ position: "absolute", top: 10, right: 10, width: 30, height: 30, border: 0, borderRadius: 999, background: "#f1f5f9", color: "#334155", fontSize: 22, cursor: "pointer" }}>×</button><h2 style={{ margin: "0 0 24px", fontSize: 24, fontWeight: 850, color: "#111827" }}>{authMode === "Log In" ? "Login to your account" : "Create an account"}</h2><form onSubmit={(event) => { event.preventDefault(); setAuthSetupNotice(true); }}><label style={{ display: "block", marginBottom: 7, fontSize: 13, color: "#64748b" }}>Email</label><input required type="email" aria-label="Email" placeholder="Enter your email" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "2px solid #bfdbfe", borderRadius: 7, marginBottom: 17, color: "#111827", background: "white" }}/><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}><label style={{ fontSize: 13, color: "#64748b" }}>Password</label>{authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, background: "transparent", color: "#0784f9", fontSize: 12, cursor: "pointer" }}>Forgot?</button>}</div><input required type="password" aria-label="Password" placeholder="Enter your password" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "1px solid #d1d5db", borderRadius: 7, marginBottom: 22, color: "#111827", background: "white" }}/><button type="submit" style={{ width: "100%", border: 0, borderRadius: 7, padding: "13px", background: "#0784f9", color: "white", fontWeight: 800, cursor: "pointer" }}>{authMode === "Log In" ? "Login now" : "Create account"}</button></form><button type="button" onClick={() => setAuthSetupNotice(true)} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 7, padding: "13px", background: "#e0efff", color: "#0784f9", fontWeight: 800, cursor: "pointer" }}>🌐　Continue with Google</button><p style={{ margin: "20px 0 0", textAlign: "center", color: "#9ca3af", fontSize: 12 }}>{authMode === "Log In" ? "Don’t have an account?" : "Already have an account?"} <button type="button" onClick={() => { setAuthMode(authMode === "Log In" ? "Sign Up" : "Log In"); setAuthSetupNotice(false); }} style={{ border: 0, background: "transparent", color: "#0784f9", cursor: "pointer" }}>{authMode === "Log In" ? "Sign up" : "Log in"}</button></p>{authSetupNotice && <p role="status" style={{ marginTop: 14, padding: 10, borderRadius: 8, background: "#fff7ed", color: "#9a3412", fontSize: 12 }}>Authentication is not connected yet. Amazon Cognito setup is required before you can continue.</p>}</section></div>}
 
-      <section style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+      <section id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
@@ -1380,16 +1395,19 @@ export default function Home() {
                   ? { color: "#991b1b", background: "#fee2e2" }
                   : { color: "#1d4ed8", background: "#dbeafe" };
               return (
-                <article key={review.id} style={{ border: "1px solid #e2e8f0", borderRadius: 12, padding: 15, minWidth: 0, background: "white" }}>
+                <article key={review.id} style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 11, fontWeight: 900, color: style.color, background: style.background, borderRadius: 999, padding: "5px 9px" }}>{review.type}</span>
-                    <span style={{ color: "#64748b", fontSize: 11 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    <span style={{ fontSize: 10, fontWeight: 850, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{review.type}</span>
+                    <span style={{ color: "#9ca3af", fontSize: 11, whiteSpace: "nowrap" }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
                   </div>
-                  <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 900 }}>{review.title}</h3>
-                  <p style={{ margin: "0 0 8px", color: "#475569", fontSize: 13, lineHeight: 1.6, overflowWrap: "anywhere" }}>{review.body}</p>
-                  {review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", margin: "10px 0", maxWidth: "100%", maxHeight: 360, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} />}
-                  <p style={{ margin: 0, color: "#64748b", fontSize: 11 }}>By <strong>{review.name}</strong> · {review.profile}</p>
-                  <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginTop: 13, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
+                  <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 850, color: "#202124" }}>{review.title}</h3>
+                  <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, lineHeight: 1.65, overflowWrap: "anywhere" }}>{review.body}</p>
+                  {review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", margin: "10px 0 13px", maxWidth: "100%", maxHeight: 360, borderRadius: 11, border: "1px solid #e5e7eb", objectFit: "contain" }} />}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: 10, paddingTop: 12, borderTop: "1px solid #f0f1f3" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+                      <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 900 }}>{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
+                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 800 }}>{review.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, overflowWrap: "anywhere" }}>{review.profile}</p></div>
+                    </div>
                     <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
                       <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "up" ? "#dbeafe" : "transparent", color: homeVotes[review.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{review.votes?.up ?? 0}</span></button>
                       <button type="button" aria-label="Downvote review" title="Downvote" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "down" ? "#ffedd5" : "transparent", color: homeVotes[review.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{review.votes?.down ?? 0}</span></button>
