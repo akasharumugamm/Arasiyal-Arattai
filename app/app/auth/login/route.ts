@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
   }
 
   const response = NextResponse.redirect(authorizeUrl);
-  const isHttps = request.headers.get("x-forwarded-proto") === "https:" ||
+  const isHttps = ["https", "https:"].includes(request.headers.get("x-forwarded-proto") ?? "") ||
     request.nextUrl.protocol === "https:";
   response.cookies.set("tge_oauth_state", state, {
     httpOnly: true,

@@ -97,14 +97,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      {showAvatar && (data.partyLogoUrl && !imageFailed ? (
-        <img
-          src={data.partyLogoUrl}
-          alt={data.mlaParty ? `${data.mlaParty} party logo` : `${data.label} party logo`}
-          onError={() => setImageFailed(true)}
-          style={{ display: "block", width: 88, height: 88, objectFit: "contain", padding: 5, boxSizing: "border-box", borderRadius: 16, margin: "0 auto 10px", border: "1px solid #e2e8f0", background: "white" }}
-        />
-      ) : data.photoUrl && !imageFailed ? (
+      {showAvatar && (data.photoUrl && !imageFailed ? (
         ["governor", "chief-justice"].includes(id) ? (
           <div style={{ width: 88, height: 88, boxSizing: "border-box", overflow: "hidden", borderRadius: 20, border: "4px solid #e5e7eb", margin: "0 auto 10px", background: "#f1f5f9" }}>
             <img
@@ -132,6 +125,13 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
             }}
           />
         )
+      ) : data.partyLogoUrl && !imageFailed ? (
+        <img
+          src={data.partyLogoUrl}
+          alt={data.mlaParty ? `${data.mlaParty} party logo` : `${data.label} party logo`}
+          onError={() => setImageFailed(true)}
+          style={{ display: "block", width: 88, height: 88, objectFit: "contain", padding: 5, boxSizing: "border-box", borderRadius: 16, margin: "0 auto 10px", border: "1px solid #e2e8f0", background: "white" }}
+        />
       ) : showAvatar ? (
         <div
           aria-label={data.label + " profile image unavailable"}
@@ -895,6 +895,53 @@ const categoryDescriptions: Record<Category, string> = {
   "Schemes & Projects": "Explore schemes, projects and documented outcomes.",
 };
 
+type ReviewSortOrder = "Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes";
+
+function ReviewSortMenu({
+  value,
+  onChange,
+}: {
+  value: ReviewSortOrder;
+  onChange: (value: ReviewSortOrder) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const options: ReviewSortOrder[] = ["Newest first", "Oldest first", "Highest upvotes", "Highest downvotes"];
+
+  return (
+    <div className="review-sort-menu" style={{ position: "relative", fontFamily: "Inter, sans-serif" }}>
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((isOpen) => !isOpen)}
+        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, minWidth: 148, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 400, background: "white", color: "#475569", cursor: "pointer" }}
+      >
+        <span>{value}</span>
+        <span aria-hidden="true" style={{ fontSize: 10 }}>⌄</span>
+      </button>
+      {open && (
+        <div role="listbox" aria-label="Sort reviews" style={{ position: "absolute", zIndex: 20, top: "calc(100% + 4px)", right: 0, minWidth: 180, padding: 4, border: "1px solid #cbd5e1", borderRadius: 9, background: "white", boxShadow: "0 8px 20px #0f172a24" }}>
+          {options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              role="option"
+              aria-selected={value === option}
+              onClick={() => {
+                onChange(option);
+                setOpen(false);
+              }}
+              style={{ display: "block", width: "100%", border: 0, borderRadius: 6, padding: "7px 8px", fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 400, textAlign: "left", background: value === option ? "#e2e8f0" : "white", color: "#475569", cursor: "pointer" }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -1040,6 +1087,7 @@ export default function Home() {
     email: string;
     status: string;
     source: string;
+    photoUrl?: string;
   }>;
   const mlaParties = useMemo(
     () => [...new Set(mlaRecords.map((member) => member.party || "Vacant"))].sort((a, b) => {
@@ -1073,12 +1121,13 @@ export default function Home() {
             role: `${member.constituency} · ${member.party || "No party listed"}`,
             description: vacant
               ? `Constituency: ${member.constituency}. The Assembly directory marks this seat as vacant. Verify current vacancy status before publication. Source: ${member.source}`
-              : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}. This dataset transcribes the Assembly directory; verify changes against the official source. Source: ${member.source}`,
+              : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}.`,
             isPerson: !vacant,
             mlaNumber: member.number,
             mlaParty: member.party,
             mlaEmail: member.email,
             mlaStatus: member.status,
+            photoUrl: member.photoUrl,
             partyLogoUrl: getPartyLogoPath(member.party),
           },
         });
@@ -1127,12 +1176,13 @@ export default function Home() {
             role: `${member.constituency} · ${member.party || "No party listed"}`,
             description: vacant
               ? `Constituency: ${member.constituency}. The Assembly directory marks this seat as vacant. Verify current vacancy status before publication. Source: ${member.source}`
-              : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}. This dataset transcribes the Assembly directory; verify changes against the official source. Source: ${member.source}`,
+              : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}.`,
             isPerson: !vacant,
             mlaNumber: member.number,
             mlaParty: member.party,
             mlaEmail: member.email,
             mlaStatus: member.status,
+            photoUrl: member.photoUrl,
             partyLogoUrl: getPartyLogoPath(member.party),
           },
         });
@@ -1415,9 +1465,7 @@ export default function Home() {
             ))}
           </div>
           <input aria-label="Filter reviews by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name" style={{ flex: "1 1 160px", minWidth: 140, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", font: "inherit", fontSize: 12, background: "white", color: "#0f172a" }} />
-          <select aria-label="Sort reviews by date" value={homeReviewDateOrder} onChange={(e) => setHomeReviewDateOrder(e.target.value as "Newest first" | "Oldest first")} style={{ border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontSize: 12, background: "white", color: "#334155" }}>
-            <option>Newest first</option><option>Oldest first</option><option>Highest upvotes</option><option>Highest downvotes</option>
-          </select>
+          <ReviewSortMenu value={homeReviewDateOrder} onChange={setHomeReviewDateOrder} />
         </div>
         {recentReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center", border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>

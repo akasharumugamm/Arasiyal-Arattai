@@ -22,31 +22,74 @@ const typeStyles: Record<Review["type"], { color: string; background: string }> 
   Allegation: { color: "#1d4ed8", background: "#dbeafe" },
   Request: { color: "#1d4ed8", background: "#dbeafe" },
 };
+const VOTES_KEY = "tn-government-explorer-review-votes-v1";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState<Review[]>([]);
+  const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
 
   useEffect(() => {
     const loadProfile = async () => {
-      fetch("/api/auth/me", { cache: "no-store" })
-        .then(async (response) => {
+      try {
+        const response = await fetch("/api/auth/me", { cache: "no-store" });
         if (!response.ok) throw new Error("not_authenticated");
         const result = (await response.json()) as { user: AuthUser };
         setUser(result.user);
-        })
-        .catch(() => setUser(null));
+      } catch {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
 
-      await Promise.resolve();
       try {
         const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
         setPosts(saved ? JSON.parse(saved) as Review[] : []);
+        const savedVotes = localStorage.getItem(VOTES_KEY);
+        setVotes(savedVotes ? JSON.parse(savedVotes) as Record<string, "up" | "down"> : {});
       } catch {
         setPosts([]);
+        setVotes({});
       }
     };
     void loadProfile();
   }, []);
+
+  function votePost(id: string, direction: "up" | "down") {
+    const previous = votes[id];
+    const nextDirection = previous === direction ? undefined : direction;
+    const nextVotes = { ...votes };
+    if (nextDirection) nextVotes[id] = nextDirection;
+    else delete nextVotes[id];
+
+    const updatedPosts = posts.map((post) => {
+      if (post.id !== id) return post;
+      const counts = { up: post.votes?.up ?? 0, down: post.votes?.down ?? 0 };
+      if (previous === "up") counts.up = Math.max(0, counts.up - 1);
+      if (previous === "down") counts.down = Math.max(0, counts.down - 1);
+      if (nextDirection === "up") counts.up += 1;
+      if (nextDirection === "down") counts.down += 1;
+      return { ...post, votes: counts };
+    });
+
+    setVotes(nextVotes);
+    setPosts(updatedPosts);
+    try {
+      localStorage.setItem(VOTES_KEY, JSON.stringify(nextVotes));
+      localStorage.setItem("tn-government-explorer-reviews-v1", JSON.stringify(updatedPosts));
+    } catch {
+      // Keep the current UI state if browser storage is unavailable.
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6 text-slate-900">
+        <p className="text-sm text-slate-600">Loading your profile...</p>
+      </main>
+    );
+  }
 
   if (!user) {
     return (
@@ -95,8 +138,8 @@ export default function ProfilePage() {
                       <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 700 }}>{post.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, overflowWrap: "anywhere" }}>{post.profile}</p></div>
                     </div>
                     <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, color: "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700 }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{post.votes?.up ?? 0}</span></span>
-                      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, color: "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700 }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{post.votes?.down ?? 0}</span></span>
+                      <button type="button" aria-label="Upvote post" title="Upvote" aria-pressed={votes[post.id] === "up"} onClick={() => votePost(post.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[post.id] === "up" ? "#dbeafe" : "transparent", color: votes[post.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{post.votes?.up ?? 0}</span></button>
+                      <button type="button" aria-label="Downvote post" title="Downvote" aria-pressed={votes[post.id] === "down"} onClick={() => votePost(post.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[post.id] === "down" ? "#ffedd5" : "transparent", color: votes[post.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{post.votes?.down ?? 0}</span></button>
                     </div>
                   </div>
                 </article>

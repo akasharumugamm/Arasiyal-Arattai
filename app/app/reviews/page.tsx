@@ -99,11 +99,13 @@ export default function ReviewsPage() {
   const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Log In");
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me", { cache: "no-store" })
       .then((response) => setIsAuthenticated(response.ok))
-      .catch(() => setIsAuthenticated(false));
+      .catch(() => setIsAuthenticated(false))
+      .finally(() => setAuthChecked(true));
   }, []);
 
   useEffect(() => {
@@ -116,15 +118,15 @@ export default function ReviewsPage() {
     const params = new URLSearchParams(window.location.search);
     const requestedProfile = params.get("profile");
     if (requestedProfile && PROFILES.includes(requestedProfile)) setProfile(requestedProfile);
-    if (params.get("action") === "write") {
+    if (authChecked && params.get("action") === "write" && isAuthenticated) {
+      setShowForm(true);
+    } else if (authChecked && params.get("action") === "write") {
       setShowForm(false);
       setAuthMode("Log In");
       setAuthSetupNotice(false);
       setAuthModalOpen(true);
-    } else {
-      setShowForm(false);
     }
-  }, []);
+  }, [authChecked, isAuthenticated]);
 
   const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
   const visibleReviews = useMemo(() => profileReviews
@@ -207,7 +209,16 @@ export default function ReviewsPage() {
             <h1 style={{ fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.1, letterSpacing: -1.5, margin: "9px 0", fontWeight: 900 }}>Public Feedback</h1>
             <p style={{ maxWidth: 650, color: "#64748b", lineHeight: 1.65, margin: 0 }}>Share a public assessment, raise a concern, or request action about a government representative. Keep comments specific, respectful and evidence-based.</p>
           </div>
-          <button onClick={() => { setShowForm(false); setAuthMode("Sign Up"); setAuthModalOpen(true); }} style={{ border: 0, borderRadius: 11, background: "#1d4ed8", color: "white", padding: "13px 18px", fontWeight: 700, cursor: "pointer" }}>{showForm ? "Close form" : "✍ Share feedback"}</button>
+          <button onClick={() => {
+            if (showForm) {
+              setShowForm(false);
+            } else if (isAuthenticated) {
+              setShowForm(true);
+            } else {
+              setAuthMode("Sign Up");
+              setAuthModalOpen(true);
+            }
+          }} style={{ border: 0, borderRadius: 11, background: "#1d4ed8", color: "white", padding: "13px 18px", fontWeight: 700, cursor: "pointer" }}>{showForm ? "Close form" : "✍ Share feedback"}</button>
         </header>
 
         <section style={{ ...panel, marginBottom: 20 }}>

@@ -8,8 +8,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-poppins), sans-serif;
-  --font-heading: var(--font-outfit), sans-serif;
+  --font-sans: Inter, sans-serif;
+  --font-heading: Inter, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -27,7 +27,8 @@ html {
 }
 
 body {
-  font-family: var(--font-poppins), Poppins, sans-serif;
+  font-family: Inter, sans-serif;
+  font-weight: 400;
   margin: 0;
   min-height: 100vh;
   background-color: #f8fafc !important;
@@ -36,9 +37,20 @@ body {
 }
 
 body :is(h1, h2, h3, h4, h5, h6) {
-  font-family: var(--font-outfit) !important;
+  font-family: Inter, sans-serif !important;
+  font-weight: 700 !important;
 }
 
 button {
   font-weight: 700 !important;
+}
+
+.review-sort-menu button {
+  font-weight: 400 !important;
+}
+
+select,
+option {
+  font-family: Inter, sans-serif !important;
+  font-weight: 400 !important;
 }

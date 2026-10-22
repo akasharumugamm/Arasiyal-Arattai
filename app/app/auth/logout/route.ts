@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   logoutUrl.searchParams.set("logout_uri", signoutUrl);
 
   const response = NextResponse.redirect(logoutUrl);
-  const isHttps = request.headers.get("x-forwarded-proto") === "https:" ||
+  const isHttps = ["https", "https:"].includes(request.headers.get("x-forwarded-proto") ?? "") ||
     request.nextUrl.protocol === "https:";
   for (const name of [
     "tge_access_token",

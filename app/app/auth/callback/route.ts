@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
     const response = NextResponse.redirect(new URL("/", applicationOrigin));
     const cookieOptions = {
       httpOnly: true,
-      secure: request.headers.get("x-forwarded-proto") === "https:" ||
+      secure: ["https", "https:"].includes(request.headers.get("x-forwarded-proto") ?? "") ||
         request.nextUrl.protocol === "https:",
       sameSite: "lax" as const,
       path: "/",
