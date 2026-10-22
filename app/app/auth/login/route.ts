@@ -32,14 +32,16 @@ export async function GET(request: NextRequest) {
   authorizeUrl.searchParams.set("redirect_uri", callbackUrl);
   authorizeUrl.searchParams.set("state", state);
   // Only allow explicitly supported identity providers from the app.
-  if (request.nextUrl.searchParams.get("provider") === "Google") {
+  if (request.nextUrl.searchParams.get("provider")?.toLowerCase() === "google") {
     authorizeUrl.searchParams.set("identity_provider", "Google");
   }
 
   const response = NextResponse.redirect(authorizeUrl);
+  const isHttps = request.headers.get("x-forwarded-proto") === "https:" ||
+    request.nextUrl.protocol === "https:";
   response.cookies.set("tge_oauth_state", state, {
     httpOnly: true,
-    secure: request.nextUrl.protocol === "https:",
+    secure: isHttps,
     sameSite: "lax",
     path: "/",
     maxAge: 10 * 60,

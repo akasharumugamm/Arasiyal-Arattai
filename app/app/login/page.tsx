@@ -21,8 +21,15 @@ export default function LoginPage() {
           Continue with Cognito
         </a>
 
+        <a
+          href="/auth/login?provider=Google"
+          className="mt-3 flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Continue with Google
+        </a>
+
         <p className="mt-4 text-xs leading-5 text-slate-500">
-          You will be redirected to Amazon Cognito to sign in or create an account.
+          You will be redirected to Amazon Cognito or Google to sign in or create an account.
         </p>
 
         <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5 text-sm">

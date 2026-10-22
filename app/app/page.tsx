@@ -902,6 +902,7 @@ export default function Home() {
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Sign Up");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [expandedMlaParty, setExpandedMlaParty] = useState<string | null>(null);
   const [mlaSearch, setMlaSearch] = useState("");
   const [mlaPartyFilter, setMlaPartyFilter] = useState("All parties");
@@ -912,6 +913,24 @@ export default function Home() {
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Negative" | "Allegation" | "Request">("All");
   const [homeReviewName, setHomeReviewName] = useState("");
   const [homeReviewDateOrder, setHomeReviewDateOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
+
+  useEffect(() => {
+    let cancelled = false;
+    const checkAuthentication = async () => {
+      try {
+        const response = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!cancelled) setIsAuthenticated(response.ok);
+      } catch {
+        if (!cancelled) setIsAuthenticated(false);
+      }
+    };
+    void checkAuthentication();
+    const retryTimer = window.setTimeout(() => void checkAuthentication(), 1000);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(retryTimer);
+    };
+  }, []);
 
   useEffect(() => {
     const loadReviews = () => {
@@ -1159,11 +1178,12 @@ export default function Home() {
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
   function voteHomeReview(id: string, direction: "up" | "down") {
-    // Authentication is not wired yet: block voting and direct the visitor to the account menu.
+    if (!isAuthenticated) {
+      setAuthMode("Log In");
+      setAuthModalOpen(true);
+      return;
+    }
     setProfileMenuOpen(false);
-    setAuthMode("Log In");
-    setAuthModalOpen(true);
-    return;
     const previous = homeVotes[id];
     const nextDirection = previous === direction ? undefined : direction;
     const nextVotes = { ...homeVotes };
@@ -1208,7 +1228,13 @@ export default function Home() {
             aria-label="Open profile menu"
             aria-haspopup="menu"
             aria-expanded={profileMenuOpen}
-            onClick={() => { setProfileMenuOpen((open) => !open); setAuthSetupNotice(false); }}
+            onClick={() => {
+              setProfileMenuOpen((open) => !open);
+              setAuthSetupNotice(false);
+              fetch("/api/auth/me", { cache: "no-store" })
+                .then((response) => setIsAuthenticated(response.ok))
+                .catch(() => setIsAuthenticated(false));
+            }}
             style={{ width: 44, height: 44, display: "grid", placeItems: "center", borderRadius: 999, border: "1px solid #cbd5e1", background: "white", color: "#172554", cursor: "pointer", boxShadow: "0 2px 6px #0f172a0a" }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1220,10 +1246,9 @@ export default function Home() {
             <div role="menu" aria-label="Profile menu" style={{ position: "absolute", zIndex: 100, top: 52, right: 0, width: 230, padding: 10, border: "1px solid #dbe3ef", borderRadius: 14, background: "white", boxShadow: "0 12px 32px #0f172a1c" }}>
               <div style={{ padding: "8px 9px 10px", borderBottom: "1px solid #e2e8f0", marginBottom: 8 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#172554" }}>Your account</div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>Sign in to share feedback and vote.</div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{isAuthenticated ? "Signed in with Cognito." : "Sign in to share feedback and vote."}</div>
               </div>
-              <button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Sign in</button>
-              <button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Create account</button>
+              {isAuthenticated ? <><a href="/profile" role="menuitem" style={{ display: "block", borderRadius: 9, padding: "10px 9px", color: "#172554", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>View profile</a><a href="/auth/logout" role="menuitem" style={{ display: "block", borderRadius: 9, padding: "10px 9px", color: "#172554", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>Sign out</a></> : <><button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Sign in</button><button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Create account</button></>}
               {authSetupNotice && <p role="status" style={{ margin: "7px 5px 4px", padding: 9, borderRadius: 8, background: "#eff6ff", color: "#1d4ed8", fontSize: 11, lineHeight: 1.5 }}>Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
             </div>
           )}

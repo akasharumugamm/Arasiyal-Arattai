@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
+  const configuredCallbackUrl = process.env.COGNITO_CALLBACK_URL;
+  let applicationOrigin = request.nextUrl.origin;
+  if (configuredCallbackUrl) {
+    try {
+      applicationOrigin = new URL(configuredCallbackUrl).origin;
+    } catch {
+      // The configuration error below will provide the actionable message.
+    }
+  } else {
+    const forwardedHost = request.headers.get("x-forwarded-host");
+    const forwardedProto = request.headers.get("x-forwarded-proto");
+    if (forwardedHost && forwardedProto) {
+      applicationOrigin = `${forwardedProto}://${forwardedHost}`;
+    }
+  }
   const code = searchParams.get("code");
   const returnedState = searchParams.get("state");
   const expectedState = request.cookies.get("tge_oauth_state")?.value;
@@ -9,7 +24,7 @@ export async function GET(request: NextRequest) {
 
   const redirectWithError = (reason: string) => {
     const response = NextResponse.redirect(
-      new URL(`/?auth_error=${encodeURIComponent(reason)}`, origin),
+      new URL(`/?auth_error=${encodeURIComponent(reason)}`, applicationOrigin),
     );
     response.cookies.delete("tge_oauth_state");
     return response;
@@ -81,10 +96,11 @@ export async function GET(request: NextRequest) {
       return redirectWithError("invalid_token_response");
     }
 
-    const response = NextResponse.redirect(new URL("/", origin));
+    const response = NextResponse.redirect(new URL("/", applicationOrigin));
     const cookieOptions = {
       httpOnly: true,
-      secure: request.nextUrl.protocol === "https:",
+      secure: request.headers.get("x-forwarded-proto") === "https:" ||
+        request.nextUrl.protocol === "https:",
       sameSite: "lax" as const,
       path: "/",
     };
@@ -108,7 +124,11 @@ export async function GET(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Cognito callback failed", error);
+    console.error("Cognito callback failed", {
+      errorName: error instanceof Error ? error.name : "UnknownError",
+      errorMessage: error instanceof Error ? error.message : "Unknown error",
+      callbackPath: request.nextUrl.pathname,
+    });
     return redirectWithError("callback");
   }
 }

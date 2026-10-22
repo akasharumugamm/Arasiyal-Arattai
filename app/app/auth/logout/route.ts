@@ -17,6 +17,8 @@ export async function GET(request: NextRequest) {
   logoutUrl.searchParams.set("logout_uri", signoutUrl);
 
   const response = NextResponse.redirect(logoutUrl);
+  const isHttps = request.headers.get("x-forwarded-proto") === "https:" ||
+    request.nextUrl.protocol === "https:";
   for (const name of [
     "tge_access_token",
     "tge_id_token",
@@ -25,7 +27,7 @@ export async function GET(request: NextRequest) {
   ]) {
     response.cookies.set(name, "", {
       httpOnly: true,
-      secure: request.nextUrl.protocol === "https:",
+      secure: isHttps,
       sameSite: "lax",
       path: "/",
       maxAge: 0,
