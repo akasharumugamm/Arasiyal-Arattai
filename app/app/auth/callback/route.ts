@@ -15,10 +15,18 @@ export async function GET(request: NextRequest) {
     return response;
   };
 
-  // Prevent login CSRF by checking the state generated before redirecting to Cognito.
+  // Log only presence/match metadata; never log OAuth state, codes, tokens, or cookies.
   if (!expectedState || !returnedState || returnedState !== expectedState) {
+    console.warn("Cognito callback state validation failed", {
+      stateCookiePresent: Boolean(expectedState),
+      returnedStatePresent: Boolean(returnedState),
+      stateMatches: Boolean(expectedState && returnedState && returnedState === expectedState),
+      callbackPath: request.nextUrl.pathname,
+    });
     return redirectWithError("invalid_state");
   }
+
+  // Prevent login CSRF by checking the state generated before redirecting to Cognito.
 
   if (oauthError) {
     return redirectWithError("oauth");
