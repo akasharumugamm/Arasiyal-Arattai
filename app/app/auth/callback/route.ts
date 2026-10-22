@@ -1,17 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 
-
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
+  const returnedState = searchParams.get("state");
+  const expectedState = request.cookies.get("tge_oauth_state")?.value;
   const oauthError = searchParams.get("error");
 
+  const redirectWithError = (reason: string) => {
+    const response = NextResponse.redirect(
+      new URL(`/?auth_error=${encodeURIComponent(reason)}`, origin),
+    );
+    response.cookies.delete("tge_oauth_state");
+    return response;
+  };
+
+  // Prevent login CSRF by checking the state generated before redirecting to Cognito.
+  if (!expectedState || !returnedState || returnedState !== expectedState) {
+    return redirectWithError("invalid_state");
+  }
+
   if (oauthError) {
-    return NextResponse.redirect(new URL("/?auth_error=oauth", origin));
+    return redirectWithError("oauth");
   }
 
   if (!code) {
-    return NextResponse.redirect(new URL("/?auth_error=missing_code", origin));
+    return redirectWithError("missing_code");
   }
 
   const domain = process.env.COGNITO_DOMAIN?.replace(/\/$/, "");
@@ -45,7 +59,7 @@ export async function GET(request: NextRequest) {
 
     if (!tokenResponse.ok) {
       console.error("Cognito token exchange failed with status", tokenResponse.status);
-      return NextResponse.redirect(new URL("/?auth_error=token_exchange", origin));
+      return redirectWithError("token_exchange");
     }
 
     const tokens = (await tokenResponse.json()) as {
@@ -56,17 +70,18 @@ export async function GET(request: NextRequest) {
     };
 
     if (!tokens.access_token || !tokens.id_token) {
-      return NextResponse.redirect(new URL("/?auth_error=invalid_token_response", origin));
+      return redirectWithError("invalid_token_response");
     }
 
     const response = NextResponse.redirect(new URL("/", origin));
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: request.nextUrl.protocol === "https:",
       sameSite: "lax" as const,
       path: "/",
     };
 
+    response.cookies.delete("tge_oauth_state");
     response.cookies.set("tge_access_token", tokens.access_token, {
       ...cookieOptions,
       maxAge: Math.max(60, tokens.expires_in ?? 3600),
@@ -86,6 +101,6 @@ export async function GET(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("Cognito callback failed", error);
-    return NextResponse.redirect(new URL("/?auth_error=callback", origin));
+    return redirectWithError("callback");
   }
 }
