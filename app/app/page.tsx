@@ -154,7 +154,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
           {initials || "TN"}
         </div>
       ) : null)}
-      <div style={{ fontWeight: 750, lineHeight: 1.35, overflowWrap: "anywhere" }}>{data.label}</div>
+      <div style={{ fontWeight: 850, lineHeight: 1.35, overflowWrap: "anywhere" }}>{data.label}</div>
       <div style={{ fontSize: 12, lineHeight: 1.45, marginTop: 6, color: "#64748b" }}>
         {data.role}
       </div>
@@ -173,13 +173,13 @@ function RatingGauge({ value }: { value: number | null }) {
     <div style={{ marginTop: 12, padding: 14, borderRadius: 12, border: "1px solid #e2e8f0", background: "white" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
         <div>
-          <div style={{ fontSize: 11, color: "#64748b", fontWeight: 750, letterSpacing: 0.4, textTransform: "uppercase" }}>Public sentiment</div>
+          <div style={{ fontSize: 11, color: "#64748b", fontWeight: 700, letterSpacing: 0.4, textTransform: "uppercase" }}>Public sentiment</div>
           <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 3 }}>
             <span style={{ fontSize: 30, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>{score === null ? "—" : score}</span>
             <span style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>/ 100</span>
           </div>
         </div>
-        <span style={{ padding: "6px 9px", borderRadius: 999, background: sentimentBg, color: sentimentColor, fontSize: 10, fontWeight: 850, whiteSpace: "nowrap" }}>{sentiment}</span>
+        <span style={{ padding: "6px 9px", borderRadius: 999, background: sentimentBg, color: sentimentColor, fontSize: 10, fontWeight: 700, whiteSpace: "nowrap" }}>{sentiment}</span>
       </div>
       <div role="progressbar" aria-label="Positive public sentiment score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? 0} style={{ height: 8, borderRadius: 999, overflow: "hidden", background: "#e2e8f0", marginTop: 12 }}>
         <div style={{ width: `${score ?? 0}%`, height: "100%", borderRadius: 999, background: score === null ? "#cbd5e1" : score >= 70 ? "#16a34a" : score >= 45 ? "#f59e0b" : "#ef4444", transition: "width 220ms ease" }} />
@@ -938,7 +938,7 @@ export default function Home() {
     if (!profileMenuOpen) return;
 
     const closeMenuOnOutsidePointer = (event: PointerEvent) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+      if (profileMenuRef.current && event.target instanceof globalThis.Node && !profileMenuRef.current.contains(event.target)) {
         setProfileMenuOpen(false);
         setAuthSetupNotice(false);
       }
@@ -1219,11 +1219,11 @@ export default function Home() {
           {profileMenuOpen && (
             <div role="menu" aria-label="Profile menu" style={{ position: "absolute", zIndex: 100, top: 52, right: 0, width: 230, padding: 10, border: "1px solid #dbe3ef", borderRadius: 14, background: "white", boxShadow: "0 12px 32px #0f172a1c" }}>
               <div style={{ padding: "8px 9px 10px", borderBottom: "1px solid #e2e8f0", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 850, color: "#172554" }}>Your account</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#172554" }}>Your account</div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>Sign in to share feedback and vote.</div>
               </div>
-              <button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Sign in</button>
-              <button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 750, cursor: "pointer" }}>Create account</button>
+              <button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Sign in</button>
+              <button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Create account</button>
               {authSetupNotice && <p role="status" style={{ margin: "7px 5px 4px", padding: 9, borderRadius: 8, background: "#eff6ff", color: "#1d4ed8", fontSize: 11, lineHeight: 1.5 }}>Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
             </div>
           )}
@@ -1330,7 +1330,7 @@ export default function Home() {
               <div style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, background: "#eff6ff", display: "grid", placeItems: "center", color: "#2563eb", fontSize: 28, fontWeight: 800 }}>{selected.label.slice(0, 1)}</div>
             )}
             <div style={{ minWidth: 0 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 800, lineHeight: 1.25 }}>{selected.label}</h2>
+              <h2 style={{ fontSize: 20, fontWeight: 850, lineHeight: 1.25 }}>{selected.label}</h2>
               <p style={{ color: "#64748b", fontSize: 13, marginTop: 5 }}>{selected.description?.startsWith("Minister for ") ? "Minister" : selected.role}</p>
               {isPerson && (selected.xHandle ? (
                 <a href={selected.xHandle.startsWith("http") ? selected.xHandle : `https://x.com/${selected.xHandle.replace(/^@/, "")}`} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, color: "#2563eb", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>View 𝕏 profile ↗</a>
@@ -1341,22 +1341,21 @@ export default function Home() {
             <div style={{ marginTop: 18, padding: 14, borderRadius: 12, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
-                <span style={{ fontSize: 11, color: "#64748b" }}>Average</span>
               </div>
               <RatingGauge value={reviewScore} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 11, lineHeight: 1.3, fontWeight: 850, boxShadow: "0 2px 5px #1d4ed822" }}><span aria-hidden="true">＋</span> Share feedback</a>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#f8fafc", color: "#172554", fontSize: 11, lineHeight: 1.3, fontWeight: 850 }}><span aria-hidden="true">☰</span> Browse feedback</a>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 11, lineHeight: 1.3, fontWeight: 700, boxShadow: "0 2px 5px #1d4ed822" }}><span aria-hidden="true">＋</span> Share feedback</a>
+                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#f8fafc", color: "#172554", fontSize: 11, lineHeight: 1.3, fontWeight: 700 }}><span aria-hidden="true">☰</span> Browse feedback</a>
               </div>
             </div>
           )}
           <div style={{ marginTop: 18 }}>
-            <h3 style={{ fontWeight: 800, fontSize: 14 }}>About</h3>
+            <h3 style={{ fontWeight: 700, fontSize: 14 }}>About</h3>
             <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
           </div>
           </aside>
           <section aria-label="Feedback Overview" style={{ boxSizing: "border-box", width: "100%", border: "1px solid #e5e7eb", borderRadius: 16, padding: 14, background: "#fff", boxShadow: "0 5px 18px #0f172a08" }}>
-            <h3 style={{ margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 850, color: "#172554" }}><span aria-hidden="true">▤</span> Feedback Overview</h3>
+            <h3 style={{ margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 700, color: "#172554" }}><span aria-hidden="true">▤</span> Feedback Overview</h3>
             {([
               { label: "All feedback", type: "All" as const, count: recentReviews.length, dot: "#9ca3af" },
               { label: "Positive", type: "Positive" as const, count: recentReviews.filter((r) => r.type === "Positive").length, dot: "#45a879" },
@@ -1366,28 +1365,28 @@ export default function Home() {
             ]).map((item) => (
               <button key={item.type} type="button" onClick={() => { setHomeReviewType(item.type); document.getElementById("community-feedback")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 9px", marginTop: 4, border: homeReviewType === item.type ? "1px solid #e5e7eb" : "1px solid transparent", borderRadius: 10, background: homeReviewType === item.type ? "#f8fafc" : "white", color: "#475569", textAlign: "left", cursor: "pointer", fontSize: 12 }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 9 }}><span style={{ width: 7, height: 7, flexShrink: 0, borderRadius: 99, background: item.dot }} />{item.label}</span>
-                <span style={{ minWidth: 30, textAlign: "center", borderRadius: 8, background: "#f3f4f6", color: "#374151", padding: "3px 7px", fontSize: 11, fontWeight: 800 }}>{item.count}</span>
+                <span style={{ minWidth: 30, textAlign: "center", borderRadius: 8, background: "#f3f4f6", color: "#374151", padding: "3px 7px", fontSize: 11, fontWeight: 700 }}>{item.count}</span>
               </button>
             ))}
           </section>
         </div>
       </div>
 
-      {authModalOpen && <div role="presentation" onClick={() => setAuthModalOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 1000, display: "grid", placeItems: "center", padding: 20, background: "#0f172a99", backdropFilter: "blur(4px)", overflowY: "auto" }}><section role="dialog" aria-modal="true" aria-label={authMode === "Log In" ? "Log in" : "Create an account"} onClick={(event) => event.stopPropagation()} style={{ position: "relative", width: "min(100%, 430px)", boxSizing: "border-box", padding: "34px 32px 28px", background: "white", borderRadius: 8, boxShadow: "0 24px 80px #0005" }}><button type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)} style={{ position: "absolute", top: 10, right: 10, width: 30, height: 30, border: 0, borderRadius: 999, background: "#f1f5f9", color: "#334155", fontSize: 22, cursor: "pointer" }}>×</button><h2 style={{ margin: "0 0 24px", fontSize: 24, fontWeight: 850, color: "#111827" }}>{authMode === "Log In" ? "Login to your account" : "Create an account"}</h2><form onSubmit={(event) => { event.preventDefault(); setAuthSetupNotice(true); }}><label style={{ display: "block", marginBottom: 7, fontSize: 13, color: "#64748b" }}>Email</label><input required type="email" aria-label="Email" placeholder="Enter your email" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "2px solid #bfdbfe", borderRadius: 7, marginBottom: 17, color: "#111827", background: "white" }}/><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}><label style={{ fontSize: 13, color: "#64748b" }}>Password</label>{authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, background: "transparent", color: "#0784f9", fontSize: 12, cursor: "pointer" }}>Forgot?</button>}</div><input required type="password" aria-label="Password" placeholder="Enter your password" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "1px solid #d1d5db", borderRadius: 7, marginBottom: 22, color: "#111827", background: "white" }}/><button type="submit" style={{ width: "100%", border: 0, borderRadius: 7, padding: "13px", background: "#0784f9", color: "white", fontWeight: 800, cursor: "pointer" }}>{authMode === "Log In" ? "Login now" : "Create account"}</button></form><button type="button" onClick={() => setAuthSetupNotice(true)} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 7, padding: "13px", background: "#e0efff", color: "#0784f9", fontWeight: 800, cursor: "pointer" }}>🌐　Continue with Google</button><p style={{ margin: "20px 0 0", textAlign: "center", color: "#9ca3af", fontSize: 12 }}>{authMode === "Log In" ? "Don’t have an account?" : "Already have an account?"} <button type="button" onClick={() => { setAuthMode(authMode === "Log In" ? "Sign Up" : "Log In"); setAuthSetupNotice(false); }} style={{ border: 0, background: "transparent", color: "#0784f9", cursor: "pointer" }}>{authMode === "Log In" ? "Sign up" : "Log in"}</button></p>{authSetupNotice && <p role="status" style={{ marginTop: 14, padding: 10, borderRadius: 8, background: "#fff7ed", color: "#9a3412", fontSize: 12 }}>Authentication is not connected yet. Amazon Cognito setup is required before you can continue.</p>}</section></div>}
+      {authModalOpen && <div role="presentation" onClick={() => setAuthModalOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 1000, display: "grid", placeItems: "center", padding: 20, background: "#0f172a99", backdropFilter: "blur(4px)", overflowY: "auto" }}><section role="dialog" aria-modal="true" aria-label={authMode === "Log In" ? "Log in" : "Create an account"} onClick={(event) => event.stopPropagation()} style={{ position: "relative", width: "min(100%, 430px)", boxSizing: "border-box", padding: "34px 32px 28px", background: "white", borderRadius: 8, boxShadow: "0 24px 80px #0005" }}><button type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)} style={{ position: "absolute", top: 10, right: 10, width: 30, height: 30, border: 0, borderRadius: 999, background: "#f1f5f9", color: "#334155", fontSize: 22, cursor: "pointer" }}>×</button><h2 style={{ margin: "0 0 24px", fontSize: 24, fontWeight: 900, color: "#111827" }}>{authMode === "Log In" ? "Login to your account" : "Create an account"}</h2><form onSubmit={(event) => { event.preventDefault(); setAuthSetupNotice(true); }}><label style={{ display: "block", marginBottom: 7, fontSize: 13, color: "#64748b" }}>Email</label><input required type="email" aria-label="Email" placeholder="Enter your email" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "2px solid #bfdbfe", borderRadius: 7, marginBottom: 17, color: "#111827", background: "white" }}/><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}><label style={{ fontSize: 13, color: "#64748b" }}>Password</label>{authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, background: "transparent", color: "#0784f9", fontSize: 12, cursor: "pointer" }}>Forgot?</button>}</div><input required type="password" aria-label="Password" placeholder="Enter your password" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "1px solid #d1d5db", borderRadius: 7, marginBottom: 22, color: "#111827", background: "white" }}/><button type="submit" style={{ width: "100%", border: 0, borderRadius: 7, padding: "13px", background: "#0784f9", color: "white", fontWeight: 700, cursor: "pointer" }}>{authMode === "Log In" ? "Login now" : "Create account"}</button></form><button type="button" onClick={() => setAuthSetupNotice(true)} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 7, padding: "13px", background: "#e0efff", color: "#0784f9", fontWeight: 700, cursor: "pointer" }}>🌐　Continue with Google</button><p style={{ margin: "20px 0 0", textAlign: "center", color: "#9ca3af", fontSize: 12 }}>{authMode === "Log In" ? "Don’t have an account?" : "Already have an account?"} <button type="button" onClick={() => { setAuthMode(authMode === "Log In" ? "Sign Up" : "Log In"); setAuthSetupNotice(false); }} style={{ border: 0, background: "transparent", color: "#0784f9", cursor: "pointer" }}>{authMode === "Log In" ? "Sign up" : "Log in"}</button></p>{authSetupNotice && <p role="status" style={{ marginTop: 14, padding: 10, borderRadius: 8, background: "#fff7ed", color: "#9a3412", fontSize: 12 }}>Authentication is not connected yet. Amazon Cognito setup is required before you can continue.</p>}</section></div>}
 
       <section id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
-            <p style={{ margin: 0, fontSize: 11, fontWeight: 900, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
-            <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 900 }}>Recently added feedback</h2>
+            <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
+            <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 700 }}>Recently added feedback</h2>
             <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Browse community feedback.</p>
           </div>
-          <a href="/reviews?action=write" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 15px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 850, textDecoration: "none", whiteSpace: "nowrap", boxShadow: "0 2px 5px #1d4ed822" }}>＋ Share feedback</a>
+          <a href="/reviews?action=write" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 15px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", boxShadow: "0 2px 5px #1d4ed822" }}>＋ Share feedback</a>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 14, padding: 12, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {(["All", "Positive", "Negative", "Allegation", "Request"] as const).map((type) => (
-              <button key={type} onClick={() => setHomeReviewType(type)} style={{ border: homeReviewType === type ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: homeReviewType === type ? "#dbeafe" : "white", color: homeReviewType === type ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 850, cursor: "pointer" }}>{type}</button>
+              <button key={type} onClick={() => setHomeReviewType(type)} style={{ border: homeReviewType === type ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: homeReviewType === type ? "#dbeafe" : "white", color: homeReviewType === type ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>{type}</button>
             ))}
           </div>
           <input aria-label="Filter reviews by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name" style={{ flex: "1 1 160px", minWidth: 140, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", font: "inherit", fontSize: 12, background: "white", color: "#0f172a" }} />
@@ -1399,7 +1398,7 @@ export default function Home() {
           <div style={{ height: 620, boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center", border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
             <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No feedback added yet</p>
             <p style={{ margin: "6px 0 14px", color: "#64748b", fontSize: 13 }}>Be the first to share a constructive review.</p>
-            <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>Share feedback →</a>
+            <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>Share feedback →</a>
           </div>
         ) : filteredHomeReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "grid", placeItems: "center", padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No feedback matches these filters.</div>
@@ -1414,20 +1413,20 @@ export default function Home() {
               return (
                 <article key={review.id} style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 10, fontWeight: 850, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{review.type}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{review.type}</span>
                     <span style={{ color: "#9ca3af", fontSize: 11, whiteSpace: "nowrap" }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
                   </div>
-                  <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 850, color: "#202124" }}>{review.title}</h3>
+                  <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "#202124" }}>{review.title}</h3>
                   <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, lineHeight: 1.65, overflowWrap: "anywhere" }}>{review.body}</p>
                   {review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", margin: "10px 0 13px", maxWidth: "100%", maxHeight: 360, borderRadius: 11, border: "1px solid #e5e7eb", objectFit: "contain" }} />}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: 10, paddingTop: 12, borderTop: "1px solid #f0f1f3" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
                       <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 900 }}>{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
-                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 800 }}>{review.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, overflowWrap: "anywhere" }}>{review.profile}</p></div>
+                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 700 }}>{review.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, overflowWrap: "anywhere" }}>{review.profile}</p></div>
                     </div>
                     <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
-                      <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "up" ? "#dbeafe" : "transparent", color: homeVotes[review.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{review.votes?.up ?? 0}</span></button>
-                      <button type="button" aria-label="Downvote review" title="Downvote" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "down" ? "#ffedd5" : "transparent", color: homeVotes[review.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{review.votes?.down ?? 0}</span></button>
+                      <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "up" ? "#dbeafe" : "transparent", color: homeVotes[review.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{review.votes?.up ?? 0}</span></button>
+                      <button type="button" aria-label="Downvote review" title="Downvote" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "down" ? "#ffedd5" : "transparent", color: homeVotes[review.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{review.votes?.down ?? 0}</span></button>
                     </div>
                   </div>
                 </article>

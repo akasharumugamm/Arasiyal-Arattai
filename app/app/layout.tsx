@@ -1,7 +1,19 @@
 
 import type { Metadata } from "next";
+import { Outfit, Poppins } from "next/font/google";
 import "./globals.css";
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-outfit",
+});
 
 export const metadata: Metadata = {
   title: "Tamil Nadu Government Explorer",
@@ -17,15 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://api.fontshare.com" />
-        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap"
-        />
-      </head>
-      <body>{children}</body>
+      <body className={`${poppins.variable} ${outfit.variable}`}>{children}</body>
     </html>
   );
 }
