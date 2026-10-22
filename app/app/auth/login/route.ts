@@ -31,6 +31,10 @@ export async function GET(request: NextRequest) {
   authorizeUrl.searchParams.set("scope", "openid email profile");
   authorizeUrl.searchParams.set("redirect_uri", callbackUrl);
   authorizeUrl.searchParams.set("state", state);
+  // Only allow explicitly supported identity providers from the app.
+  if (request.nextUrl.searchParams.get("provider") === "Google") {
+    authorizeUrl.searchParams.set("identity_provider", "Google");
+  }
 
   const response = NextResponse.redirect(authorizeUrl);
   response.cookies.set("tge_oauth_state", state, {
