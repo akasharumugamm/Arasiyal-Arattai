@@ -107,6 +107,7 @@ option {
 
   .app-title {
     font-size: 22px !important;
+    font-weight: 700 !important;
     line-height: 1.15;
   }
 
