@@ -1269,8 +1269,8 @@ export default function Home() {
     <main style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
-          <img src="/tvk-logo.png" alt="TVK Government Explorer logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>TVK Government Explorer</h1>
+          <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
+          <h1 className="brand-heading" style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>Arasiyal Arattai</h1>
         </div>
         <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
@@ -1305,7 +1305,7 @@ export default function Home() {
         </div>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
-        Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback.
+        Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback with Arasiyal Arattai.
       </p>
 
       <nav style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>

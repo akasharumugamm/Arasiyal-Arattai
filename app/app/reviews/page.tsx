@@ -202,7 +202,7 @@ export default function ReviewsPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#0f172a", padding: "28px 18px 56px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-        <a href="/" style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "#1d4ed8", textDecoration: "none", fontSize: 13, fontWeight: 800, marginBottom: 22 }}>← Back to Government Explorer</a>
+        <a href="/" style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "#1d4ed8", textDecoration: "none", fontSize: 13, fontWeight: 800, marginBottom: 22 }}>← Back to Arasiyal Arattai</a>
         <header style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 20, marginBottom: 24 }}>
           <div>
             <div style={{ color: "#64748b", fontSize: 11, fontWeight: 900, letterSpacing: 2, textTransform: "uppercase" }}>Public voice · Accountability</div>

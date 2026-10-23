@@ -41,6 +41,10 @@ body :is(h1, h2, h3, h4, h5, h6) {
   font-weight: 700 !important;
 }
 
+.brand-heading {
+  font-weight: 900 !important;
+}
+
 button {
   font-weight: 700 !important;
 }

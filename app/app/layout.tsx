@@ -5,14 +5,14 @@ import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "700", "900"],
 });
 
 export const metadata: Metadata = {
-  title: "Tamil Nadu Government Explorer",
+  title: "Arasiyal Arattai",
   description:
-    "Explore Tamil Nadu government officials, departments, schemes, performance and public records.",
-  icons: { icon: "/tvk-logo.png", shortcut: "/tvk-logo.png", apple: "/tvk-logo.png" },
+    "Arasiyal Arattai is a public platform to explore Tamil Nadu government leaders, departments, schemes, projects and public feedback.",
+  icons: { icon: "/aa-logo.svg", shortcut: "/aa-logo.svg", apple: "/aa-logo.svg" },
 };
 
 export default function RootLayout({
