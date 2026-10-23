@@ -1,6 +1,12 @@
 name: Deploy to EC2
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:
@@ -31,12 +37,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run ESLint
+        run: npm run lint
+
       - name: Build application
         run: npm run build
 
   deploy:
     name: Deploy application
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -61,6 +71,8 @@ jobs:
           EC2_APP_DIR: ${{ vars.EC2_APP_DIR }}
           PM2_APP_NAME: ${{ vars.PM2_APP_NAME }}
         run: |
+          test -n "$EC2_HOST"
+          test -n "$EC2_USER"
           test -n "$EC2_APP_DIR"
           test -n "$PM2_APP_NAME"
           ssh -i ~/.ssh/ec2_deploy_key "$EC2_USER@$EC2_HOST" \

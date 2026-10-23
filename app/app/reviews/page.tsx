@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 type ReviewType = "Positive" | "Negative" | "Allegation" | "Request";
@@ -83,9 +84,29 @@ function RatingGauge({ value }: { value: number | null }) {
 }
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
-  const [profile, setProfile] = useState(PROFILES[0]);
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) as Review[] : [];
+    } catch {
+      return [];
+    }
+  });
+  const [votes, setVotes] = useState<Record<string, "up" | "down">>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const savedVotes = localStorage.getItem(VOTES_KEY);
+      return savedVotes ? JSON.parse(savedVotes) as Record<string, "up" | "down"> : {};
+    } catch {
+      return {};
+    }
+  });
+  const [profile, setProfile] = useState(() => {
+    if (typeof window === "undefined") return PROFILES[0];
+    const requestedProfile = new URLSearchParams(window.location.search).get("profile");
+    return requestedProfile && PROFILES.includes(requestedProfile) ? requestedProfile : PROFILES[0];
+  });
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [sortOrder, setSortOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
   const [name, setName] = useState("");
@@ -99,34 +120,32 @@ export default function ReviewsPage() {
   const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Log In");
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((response) => setIsAuthenticated(response.ok))
-      .catch(() => setIsAuthenticated(false))
-      .finally(() => setAuthChecked(true));
-  }, []);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setReviews(JSON.parse(saved) as Review[]);
-      const savedVotes = localStorage.getItem(VOTES_KEY);
-      if (savedVotes) setVotes(JSON.parse(savedVotes) as Record<string, "up" | "down">);
-    } catch { /* Ignore invalid local browser data. */ }
     const params = new URLSearchParams(window.location.search);
-    const requestedProfile = params.get("profile");
-    if (requestedProfile && PROFILES.includes(requestedProfile)) setProfile(requestedProfile);
-    if (authChecked && params.get("action") === "write" && isAuthenticated) {
-      setShowForm(true);
-    } else if (authChecked && params.get("action") === "write") {
-      setShowForm(false);
-      setAuthMode("Log In");
-      setAuthSetupNotice(false);
-      setAuthModalOpen(true);
-    }
-  }, [authChecked, isAuthenticated]);
+    const requestedAction = params.get("action");
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((response) => {
+        setIsAuthenticated(response.ok);
+        if (requestedAction === "write" && response.ok) {
+          setShowForm(true);
+        } else if (requestedAction === "write") {
+          setShowForm(false);
+          setAuthMode("Log In");
+          setAuthSetupNotice(false);
+          setAuthModalOpen(true);
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+        if (requestedAction === "write") {
+          setShowForm(false);
+          setAuthMode("Log In");
+          setAuthSetupNotice(false);
+          setAuthModalOpen(true);
+        }
+      });
+  }, []);
 
   const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
   const visibleReviews = useMemo(() => profileReviews
@@ -202,7 +221,7 @@ export default function ReviewsPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#0f172a", padding: "28px 18px 56px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-        <a href="/" style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "#1d4ed8", textDecoration: "none", fontSize: 13, fontWeight: 800, marginBottom: 22 }}>← Back to Arasiyal Arattai</a>
+        <Link href="/" style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "#1d4ed8", textDecoration: "none", fontSize: 13, fontWeight: 800, marginBottom: 22 }}>← Back to Arasiyal Arattai</Link>
         <header style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 20, marginBottom: 24 }}>
           <div>
             <div style={{ color: "#64748b", fontSize: 11, fontWeight: 900, letterSpacing: 2, textTransform: "uppercase" }}>Public voice · Accountability</div>
@@ -260,7 +279,7 @@ export default function ReviewsPage() {
                 reader.onerror = () => setNotice("Could not read this image. Please try another file.");
                 reader.readAsDataURL(file);
               }} style={{ ...input, padding: 9 }} />
-              <p style={{ margin: "6px 0 0", fontSize: 11, color: "#64748b" }}>JPG, PNG, WEBP or GIF · maximum 2 MB. Images are saved with this browser's review data for this prototype.</p>
+              <p style={{ margin: "6px 0 0", fontSize: 11, color: "#64748b" }}>JPG, PNG, WEBP or GIF · maximum 2 MB. Images are saved with this browser&apos;s review data for this prototype.</p>
               {image && <div style={{ marginTop: 10 }}><img src={image} alt="Review attachment preview" style={{ display: "block", maxWidth: "100%", maxHeight: 260, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} /><button type="button" onClick={() => setImage(null)} style={{ marginTop: 7, border: "1px solid #cbd5e1", borderRadius: 8, background: "white", padding: "6px 10px", cursor: "pointer", fontSize: 12 }}>Remove image</button></div>}
             </div>
             <p style={{ fontSize: 11, color: "#64748b", lineHeight: 1.6 }}>Do not post private information, threats, or unverified allegations as established facts. Clearly identify claims as allegations and include public sources where possible.</p>
