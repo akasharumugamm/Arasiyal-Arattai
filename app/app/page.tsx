@@ -865,6 +865,8 @@ function ReviewSortMenu({
 
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
+  const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -881,6 +883,20 @@ export default function Home() {
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Negative" | "Allegation" | "Request">("All");
   const [homeReviewName, setHomeReviewName] = useState("");
   const [homeReviewDateOrder, setHomeReviewDateOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY < 40 || currentY < lastScrollY.current) {
+        setMobileHeaderVisible(true);
+      } else if (currentY > lastScrollY.current + 4) {
+        setMobileHeaderVisible(false);
+      }
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -1181,7 +1197,7 @@ export default function Home() {
 
   return (
     <main className="app-shell" style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <div className="app-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
+      <div className={`app-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
           <h1 className="brand-heading app-title" style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>Arasiyal Arattai</h1>
@@ -1222,6 +1238,12 @@ export default function Home() {
         Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback with Arasiyal Arattai.
       </p>
 
+      <div className="mobile-category-select">
+        <label htmlFor="mobile-category" className="sr-only">Choose a section</label>
+        <select id="mobile-category" aria-label="Choose a section" value={category} onChange={(event) => changeCategory(event.target.value as Category)}>
+          {categories.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+      </div>
       <nav className="category-nav" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
         {categories.map((item) => (
           <button
@@ -1265,6 +1287,7 @@ export default function Home() {
             {mlaParties.map((party) => <option key={party} value={party}>{party}</option>)}
           </select>
           <button
+            className="reset-graph-button"
             type="button"
             onClick={() => { setMlaSearch(""); setMlaPartyFilter("All parties"); setExpandedMlaParty(null); }}
             style={{ padding: "10px 13px", border: "1px solid #cbd5e1", borderRadius: 9, background: "#f8fafc", color: "#172554", fontWeight: 700, cursor: "pointer" }}
