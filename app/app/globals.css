@@ -53,8 +53,13 @@ button {
   font-weight: 400 !important;
 }
 
-.feedback-card button {
+.feedback-card button,
+.reset-graph-button {
   font-weight: 400 !important;
+}
+
+.mobile-category-select {
+  display: none;
 }
 
 select,
@@ -69,7 +74,35 @@ option {
   }
 
   .app-header {
-    gap: 10px !important;
+    position: sticky;
+    top: 8px;
+    z-index: 90;
+    gap: 8px !important;
+    padding: 8px 10px;
+    margin: 0 -4px 12px !important;
+    border: 1px solid rgb(255 255 255 / 70%);
+    border-radius: 18px;
+    background: rgb(255 255 255 / 72%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 8px 28px rgb(15 23 42 / 9%);
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+
+  .app-header-hidden {
+    transform: translateY(calc(-100% - 18px));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .app-header img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .app-header > div:last-child > button {
+    width: 38px !important;
+    height: 38px !important;
   }
 
   .app-title {
@@ -78,8 +111,25 @@ option {
   }
 
   .category-nav {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: none !important;
+  }
+
+  .mobile-category-select {
+    display: block;
+    width: 100%;
+    margin: 0 0 16px;
+  }
+
+  .mobile-category-select select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 88%);
+    color: #172554;
+    font: inherit;
+    font-size: 14px;
   }
 
   .category-nav button {
@@ -136,7 +186,7 @@ option {
 
 @media (max-width: 420px) {
   .app-title {
-    font-size: 19px !important;
+    font-size: 17px !important;
   }
 
   .app-header img {
