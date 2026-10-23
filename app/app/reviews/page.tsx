@@ -84,9 +84,29 @@ function RatingGauge({ value }: { value: number | null }) {
 }
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
-  const [profile, setProfile] = useState(PROFILES[0]);
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) as Review[] : [];
+    } catch {
+      return [];
+    }
+  });
+  const [votes, setVotes] = useState<Record<string, "up" | "down">>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const savedVotes = localStorage.getItem(VOTES_KEY);
+      return savedVotes ? JSON.parse(savedVotes) as Record<string, "up" | "down"> : {};
+    } catch {
+      return {};
+    }
+  });
+  const [profile, setProfile] = useState(() => {
+    if (typeof window === "undefined") return PROFILES[0];
+    const requestedProfile = new URLSearchParams(window.location.search).get("profile");
+    return requestedProfile && PROFILES.includes(requestedProfile) ? requestedProfile : PROFILES[0];
+  });
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [sortOrder, setSortOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
   const [name, setName] = useState("");
@@ -100,37 +120,32 @@ export default function ReviewsPage() {
   const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Log In");
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((response) => setIsAuthenticated(response.ok))
-      .catch(() => setIsAuthenticated(false))
-      .finally(() => setAuthChecked(true));
-  }, []);
-
-  useEffect(() => {
-    const restoreBrowserData = window.setTimeout(() => {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) setReviews(JSON.parse(saved) as Review[]);
-        const savedVotes = localStorage.getItem(VOTES_KEY);
-        if (savedVotes) setVotes(JSON.parse(savedVotes) as Record<string, "up" | "down">);
-      } catch { /* Ignore invalid local browser data. */ }
-    }, 0);
     const params = new URLSearchParams(window.location.search);
-    const requestedProfile = params.get("profile");
-    if (requestedProfile && PROFILES.includes(requestedProfile)) setProfile(requestedProfile);
-    if (authChecked && params.get("action") === "write" && isAuthenticated) {
-      setShowForm(true);
-    } else if (authChecked && params.get("action") === "write") {
-      setShowForm(false);
-      setAuthMode("Log In");
-      setAuthSetupNotice(false);
-      setAuthModalOpen(true);
-    }
-    return () => window.clearTimeout(restoreBrowserData);
-  }, [authChecked, isAuthenticated]);
+    const requestedAction = params.get("action");
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((response) => {
+        setIsAuthenticated(response.ok);
+        if (requestedAction === "write" && response.ok) {
+          setShowForm(true);
+        } else if (requestedAction === "write") {
+          setShowForm(false);
+          setAuthMode("Log In");
+          setAuthSetupNotice(false);
+          setAuthModalOpen(true);
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+        if (requestedAction === "write") {
+          setShowForm(false);
+          setAuthMode("Log In");
+          setAuthSetupNotice(false);
+          setAuthModalOpen(true);
+        }
+      });
+  }, []);
 
   const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
   const visibleReviews = useMemo(() => profileReviews
