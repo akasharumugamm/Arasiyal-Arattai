@@ -1,0 +1,77 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Validate application
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+  deploy:
+    name: Deploy application
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Install SSH key
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/ec2_deploy_key
+          chmod 600 ~/.ssh/ec2_deploy_key
+
+      - name: Add EC2 host key
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy and restart PM2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_APP_DIR: ${{ vars.EC2_APP_DIR }}
+          PM2_APP_NAME: ${{ vars.PM2_APP_NAME }}
+        run: |
+          test -n "$EC2_APP_DIR"
+          test -n "$PM2_APP_NAME"
+          ssh -i ~/.ssh/ec2_deploy_key "$EC2_USER@$EC2_HOST" \
+            "EC2_APP_DIR='$EC2_APP_DIR' PM2_APP_NAME='$PM2_APP_NAME' bash -s" <<'REMOTE_SCRIPT'
+          set -Eeuo pipefail
+
+          cd "$EC2_APP_DIR"
+          git pull --ff-only origin main
+          cd app
+          npm ci
+          npm run build
+          pm2 restart "$PM2_APP_NAME" --update-env
+          pm2 save
+          REMOTE_SCRIPT
