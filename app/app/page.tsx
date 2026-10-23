@@ -1282,6 +1282,7 @@ export default function Home() {
       <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
         <div className="graph-panel" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
           <ReactFlow
+            style={{ width: "100%", height: "100%" }}
             key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
             nodes={visibleNodes}
             edges={visibleEdges}
