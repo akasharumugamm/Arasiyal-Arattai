@@ -101,15 +101,26 @@ option {
   }
 
   .explorer-layout {
+    display: flex !important;
+    width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
-    flex-direction: column;
+    flex-direction: column !important;
+    align-items: stretch !important;
   }
 
   .graph-panel {
-    width: 100%;
+    position: relative !important;
+    display: block !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
     height: 58vh !important;
     min-height: 390px;
+  }
+
+  .graph-panel .react-flow {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .profile-column {
@@ -136,5 +147,10 @@ option {
   .graph-panel {
     height: 55vh !important;
     min-height: 350px;
+  }
+
+  .graph-panel .react-flow__controls {
+    bottom: 8px;
+    left: 8px;
   }
 }
