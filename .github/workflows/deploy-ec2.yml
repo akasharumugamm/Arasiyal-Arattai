@@ -1,6 +1,12 @@
 name: Deploy to EC2
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:
@@ -31,12 +37,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run ESLint
+        run: npm run lint
+
       - name: Build application
         run: npm run build
 
   deploy:
     name: Deploy application
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -45,7 +55,7 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/ec2_deploy_key
+          printf '%s\\n' "$EC2_SSH_KEY" > ~/.ssh/ec2_deploy_key
           chmod 600 ~/.ssh/ec2_deploy_key
 
       - name: Add EC2 host key
@@ -61,9 +71,11 @@ jobs:
           EC2_APP_DIR: ${{ vars.EC2_APP_DIR }}
           PM2_APP_NAME: ${{ vars.PM2_APP_NAME }}
         run: |
+          test -n "$EC2_HOST"
+          test -n "$EC2_USER"
           test -n "$EC2_APP_DIR"
           test -n "$PM2_APP_NAME"
-          ssh -i ~/.ssh/ec2_deploy_key "$EC2_USER@$EC2_HOST" \
+          ssh -i ~/.ssh/ec2_deploy_key "$EC2_USER@$EC2_HOST" \\
             "EC2_APP_DIR='$EC2_APP_DIR' PM2_APP_NAME='$PM2_APP_NAME' bash -s" <<'REMOTE_SCRIPT'
           set -Eeuo pipefail
 
