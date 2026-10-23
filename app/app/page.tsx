@@ -865,6 +865,7 @@ function ReviewSortMenu({
 
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
+  const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -1239,10 +1240,37 @@ export default function Home() {
       </p>
 
       <div className="mobile-category-select">
-        <label htmlFor="mobile-category" className="sr-only">Choose a section</label>
-        <select id="mobile-category" aria-label="Choose a section" value={category} onChange={(event) => changeCategory(event.target.value as Category)}>
-          {categories.map((item) => <option key={item} value={item}>{item}</option>)}
-        </select>
+        <button
+          type="button"
+          className="mobile-category-trigger"
+          aria-label="Choose a section"
+          aria-haspopup="listbox"
+          aria-expanded={isCategoryPickerOpen}
+          onClick={() => setIsCategoryPickerOpen((open) => !open)}
+        >
+          <span className="mobile-category-current">
+            <span className="mobile-category-eyebrow">EXPLORE SECTION</span>
+            <span className="mobile-category-value">{category}</span>
+          </span>
+          <svg className={isCategoryPickerOpen ? "mobile-category-chevron is-open" : "mobile-category-chevron"} width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        {isCategoryPickerOpen && (
+          <div className="mobile-category-options" role="listbox" aria-label="Explore sections">
+            {categories.map((item) => (
+              <button
+                key={item}
+                type="button"
+                role="option"
+                aria-selected={category === item}
+                className={category === item ? "mobile-category-option is-selected" : "mobile-category-option"}
+                onClick={() => { changeCategory(item); setIsCategoryPickerOpen(false); }}
+              >
+                <span>{item}</span>
+                {category === item && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       <nav className="category-nav" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
         {categories.map((item) => (
