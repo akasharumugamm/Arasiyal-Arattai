@@ -1180,11 +1180,11 @@ export default function Home() {
     });
 
   return (
-    <main style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
+    <main className="app-shell" style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
+      <div className="app-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
-          <h1 className="brand-heading" style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>Arasiyal Arattai</h1>
+          <h1 className="brand-heading app-title" style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>Arasiyal Arattai</h1>
         </div>
         <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
@@ -1222,7 +1222,7 @@ export default function Home() {
         Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback with Arasiyal Arattai.
       </p>
 
-      <nav style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+      <nav className="category-nav" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
         {categories.map((item) => (
           <button
             key={item}
@@ -1247,7 +1247,7 @@ export default function Home() {
       </p>
 
       {category === "MLAs" && (
-        <section aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 336px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
+        <section className="mla-controls" aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 336px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
           <input
             aria-label="Search MLA name or constituency"
             value={mlaSearch}
@@ -1279,8 +1279,8 @@ export default function Home() {
         </section>
       )}
 
-      <div style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
-        <div style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
+      <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
+        <div className="graph-panel" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
           <ReactFlow
             key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
             nodes={visibleNodes}
@@ -1306,7 +1306,7 @@ export default function Home() {
           </ReactFlow>
         </div>
 
-        <div style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
+        <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
         <aside style={{ width: "100%", boxSizing: "border-box", padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a0a" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>Selected profile</span>
@@ -1363,7 +1363,7 @@ export default function Home() {
 
       {authModalOpen && <div role="presentation" onClick={() => setAuthModalOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 1000, display: "grid", placeItems: "center", padding: 20, background: "#0f172a99", backdropFilter: "blur(4px)", overflowY: "auto" }}><section role="dialog" aria-modal="true" aria-label={authMode === "Log In" ? "Log in" : "Create an account"} onClick={(event) => event.stopPropagation()} style={{ position: "relative", width: "min(100%, 430px)", boxSizing: "border-box", padding: "34px 32px 28px", background: "white", borderRadius: 8, boxShadow: "0 24px 80px #0005" }}><button type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)} style={{ position: "absolute", top: 10, right: 10, width: 30, height: 30, border: 0, borderRadius: 999, background: "#f1f5f9", color: "#334155", fontSize: 22, cursor: "pointer" }}>×</button><h2 style={{ margin: "0 0 24px", fontSize: 24, fontWeight: 900, color: "#111827" }}>{authMode === "Log In" ? "Login to your account" : "Create an account"}</h2><form onSubmit={(event) => { event.preventDefault(); window.location.href = "/auth/login"; }}><label style={{ display: "block", marginBottom: 7, fontSize: 13, color: "#64748b" }}>Email</label><input required type="email" aria-label="Email" placeholder="Enter your email" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "2px solid #bfdbfe", borderRadius: 7, marginBottom: 17, color: "#111827", background: "white" }}/><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}><label style={{ fontSize: 13, color: "#64748b" }}>Password</label>{authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, background: "transparent", color: "#0784f9", fontSize: 12, cursor: "pointer" }}>Forgot?</button>}</div><input required type="password" aria-label="Password" placeholder="Enter your password" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "1px solid #d1d5db", borderRadius: 7, marginBottom: 22, color: "#111827", background: "white" }}/><button type="submit" style={{ width: "100%", border: 0, borderRadius: 7, padding: "13px", background: "#0784f9", color: "white", fontWeight: 700, cursor: "pointer" }}>{authMode === "Log In" ? "Login now" : "Create account"}</button></form><button type="button" onClick={() => { window.location.href = "/auth/login?provider=Google"; }} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 7, padding: "13px", background: "#e0efff", color: "#0784f9", fontWeight: 700, cursor: "pointer" }}>🌐　Continue with Google</button><p style={{ margin: "20px 0 0", textAlign: "center", color: "#9ca3af", fontSize: 12 }}>{authMode === "Log In" ? "Don’t have an account?" : "Already have an account?"} <button type="button" onClick={() => { setAuthMode(authMode === "Log In" ? "Sign Up" : "Log In"); setAuthSetupNotice(false); }} style={{ border: 0, background: "transparent", color: "#0784f9", cursor: "pointer" }}>{authMode === "Log In" ? "Sign up" : "Log in"}</button></p>{authSetupNotice && <p role="status" style={{ marginTop: 14, padding: 10, borderRadius: 8, background: "#fff7ed", color: "#9a3412", fontSize: 12 }}>Authentication is not connected yet. Amazon Cognito setup is required before you can continue.</p>}</section></div>}
 
-      <section id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+      <section className="community-feedback" id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>

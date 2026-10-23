@@ -62,3 +62,79 @@ option {
   font-family: Inter, sans-serif !important;
   font-weight: 400 !important;
 }
+
+@media (max-width: 760px) {
+  .app-shell {
+    padding: 14px !important;
+  }
+
+  .app-header {
+    gap: 10px !important;
+  }
+
+  .app-title {
+    font-size: 22px !important;
+    line-height: 1.15;
+  }
+
+  .category-nav {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .category-nav button {
+    min-height: 42px;
+    padding: 9px 8px !important;
+    font-size: 12px;
+  }
+
+  .mla-controls {
+    width: 100% !important;
+  }
+
+  .mla-controls input,
+  .mla-controls select,
+  .mla-controls button {
+    min-width: 0 !important;
+    width: 100%;
+    flex: 1 1 100% !important;
+  }
+
+  .explorer-layout {
+    height: auto !important;
+    min-height: 0 !important;
+    flex-direction: column;
+  }
+
+  .graph-panel {
+    width: 100%;
+    height: 58vh !important;
+    min-height: 390px;
+  }
+
+  .profile-column {
+    width: 100% !important;
+  }
+
+  .community-feedback {
+    width: 100% !important;
+    margin: 16px 0 0 !important;
+    padding: 16px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-title {
+    font-size: 19px !important;
+  }
+
+  .app-header img {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .graph-panel {
+    height: 55vh !important;
+    min-height: 350px;
+  }
+}
