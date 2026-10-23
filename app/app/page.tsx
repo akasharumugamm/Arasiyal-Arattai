@@ -71,7 +71,7 @@ function getPartyLogoPath(party?: string) {
 
 function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
   const [imageFailed, setImageFailed] = useState(false);
-  const showAvatar = !["cm-admin", "cm-home", "cm-special", "cm-other", "council-summary", "mla-summary", "departments", "schemes", "projects"].includes(id);
+  const showAvatar = !["cm-admin", "cm-home", "cm-special", "cm-other", "council-summary", "mla-summary"].includes(id);
   const initials = data.label
     .replace(/^(Honourable|Honorable|Thiru|Justice)\s+/i, "")
     .split(/\s+/)
@@ -736,81 +736,6 @@ const allNodes: Node<Profile>[] = [
       label: "MLA Directory",
       role: "Constituencies and elected representatives",
       description: "This directory is intended to list elected Members of the Tamil Nadu Legislative Assembly, their constituencies and publicly documented affiliations. Verify each member’s name and constituency against the official Assembly directory and election records.",
-      photoUrl: "https://i.pravatar.cc/150?img=25",
-    },
-  },
-  {
-    id: "ias",
-    type: "info",
-    position: { x: 360, y: 200 },
-    data: {
-      label: "IAS Officers",
-      role: "Indian Administrative Service",
-      description: "The IAS directory covers civil-service officers serving in state administration, including department and district appointments. Record postings and transfers only when supported by official orders, and include the order date and source.",
-      photoUrl: "https://i.pravatar.cc/150?img=21",
-    },
-  },
-  {
-    id: "ips",
-    type: "info",
-    position: { x: 200, y: 180 },
-    data: {
-      label: "IPS Officers",
-      role: "Indian Police Service",
-      description: "The IPS directory covers police-service officers and leadership assignments. Use official police and government orders to confirm each officer’s current rank, posting and transfer history.",
-      photoUrl: "https://i.pravatar.cc/150?img=22",
-    },
-  },
-  {
-    id: "dgp",
-    type: "info",
-    position: { x: 520, y: 180 },
-    data: {
-      label: "Director General of Police",
-      role: "DGP — current incumbent to verify",
-      description: "The Director General of Police is the senior-most police leadership role in the state. Confirm the incumbent, appointment date and current responsibilities against the latest official government order before publishing.",
-      photoUrl: "https://i.pravatar.cc/150?img=11",
-    },
-  },
-  {
-    id: "amalraj",
-    type: "info",
-    position: { x: 360, y: 430 },
-    data: {
-      label: "A. Amalraj",
-      role: "IPS officer — current posting to verify",
-      description: "Use this profile to document A. Amalraj’s verified service details and postings. Confirm the current designation and appointment from an official government order before treating it as current.",
-      photoUrl: "https://i.pravatar.cc/150?img=17",
-    },
-  },
-  {
-    id: "departments",
-    type: "info",
-    position: { x: 360, y: 200 },
-    data: {
-      label: "Department Directory",
-      role: "Government departments",
-      description: "Browse state government departments, their published responsibilities and associated ministerial or administrative leadership. Add reporting relationships only when supported by an official department page or government order.",
-    },
-  },
-  {
-    id: "schemes",
-    type: "info",
-    position: { x: 200, y: 180 },
-    data: {
-      label: "Government Schemes",
-      role: "Programmes and public projects",
-      description: "Use this section to document public schemes with their official description, eligibility, implementing department, application details and published updates. Link to government sources and distinguish announced plans from active schemes.",
-    },
-  },
-  {
-    id: "projects",
-    type: "info",
-    position: { x: 520, y: 180 },
-    data: {
-      label: "Public Projects",
-      role: "Projects and outcomes",
-      description: "Use this section to describe public projects with the responsible department, location, announced timeline and publicly released budget or progress information. Cite official sources and label unconfirmed estimates clearly.",
     },
   },
 ];
@@ -859,20 +784,16 @@ const allEdges: Edge[] = [
   { id: "m-vignesh", source: "cm", target: "vignesh", label: "Minister" },
   { id: "m-vijaytamilan", source: "cm", target: "vijaytamilan", label: "Minister" },
   { id: "m-vinoth", source: "cm", target: "vinoth", label: "Minister" },
-  { id: "p1", source: "ips", target: "dgp", label: "Police leadership" },
-  { id: "p2", source: "ips", target: "amalraj", label: "Officer profile" },
-  { id: "s1", source: "departments", target: "schemes", label: "Responsible department" },
-  { id: "s2", source: "schemes", target: "projects", label: "Implementation" },
 ];
 
 const categoryNodes: Record<Category, string[]> = {
   Government: ["government", "governor", "cm", "chief-justice", "tvk", "council-summary", "mla-summary", "cm-admin", "cm-home", "cm-special", "cm-other"],
   Ministers: ["cm", "anand", "aadhav", "arunraj", "sengottaiyan", "venkataramanan", "shahjahan", "rajkumar", "vijayalakshmi", "sarathkumar", "prabhu", "jegadeshwari", "kamali", "kumar", "logesh", "vijaybalaji", "mathanraja", "farvas", "mariewilson", "viswanathan", "nirmalkumar", "ranjithkumar", "rajeev", "rajeshkumar", "rajmohan", "ramesh", "keerthana", "srinath", "thennarasu", "gandhiraj", "sampathkumar", "vanniarasu", "vignesh", "vijaytamilan", "vinoth"],
   MLAs: ["mla-directory"],
-  "IAS Officers": ["ias"],
-  "IPS Officers": ["ips", "dgp", "amalraj"],
-  Departments: ["departments"],
-  "Schemes & Projects": ["schemes", "projects"],
+  "IAS Officers": [],
+  "IPS Officers": [],
+  Departments: [],
+  "Schemes & Projects": [],
 };
 
 const categories: Category[] = [
@@ -1066,17 +987,10 @@ export default function Home() {
       vinoth: { x: 2250, y: 680 },
     },
     MLAs: { "mla-directory": { x: 300, y: 150 } },
-    "IAS Officers": { ias: { x: 300, y: 150 } },
-    "IPS Officers": {
-      ips: { x: 300, y: 20 },
-      dgp: { x: 0, y: 260 },
-      amalraj: { x: 600, y: 260 },
-    },
-    Departments: { departments: { x: 300, y: 150 } },
-    "Schemes & Projects": {
-      schemes: { x: 300, y: 20 },
-      projects: { x: 300, y: 280 },
-    },
+    "IAS Officers": {},
+    "IPS Officers": {},
+    Departments: {},
+    "Schemes & Projects": {},
   };
 
   const mlaRecords = mlaDirectory.members as Array<{
@@ -1484,18 +1398,18 @@ export default function Home() {
                   ? { color: "#991b1b", background: "#fee2e2" }
                   : { color: "#1d4ed8", background: "#dbeafe" };
               return (
-                <article key={review.id} style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
+                <article key={review.id} className="feedback-card" style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{review.type}</span>
-                    <span style={{ color: "#9ca3af", fontSize: 11, whiteSpace: "nowrap" }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    <span style={{ fontSize: 10, fontWeight: 400, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{review.type}</span>
+                    <span style={{ color: "#9ca3af", fontSize: 11, fontWeight: 400, whiteSpace: "nowrap" }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
                   </div>
                   <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "#202124" }}>{review.title}</h3>
-                  <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, lineHeight: 1.65, overflowWrap: "anywhere" }}>{review.body}</p>
+                  <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, fontWeight: 400, lineHeight: 1.65, overflowWrap: "anywhere" }}>{review.body}</p>
                   {review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", margin: "10px 0 13px", maxWidth: "100%", maxHeight: 360, borderRadius: 11, border: "1px solid #e5e7eb", objectFit: "contain" }} />}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: 10, paddingTop: 12, borderTop: "1px solid #f0f1f3" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-                      <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 900 }}>{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
-                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 700 }}>{review.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, overflowWrap: "anywhere" }}>{review.profile}</p></div>
+                      <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 400 }}>{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
+                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 400 }}>{review.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, fontWeight: 400, overflowWrap: "anywhere" }}>{review.profile}</p></div>
                     </div>
                     <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
                       <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "up" ? "#dbeafe" : "transparent", color: homeVotes[review.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{review.votes?.up ?? 0}</span></button>

@@ -124,18 +124,18 @@ export default function ProfilePage() {
                 const style = typeStyles[post.type];
                 const initials = post.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
                 return (
-                <article key={post.id} style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
+                <article key={post.id} className="feedback-card" style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{post.type}</span>
-                    <span style={{ color: "#9ca3af", fontSize: 11, whiteSpace: "nowrap" }}>{new Date(post.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    <span style={{ fontSize: 10, fontWeight: 400, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{post.type}</span>
+                    <span style={{ color: "#9ca3af", fontSize: 11, fontWeight: 400, whiteSpace: "nowrap" }}>{new Date(post.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
                   </div>
                   <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "#202124" }}>{post.title}</h3>
-                  <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, lineHeight: 1.65, overflowWrap: "anywhere" }}>{post.body}</p>
+                  <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, fontWeight: 400, lineHeight: 1.65, overflowWrap: "anywhere" }}>{post.body}</p>
                   {post.image && <img src={post.image} alt={`Image attached to review: ${post.title}`} style={{ display: "block", margin: "10px 0 13px", maxWidth: "100%", maxHeight: 360, borderRadius: 11, border: "1px solid #e5e7eb", objectFit: "contain" }} />}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: 10, paddingTop: 12, borderTop: "1px solid #f0f1f3" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-                      <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 900 }}>{initials}</div>
-                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 700 }}>{post.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, overflowWrap: "anywhere" }}>{post.profile}</p></div>
+                      <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 400 }}>{initials}</div>
+                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 400 }}>{post.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, fontWeight: 400, overflowWrap: "anywhere" }}>{post.profile}</p></div>
                     </div>
                     <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
                       <button type="button" aria-label="Upvote post" title="Upvote" aria-pressed={votes[post.id] === "up"} onClick={() => votePost(post.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[post.id] === "up" ? "#dbeafe" : "transparent", color: votes[post.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{post.votes?.up ?? 0}</span></button>

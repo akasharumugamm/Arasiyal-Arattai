@@ -53,6 +53,10 @@ button {
   font-weight: 400 !important;
 }
 
+.feedback-card button {
+  font-weight: 400 !important;
+}
+
 select,
 option {
   font-family: Inter, sans-serif !important;
