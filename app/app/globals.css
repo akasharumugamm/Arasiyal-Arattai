@@ -544,3 +544,17 @@ option {
   outline: 2px solid #93c5fd;
   outline-offset: 2px;
 }
+
+
+/* Fix: the default highlight must not stick to the fourth row (Allegations). */
+.feedback-overview-row:nth-of-type(4) {
+  background: transparent;
+  border-color: transparent;
+}
+.feedback-overview-row:nth-of-type(4):hover {
+  background: #f8fafc;
+}
+.feedback-overview-row:nth-of-type(4).is-selected {
+  background: #f8fafc;
+  border-color: #e7ebf1;
+}
