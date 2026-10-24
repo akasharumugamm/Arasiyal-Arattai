@@ -1362,10 +1362,7 @@ export default function Home() {
               </button>
             ))}
           </section>
-          <section className="discussion-overview-card" aria-label="Discussion overview">
-            <h3>Discussion overview</h3>
-            <p>{recentReviews.length} public {recentReviews.length === 1 ? "post" : "posts"} across the directory. Positive and Concern posts contribute to sentiment; allegations are not treated as proven facts.</p>
-          </section>
+
         </div>
       </div>
 
