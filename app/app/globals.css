@@ -1131,3 +1131,114 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-text-input, .aa-textarea, .aa-dropdown-trigger, .aa-submit-row button, .aa-photo-button, .aa-add-photo { transition: none; }
 }
+
+
+/* Refined photo upload control */
+.aa-upload-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.aa-upload-button {
+  position: relative;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 16px;
+  border: 1px solid #d9e2f0;
+  border-radius: 13px;
+  background: #fff;
+  color: #263858;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: -.1px;
+  box-shadow: 0 2px 4px rgb(15 23 42 / 3%);
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+.aa-upload-button::before {
+  content: "+";
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 7px;
+  background: #eef3ff;
+  color: #315be8;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1;
+}
+.aa-upload-button:hover {
+  border-color: #b9c9ed;
+  background: #f9fbff;
+  box-shadow: 0 5px 14px rgb(35 67 135 / 7%);
+  transform: translateY(-1px);
+}
+.aa-upload-button:focus-within {
+  outline: 3px solid rgb(49 91 232 / 15%);
+  outline-offset: 2px;
+}
+.aa-upload-button:has(input:disabled) {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+.aa-upload-row > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 500;
+}
+.aa-upload-row > span::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+.aa-compose-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 130px));
+  gap: 12px;
+  margin-top: 14px;
+}
+.aa-compose-gallery > div {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 13px;
+  background: #f8fafc;
+  box-shadow: 0 3px 10px rgb(15 23 42 / 5%);
+}
+.aa-compose-gallery > div img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.aa-compose-gallery > div > button {
+  position: absolute;
+  z-index: 1;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 70%);
+  border-radius: 9px;
+  background: rgb(15 23 42 / 75%);
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aa-upload-button { transition: none; }
+}
