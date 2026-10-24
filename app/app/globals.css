@@ -355,3 +355,21 @@ option {
 @media (max-width:760px) {
   .aa-page { padding:12px 12px 30px; }.aa-topbar { margin-bottom:24px; padding:9px; border-radius:15px; }.aa-brand-mark { width:35px; height:35px; border-radius:11px; font-size:22px; }.aa-brand strong { font-size:13px; }.aa-brand small { font-size:7px; letter-spacing:1.1px; }.aa-top-actions { gap:5px; }.aa-profile-link,.aa-back-link { padding:9px 8px; font-size:10px; }.aa-hero { display:block; padding:0 2px 20px; }.aa-hero h1 { letter-spacing:-1.3px; }.aa-hero p { font-size:13px; }.aa-score { margin-top:18px; }.aa-composer { padding:17px; border-radius:17px; }.aa-composer-heading { align-items:flex-start; }.aa-composer h2,.aa-feed-heading h2 { font-size:22px; }.aa-private-note { max-width:95px; text-align:right; line-height:1.4; }.aa-composer-controls { grid-template-columns:1fr; gap:3px; }.aa-official-picker { min-width:0; }.aa-submit-row { align-items:stretch; flex-direction:column; }.aa-submit-row button { width:100%; }.aa-compose-gallery { grid-template-columns:repeat(2,minmax(0,1fr)); }.aa-feed-heading { align-items:flex-start; }.aa-feed-count { white-space:nowrap; }.aa-feed-controls { flex-direction:column; }.aa-feed-controls .aa-dropdown { flex:auto; }.aa-feed { grid-template-columns:1fr; }.aa-post { padding:16px; border-radius:17px; }.aa-post h3 { font-size:16px; }.aa-footer { flex-direction:column; }.aa-lightbox { padding:55px 12px; }.aa-lightbox-prev { left:5px; }.aa-lightbox-next { right:5px; }.aa-lightbox-close { top:10px; right:10px; }.aa-type-pill { font-size:9px; padding:5px 7px; }
 }
+
+.aa-profile-layout { display:grid; grid-template-columns:minmax(260px,.7fr) minmax(0,1.3fr); gap:18px; max-width:1120px; margin:0 auto; align-items:start; }
+.aa-profile-card,.aa-profile-posts { min-width:0; padding:clamp(18px,3vw,28px); border:1px solid #e2e8f0; border-radius:22px; background:white; box-shadow:0 10px 35px rgb(15 23 42 / 4%); }
+.aa-profile-card h1 { margin:8px 0; color:#172554; font-size:32px; letter-spacing:-1px; }
+.aa-profile-email { color:#64748b; font-size:12px; overflow-wrap:anywhere; }
+.aa-profile-form { margin-top:25px; padding-top:20px; border-top:1px solid #eef2f7; }
+.aa-profile-form label { display:block; color:#334155; font-size:12px; font-weight:800; }
+.aa-profile-form p { color:#64748b; font-size:11px; line-height:1.6; }
+.aa-profile-form input { display:block; width:100%; box-sizing:border-box; margin:10px 0; padding:12px; border:1px solid #d7dfeb; border-radius:11px; outline:none; font:inherit; font-size:13px; }
+.aa-profile-form button { width:100%; padding:12px; border:0; border-radius:11px; background:#172554; color:white; font-size:12px; cursor:pointer; }
+.aa-profile-form button:disabled { opacity:.6; }
+.aa-profile-notice { padding:11px; border-radius:10px; background:#eff6ff; color:#1d4ed8; font-size:11px; line-height:1.6; }
+.aa-profile-posts .aa-feed-heading { margin-top:0; }
+.aa-profile-post-list { display:grid; gap:12px; }
+.aa-profile-post-list .aa-post { padding:17px; border-radius:16px; }
+.aa-profile-post-date { display:block; margin-top:12px; color:#94a3b8; font-size:10px; }
+.aa-empty a { display:inline-block; margin-top:14px; color:#1d4ed8; text-decoration:none; font-size:12px; font-weight:800; }
+@media (max-width:760px) { .aa-profile-layout { grid-template-columns:1fr; }.aa-profile-card,.aa-profile-posts { padding:17px; border-radius:17px; } }
