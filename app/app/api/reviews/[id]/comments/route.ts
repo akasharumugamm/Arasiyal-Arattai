@@ -58,10 +58,10 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     const userId = await ensureUser(claims);
     const result = await query(
       `INSERT INTO review_comments (post_id, author_id, parent_comment_id, body)
-       SELECT p.id, $2, CASE WHEN $4::text IS NULL THEN NULL ELSE c.id END, $3
+       SELECT p.id, $2, CASE WHEN $4::uuid IS NULL THEN NULL ELSE c.id END, $3
        FROM review_posts p LEFT JOIN review_comments c ON c.id = $4::uuid AND c.post_id = p.id AND c.deleted_at IS NULL
        WHERE p.id = $1 AND p.deleted_at IS NULL
-         AND ($4::text IS NULL OR c.id IS NOT NULL)
+         AND ($4::uuid IS NULL OR c.id IS NOT NULL)
        RETURNING id, parent_comment_id AS "parentCommentId", body, created_at AS date`,
       [id, userId, body, parentId ?? null],
     );
