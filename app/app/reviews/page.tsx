@@ -92,9 +92,6 @@ export default function ReviewsPage() {
   const [replyTo, setReplyTo] = useState<Record<string, string | null>>({});
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
   const [lightbox, setLightbox] = useState<{ urls: string[]; index: number } | null>(null);
-  const [profileName, setProfileName] = useState("");
-  const [editProfile, setEditProfile] = useState(false);
-  const [savingProfile, setSavingProfile] = useState(false);
 
   async function loadReviews() {
     try {
@@ -107,9 +104,6 @@ export default function ReviewsPage() {
   useEffect(() => {
     queueMicrotask(() => { void loadReviews(); });
     fetch("/api/auth/me", { cache: "no-store" }).then((response) => setIsAuthenticated(response.ok)).catch(() => setIsAuthenticated(false));
-    fetch("/api/profile", { cache: "no-store" }).then(async (response) => {
-      if (response.ok) { const data = await response.json(); setProfileName(data.profile?.name ?? ""); }
-    }).catch(() => undefined);
     const params = new URLSearchParams(window.location.search);
     const requested = params.get("profile");
     if (requested) {
@@ -218,16 +212,7 @@ export default function ReviewsPage() {
       setReviews((current) => current.map((item) => item.id === review.id ? { ...item, commentCount: (item.commentCount ?? 0) + 1 } : item));
     } catch (error) { setNotice(error instanceof Error ? error.message : "Could not post comment"); }
   }
-  async function saveProfile(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setSavingProfile(true);
-    try {
-      const response = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ name: profileName }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Could not save display name");
-      setProfileName(data.profile.name); setEditProfile(false); setNotice("Your display name has been updated.");
-    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not save profile"); }
-    finally { setSavingProfile(false); }
-  }
+
 
   return <main className="aa-page">
     <header className="aa-topbar app-header aa-directory-header">
