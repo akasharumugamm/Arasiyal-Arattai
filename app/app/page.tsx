@@ -157,7 +157,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
           {initials || "TN"}
         </div>
       ) : null)}
-      <div style={{ fontWeight: 850, lineHeight: 1.35, overflowWrap: "anywhere" }}>{data.label}</div>
+      <div className="info-node-name" style={{ fontWeight: 600, lineHeight: 1.35, overflowWrap: "anywhere" }}>{data.label}</div>
       <div style={{ fontSize: 12, lineHeight: 1.45, marginTop: 6, color: "#64748b" }}>
         {data.role}
       </div>
