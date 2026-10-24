@@ -113,7 +113,7 @@ export default function ReviewsPage() {
     const requested = params.get("profile");
     if (requested) {
       const found = OFFICIALS.find((item) => item.name.toLowerCase() === requested.toLowerCase());
-      if (found) setSelectedOfficials([found]);
+      if (found) queueMicrotask(() => setSelectedOfficials([found]));
     }
     if (params.get("action") === "write") {
       fetch("/api/auth/me", { cache: "no-store" }).then((response) => {
