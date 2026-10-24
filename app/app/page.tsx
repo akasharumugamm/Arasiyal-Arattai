@@ -1376,7 +1376,7 @@ export default function Home() {
             onClick={(event) => event.stopPropagation()}
           >
             <button className="auth-close" type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)}>×</button>
-            <div className="auth-mark" aria-hidden="true">அ</div>
+            <div className="auth-mark"><img src="/aa-logo.svg" alt="Arasiyal Arattai logo" /></div>
             <p className="auth-eyebrow">{authMode === "Log In" ? "WELCOME BACK" : "JOIN THE CONVERSATION"}</p>
             <h2 className="auth-title">{authMode === "Log In" ? "Login to your account" : "Create your account"}</h2>
             <p className="auth-subtitle">{authMode === "Log In" ? "Sign in to continue to Arasiyal Arattai." : "Join the community and share your perspective."}</p>
@@ -1388,7 +1388,7 @@ export default function Home() {
                 {authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)}>Forgot password?</button>}
               </div>
               <input id="auth-password" required type="password" autoComplete={authMode === "Log In" ? "current-password" : "new-password"} aria-label="Password" placeholder="Enter your password" />
-              <button className="auth-submit" type="submit">{authMode === "Log In" ? "Log in" : "Create account"}<span aria-hidden="true">→</span></button>
+              <button className="auth-submit" type="submit">{authMode === "Log In" ? "Log in" : "Create account"}</button>
             </form>
             <div className="auth-divider"><span>or continue with</span></div>
             <button className="auth-google" type="button" onClick={() => { window.location.href = "/auth/login?provider=Google"; }}>
