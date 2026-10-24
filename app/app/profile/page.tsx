@@ -3,152 +3,84 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type AuthUser = { id: string; email?: string; name?: string; username?: string };
-type Review = {
-  id: string;
-  profile: string;
-  name: string;
-  type: "Positive" | "Negative" | "Allegation" | "Request";
-  title: string;
-  body: string;
-  image?: string;
-  votes?: { up: number; down: number };
-  date: string;
+type Profile = { id: string; name: string; email?: string; username?: string };
+type Post = {
+  id: string; authorId: string; name: string; type: "Positive" | "Concern" | "Allegation" | "Request";
+  title: string; body: string; date: string; officials: { name: string; category: string }[];
+  imageUrls: string[]; votes: { up: number; down: number };
 };
-
-const typeStyles: Record<Review["type"], { color: string; background: string }> = {
+const typeColors: Record<Post["type"], { color: string; background: string }> = {
   Positive: { color: "#166534", background: "#dcfce7" },
-  Negative: { color: "#991b1b", background: "#fee2e2" },
-  Allegation: { color: "#1d4ed8", background: "#dbeafe" },
+  Concern: { color: "#92400e", background: "#fef3c7" },
+  Allegation: { color: "#991b1b", background: "#fee2e2" },
   Request: { color: "#1d4ed8", background: "#dbeafe" },
 };
-const VOTES_KEY = "tn-government-explorer-review-votes-v1";
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [posts, setPosts] = useState<Review[]>([]);
-  const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [signedOut, setSignedOut] = useState(false);
 
   useEffect(() => {
-    const loadProfile = async () => {
+    let cancelled = false;
+    async function load() {
       try {
-        const response = await fetch("/api/auth/me", { cache: "no-store" });
-        if (!response.ok) throw new Error("not_authenticated");
-        const result = (await response.json()) as { user: AuthUser };
-        setUser(result.user);
+        const [profileResponse, postsResponse] = await Promise.all([
+          fetch("/api/profile", { cache: "no-store" }),
+          fetch("/api/reviews", { cache: "no-store" }),
+        ]);
+        if (!profileResponse.ok) { if (!cancelled) setSignedOut(true); return; }
+        const profileData = await profileResponse.json();
+        const postsData = await postsResponse.json();
+        if (cancelled) return;
+        const loadedProfile = profileData.profile as Profile;
+        setProfile(loadedProfile);
+        setName(loadedProfile.name ?? "");
+        const authored = (Array.isArray(postsData.reviews) ? postsData.reviews : [])
+          .filter((post: Post) => post.authorId === loadedProfile.id) as Post[];
+        setPosts(authored);
       } catch {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-
-      try {
-        const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
-        setPosts(saved ? JSON.parse(saved) as Review[] : []);
-        const savedVotes = localStorage.getItem(VOTES_KEY);
-        setVotes(savedVotes ? JSON.parse(savedVotes) as Record<string, "up" | "down"> : {});
-      } catch {
-        setPosts([]);
-        setVotes({});
-      }
-    };
-    void loadProfile();
+        if (!cancelled) setNotice("Could not load your profile. Please refresh and try again.");
+      } finally { if (!cancelled) setLoading(false); }
+    }
+    queueMicrotask(() => { void load(); });
+    return () => { cancelled = true; };
   }, []);
 
-  function votePost(id: string, direction: "up" | "down") {
-    const previous = votes[id];
-    const nextDirection = previous === direction ? undefined : direction;
-    const nextVotes = { ...votes };
-    if (nextDirection) nextVotes[id] = nextDirection;
-    else delete nextVotes[id];
-
-    const updatedPosts = posts.map((post) => {
-      if (post.id !== id) return post;
-      const counts = { up: post.votes?.up ?? 0, down: post.votes?.down ?? 0 };
-      if (previous === "up") counts.up = Math.max(0, counts.up - 1);
-      if (previous === "down") counts.down = Math.max(0, counts.down - 1);
-      if (nextDirection === "up") counts.up += 1;
-      if (nextDirection === "down") counts.down += 1;
-      return { ...post, votes: counts };
-    });
-
-    setVotes(nextVotes);
-    setPosts(updatedPosts);
+  async function saveName(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setSaving(true); setNotice("");
     try {
-      localStorage.setItem(VOTES_KEY, JSON.stringify(nextVotes));
-      localStorage.setItem("tn-government-explorer-reviews-v1", JSON.stringify(updatedPosts));
-    } catch {
-      // Keep the current UI state if browser storage is unavailable.
-    }
+      const response = await fetch("/api/profile", {
+        method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "same-origin",
+        body: JSON.stringify({ name }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not save your display name");
+      setProfile((current) => current ? { ...current, name: data.profile.name } : current);
+      setName(data.profile.name);
+      setNotice("Your public display name is saved and will be used on future discussions.");
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not save your name"); }
+    finally { setSaving(false); }
   }
 
-  if (isLoading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6 text-slate-900">
-        <p className="text-sm text-slate-600">Loading your profile...</p>
-      </main>
-    );
-  }
+  if (loading) return <main className="aa-page"><div className="aa-empty">Loading your profile…</div></main>;
+  if (signedOut || !profile) return <main className="aa-page"><section className="aa-auth-modal"><h1>Sign in required</h1><p>Sign in to manage your public display name and discussions.</p><Link href="/auth/login">Continue to sign in ↗</Link><Link href="/" className="aa-back-link">Back to Explorer</Link></section></main>;
 
-  if (!user) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6 text-slate-900">
-        <section className="max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-          <h1 className="text-2xl font-bold">Sign in required</h1>
-          <p className="mt-2 text-sm text-slate-600">Sign in before opening your profile.</p>
-          <a href="/auth/login" className="mt-6 inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white">Sign in</a>
-        </section>
-      </main>
-    );
-  }
-
-  const displayName = user.name || user.username || user.email || "Community member";
-  return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
-      <div className="mx-auto max-w-3xl">
-        <Link href="/" className="text-sm font-semibold text-blue-700">← Back to Explorer</Link>
-        <section className="mt-5 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">Your profile</p>
-          <h1 className="mt-2 text-3xl font-bold">{displayName}</h1>
-          <p className="mt-2 text-sm text-slate-600">{user.email || "Authenticated with Cognito"}</p>
-        </section>
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h2 className="text-xl font-bold">Your posts</h2>
-          <p className="mt-1 text-sm text-slate-600">Posts created in this browser are shown here until the PostgreSQL API is connected.</p>
-          {posts.length === 0 ? (
-            <p className="mt-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">You have not created any posts yet.</p>
-          ) : (
-            <div className="mt-5 grid gap-3">
-              {posts.map((post) => {
-                const style = typeStyles[post.type];
-                const initials = post.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
-                return (
-                <article key={post.id} className="feedback-card" style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 10, fontWeight: 400, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{post.type}</span>
-                    <span style={{ color: "#9ca3af", fontSize: 11, fontWeight: 400, whiteSpace: "nowrap" }}>{new Date(post.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
-                  </div>
-                  <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "#202124" }}>{post.title}</h3>
-                  <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, fontWeight: 400, lineHeight: 1.65, overflowWrap: "anywhere" }}>{post.body}</p>
-                  {post.image && <img src={post.image} alt={`Image attached to review: ${post.title}`} style={{ display: "block", margin: "10px 0 13px", maxWidth: "100%", maxHeight: 360, borderRadius: 11, border: "1px solid #e5e7eb", objectFit: "contain" }} />}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: 10, paddingTop: 12, borderTop: "1px solid #f0f1f3" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-                      <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 400 }}>{initials}</div>
-                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 400 }}>{post.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, fontWeight: 400, overflowWrap: "anywhere" }}>{post.profile}</p></div>
-                    </div>
-                    <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
-                      <button type="button" aria-label="Upvote post" title="Upvote" aria-pressed={votes[post.id] === "up"} onClick={() => votePost(post.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[post.id] === "up" ? "#dbeafe" : "transparent", color: votes[post.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{post.votes?.up ?? 0}</span></button>
-                      <button type="button" aria-label="Downvote post" title="Downvote" aria-pressed={votes[post.id] === "down"} onClick={() => votePost(post.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[post.id] === "down" ? "#ffedd5" : "transparent", color: votes[post.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{post.votes?.down ?? 0}</span></button>
-                    </div>
-                  </div>
-                </article>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      </div>
-    </main>
-  );
+  return <main className="aa-page">
+    <header className="aa-topbar"><Link href="/" className="aa-brand"><span className="aa-brand-mark">அ</span><span><strong>அரசியல் அரட்டை</strong><small>ARASIYAL ARATTAI</small></span></Link><Link href="/reviews" className="aa-back-link">Public discussions</Link></header>
+    <div className="aa-profile-layout">
+      <section className="aa-profile-card"><span className="aa-eyebrow">YOUR ACCOUNT</span><h1>Your profile</h1><p className="aa-profile-email">{profile.email || "Signed in with Cognito"}</p>
+        <form onSubmit={saveName} className="aa-profile-form"><label htmlFor="aa-profile-name">Public display name</label><p>This name appears next to your public discussions and comments.</p><input id="aa-profile-name" value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={60} required /><button type="submit" disabled={saving}>{saving ? "Saving…" : "Save display name"}</button></form>
+        {notice && <p role="status" className="aa-profile-notice">{notice}</p>}
+      </section>
+      <section className="aa-profile-posts"><div className="aa-feed-heading"><div><span className="aa-eyebrow">YOUR CONTRIBUTIONS</span><h2>Your discussions</h2><p>Posts you have published across the directory.</p></div><span className="aa-feed-count">{posts.length} posts</span></div>
+        {posts.length === 0 ? <div className="aa-empty"><span>✦</span><h3>No discussions yet</h3><p>Share a constructive observation, raise a concern or request action.</p><Link href="/reviews?action=write">Start a discussion ↗</Link></div> :
+          <div className="aa-profile-post-list">{posts.map((post) => { const style = typeColors[post.type]; return <article key={post.id} className="aa-post"><span className="aa-type-pill" style={{ color: style.color, background: style.background }}>{post.type}</span><h3>{post.title}</h3><p className="aa-post-body">{post.body}</p><div className="aa-tagged-officials">{post.officials?.map((official) => <span key={official.name}>{official.name}</span>)}</div>{post.imageUrls?.length > 0 && <div className="home-review-images">{post.imageUrls.map((url) => <img key={url} src={url} alt="Discussion attachment" />)}</div>}<small className="aa-profile-post-date">{new Date(post.date).toLocaleString()}</small></article>; })}</div>}
+      </section>
+    </div>
+  </main>;
 }
