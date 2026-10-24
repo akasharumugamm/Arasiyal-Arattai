@@ -259,7 +259,6 @@ export default function ReviewsPage() {
 
     <section className="aa-hero">
       <div><div className="aa-eyebrow">PUBLIC VOICE · ACCOUNTABILITY</div><h1>Public discussions</h1><p>Recognise good work, raise concerns, ask for action, and discuss public service. Keep it respectful, specific and evidence-based.</p></div>
-      <div className="aa-score"><span>Community sentiment</span><strong>{score === null ? "—" : score}<small>{score === null ? "" : " / 100"}</small></strong><div className="aa-score-track"><i style={{ width: `${score ?? 0}%` }} /></div><small>Based on Positive and Concern posts only</small></div>
     </section>
     <section id="aa-composer" className="aa-composer">
       <div className="aa-composer-heading"><div><span className="aa-eyebrow">YOUR VOICE MATTERS</span><h2>Start a discussion</h2></div><span className="aa-private-note">✦ Public by default</span></div>
