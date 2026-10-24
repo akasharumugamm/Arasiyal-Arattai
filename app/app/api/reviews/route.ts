@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
 
     const result = await query(
-      `SELECT p.id, p.review_type AS type, p.title, p.body, p.created_at AS date,
+      `SELECT p.id, p.author_id AS "authorId", p.review_type AS type, p.title, p.body, p.created_at AS date,
               COALESCE(u.display_name, u.username, 'User') AS name,
               COALESCE((SELECT json_agg(json_build_object('name', po.official_name, 'category', po.official_category) ORDER BY po.official_name)
                         FROM review_post_officials po WHERE po.post_id = p.id), '[]'::json) AS officials,
