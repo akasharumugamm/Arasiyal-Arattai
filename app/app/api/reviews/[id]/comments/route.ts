@@ -56,6 +56,8 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
   }
   try {
     const userId = await ensureUser(claims);
+    const authorResult = await query<{ display_name: string | null; username: string | null }>("SELECT display_name, username FROM app_users WHERE id = $1", [userId]);
+    const authorName = authorResult.rows[0]?.display_name ?? authorResult.rows[0]?.username ?? "User";
     const result = await query(
       `INSERT INTO review_comments (post_id, author_id, parent_comment_id, body)
        SELECT p.id, $2, CASE WHEN $4::uuid IS NULL THEN NULL ELSE c.id END, $3
@@ -66,7 +68,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
       [id, userId, body, parentId ?? null],
     );
     if (!result.rowCount) return NextResponse.json({ error: "Review or parent comment not found" }, { status: 404 });
-    return NextResponse.json({ comment: { ...result.rows[0], name: claims.name ?? claims.username ?? "User" } }, { status: 201 });
+    return NextResponse.json({ comment: { ...result.rows[0], name: authorName } }, { status: 201 });
   } catch (error) {
     console.error("Could not save comment:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Could not save comment" }, { status: 503 });
