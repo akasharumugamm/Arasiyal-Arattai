@@ -41,10 +41,13 @@ type ReviewSummary = {
   id: string;
   profile: string;
   name: string;
-  type: "Positive" | "Negative" | "Allegation" | "Request";
+  type: "Positive" | "Concern" | "Allegation" | "Request";
   title: string;
   body: string;
   image?: string;
+  imageUrls?: string[];
+  officials?: { name: string; category: string }[];
+  myVote?: "up" | "down" | null;
   votes?: { up: number; down: number };
   date: string;
 };
@@ -863,6 +866,16 @@ function ReviewSortMenu({
   );
 }
 
+function HomeCategoryMenu({ value, onChange }: {
+  value: "All" | "Positive" | "Concern" | "Allegation" | "Request";
+  onChange: (value: "All" | "Positive" | "Concern" | "Allegation" | "Request") => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const options = [{ value: "All" as const, label: "All categories" }, { value: "Positive" as const, label: "Positive" }, { value: "Concern" as const, label: "Concern" }, { value: "Allegation" as const, label: "Allegation" }, { value: "Request" as const, label: "Request" }];
+  const current = options.find((item) => item.value === value) ?? options[0];
+  return <div className="home-category-menu"><button type="button" className="home-category-trigger" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen((v) => !v)}><span>{current.label}</span><span>⌄</span></button>{open && <><button type="button" className="home-category-away" aria-label="Close category menu" onClick={() => setOpen(false)} /><div className="home-category-options" role="listbox" aria-label="Discussion category">{options.map((option) => <button key={option.value} type="button" role="option" aria-selected={value === option.value} className={value === option.value ? "selected" : ""} onClick={() => { onChange(option.value); setOpen(false); }}>{option.label}{value === option.value && <span>✓</span>}</button>)}</div></>}</div>;
+}
+
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
@@ -881,9 +894,8 @@ export default function Home() {
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
   const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
-  const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Negative" | "Allegation" | "Request">("All");
+  const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Concern" | "Allegation" | "Request">("All");
   const [homeReviewName, setHomeReviewName] = useState("");
-  const [homeReviewDateOrder, setHomeReviewDateOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -918,24 +930,27 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const loadReviews = () => {
+    let cancelled = false;
+    async function loadReviews() {
       try {
-        const saved = localStorage.getItem("tn-government-explorer-reviews-v1");
-        const reviews = saved ? JSON.parse(saved) as ReviewSummary[] : [];
-        setRecentReviews(reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
-        const savedVotes = localStorage.getItem("tn-government-explorer-review-votes-v1");
-        setHomeVotes(savedVotes ? JSON.parse(savedVotes) as Record<string, "up" | "down"> : {});
-        const relevant = reviews.filter((review) => review.profile === selected.label && (review.type === "Positive" || review.type === "Negative"));
+        const response = await fetch("/api/reviews", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not load discussions");
+        const loaded = (Array.isArray(data.reviews) ? data.reviews : []).map((review: Record<string, unknown>) => {
+          const officials = Array.isArray(review.officials) ? review.officials as { name: string; category: string }[] : [];
+          const imageUrls = Array.isArray(review.imageUrls) ? review.imageUrls as string[] : [];
+          return { ...review, profile: officials.map((official) => official.name).join(", "), officials, imageUrls, image: imageUrls[0] } as ReviewSummary;
+        });
+        if (cancelled) return;
+        setRecentReviews(loaded);
+        setHomeVotes(Object.fromEntries(loaded.filter((review) => review.myVote).map((review) => [review.id, review.myVote as "up" | "down"])));
+        const relevant = loaded.filter((review) => review.officials?.some((official) => official.name === selected.label) && (review.type === "Positive" || review.type === "Concern"));
         const positive = relevant.filter((review) => review.type === "Positive").length;
         setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
-      } catch {
-        setRecentReviews([]);
-        setReviewScore(null);
-      }
-    };
-    loadReviews();
-    window.addEventListener("storage", loadReviews);
-    return () => window.removeEventListener("storage", loadReviews);
+      } catch { if (!cancelled) { setRecentReviews([]); setReviewScore(null); } }
+    }
+    void loadReviews();
+    return () => { cancelled = true; };
   }, [selected.label]);
 
   useEffect(() => {
@@ -1158,43 +1173,21 @@ export default function Home() {
 
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
-  function voteHomeReview(id: string, direction: "up" | "down") {
-    if (!isAuthenticated) {
-      setAuthMode("Log In");
-      setAuthModalOpen(true);
-      return;
-    }
+  async function voteHomeReview(id: string, direction: "up" | "down") {
+    if (!isAuthenticated) { setAuthMode("Log In"); setAuthModalOpen(true); return; }
     setProfileMenuOpen(false);
-    const previous = homeVotes[id];
-    const nextDirection = previous === direction ? undefined : direction;
-    const nextVotes = { ...homeVotes };
-    if (nextDirection) nextVotes[id] = nextDirection;
-    else delete nextVotes[id];
-    const updated = recentReviews.map((review) => {
-      if (review.id !== id) return review;
-      const counts = { up: review.votes?.up ?? 0, down: review.votes?.down ?? 0 };
-      if (previous === "up") counts.up = Math.max(0, counts.up - 1);
-      if (previous === "down") counts.down = Math.max(0, counts.down - 1);
-      if (nextDirection === "up") counts.up += 1;
-      if (nextDirection === "down") counts.down += 1;
-      return { ...review, votes: counts };
-    });
-    setHomeVotes(nextVotes);
-    setRecentReviews(updated);
     try {
-      localStorage.setItem("tn-government-explorer-review-votes-v1", JSON.stringify(nextVotes));
-      localStorage.setItem("tn-government-explorer-reviews-v1", JSON.stringify(updated));
-    } catch { /* Keep current UI state. */ }
+      const response = await fetch("/api/reviews/" + encodeURIComponent(id) + "/vote", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ direction }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not save vote");
+      setHomeVotes((current) => ({ ...current, [id]: direction }));
+      setRecentReviews((current) => current.map((review) => review.id === id ? { ...review, myVote: direction, votes: { up: data.upvotes ?? 0, down: data.downvotes ?? 0 } } : review));
+    } catch { /* Keep the existing feed visible if voting fails. */ }
   }
 
   const filteredHomeReviews = recentReviews
-    .filter((review) => homeReviewType === "All" || (homeReviewType === "Negative" ? review.type === "Negative" : review.type === homeReviewType))
-    .filter((review) => !homeReviewName.trim() || review.profile.toLowerCase().includes(homeReviewName.trim().toLowerCase()))
-    .sort((a, b) => {
-      if (homeReviewDateOrder === "Highest upvotes") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
-      if (homeReviewDateOrder === "Highest downvotes") return (b.votes?.down ?? 0) - (a.votes?.down ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
-      return homeReviewDateOrder === "Newest first" ? new Date(b.date).getTime() - new Date(a.date).getTime() : new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
+    .filter((review) => homeReviewType === "All" || review.type === homeReviewType)
+    .filter((review) => !homeReviewName.trim() || (review.officials ?? []).some((official) => official.name.toLowerCase().includes(homeReviewName.trim().toLowerCase())));
 
   return (
     <main className="app-shell" style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
