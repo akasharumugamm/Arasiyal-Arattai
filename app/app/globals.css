@@ -880,3 +880,43 @@ option {
   .aa-directory-header .app-header-actions { gap: 5px; }
   .aa-directory-header .aa-directory-action { padding: 0 8px; font-size: 10px; }
 }
+
+
+/* Match the circular profile action from the homepage header. */
+.aa-directory-header .aa-header-profile-icon {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #334155;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.aa-directory-header .aa-header-profile-icon:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  transform: translateY(-1px);
+}
+.aa-directory-header .aa-header-profile-icon:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+@media (max-width: 760px) {
+  .aa-directory-header .aa-header-profile-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+}
+@media (max-width: 420px) {
+  .aa-directory-header .aa-header-profile-icon {
+    width: 34px;
+    height: 34px;
+  }
+}
