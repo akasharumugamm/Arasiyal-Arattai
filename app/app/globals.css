@@ -514,3 +514,33 @@ option {
   .feedback-overview-card, .discussion-overview-card { padding: 14px; border-radius: 16px; }
   .feedback-overview-row { min-height: 41px; }
 }
+
+
+/* Selected feedback category is emphasized; inactive rows stay regular */
+.feedback-overview-row {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+.feedback-overview-row:hover {
+  background: #f8fafc;
+}
+.feedback-overview-row .feedback-overview-label {
+  font-weight: 400;
+  transition: font-weight 140ms ease;
+}
+.feedback-overview-row.is-selected {
+  background: #f8fafc;
+  border-color: #e7ebf1;
+}
+.feedback-overview-row.is-selected .feedback-overview-label {
+  font-weight: 700;
+}
+.feedback-overview-row:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
