@@ -1227,6 +1227,7 @@ export default function Home() {
             </div>
           )}
         </div>
+        <a className="app-share-feedback" href="/reviews?action=write">＋ Share feedback</a>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
         Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback with Arasiyal Arattai.
@@ -1377,10 +1378,7 @@ export default function Home() {
                 <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
               </div>
               <RatingGauge value={reviewScore} />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}&action=write`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 11, lineHeight: 1.3, fontWeight: 700, boxShadow: "0 2px 5px #1d4ed822" }}><span aria-hidden="true">＋</span> Share feedback</a>
-                <a href={`/reviews?profile=${encodeURIComponent(selected.label)}`} style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, textAlign: "center", textDecoration: "none", padding: "11px 8px", borderRadius: 10, border: "1px solid #cbd5e1", background: "#f8fafc", color: "#172554", fontSize: 11, lineHeight: 1.3, fontWeight: 700 }}><span aria-hidden="true">☰</span> Browse feedback</a>
-              </div>
+              <div style={{ marginTop: 12, color: "#64748b", fontSize: 12, lineHeight: 1.5 }}>Community discussions tagged to this official appear in Public Discussions below.</div>
             </div>
           )}
           <div style={{ marginTop: 18 }}>
@@ -1412,25 +1410,19 @@ export default function Home() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
-            <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 700 }}>Recently added feedback</h2>
-            <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Browse community feedback.</p>
+            <h2 style={{ margin: "5px 0 0", fontSize: 23, fontWeight: 700 }}>Public Discussions</h2>
+            <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Recent community posts about public officials and service.</p>
           </div>
-          <a href="/reviews?action=write" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 15px", borderRadius: 10, background: "#1d4ed8", color: "white", fontSize: 12, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", boxShadow: "0 2px 5px #1d4ed822" }}>＋ Share feedback</a>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 14, padding: 12, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {(["All", "Positive", "Negative", "Allegation", "Request"] as const).map((type) => (
-              <button key={type} onClick={() => setHomeReviewType(type)} style={{ border: homeReviewType === type ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: homeReviewType === type ? "#dbeafe" : "white", color: homeReviewType === type ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "7px 11px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>{type}</button>
-            ))}
-          </div>
-          <input aria-label="Filter reviews by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name" style={{ flex: "1 1 160px", minWidth: 140, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", font: "inherit", fontSize: 12, background: "white", color: "#0f172a" }} />
-          <ReviewSortMenu value={homeReviewDateOrder} onChange={setHomeReviewDateOrder} />
+        <div className="home-discussion-controls">
+          <HomeCategoryMenu value={homeReviewType} onChange={setHomeReviewType} />
+          <div className="home-discussion-search"><span aria-hidden="true">⌕</span><input aria-label="Search discussions by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name…" />{homeReviewName && <button type="button" onClick={() => setHomeReviewName("")} aria-label="Clear search">×</button>}</div>
         </div>
         {recentReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center", border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
             <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No feedback added yet</p>
             <p style={{ margin: "6px 0 14px", color: "#64748b", fontSize: 13 }}>Be the first to share a constructive review.</p>
-            <a href="/reviews?action=write" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>Share feedback →</a>
+            <p style={{ color: "#64748b", fontSize: 13 }}>Use the Share feedback button in the header to start a discussion.</p>
           </div>
         ) : filteredHomeReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "grid", placeItems: "center", padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No feedback matches these filters.</div>
@@ -1439,7 +1431,7 @@ export default function Home() {
             {filteredHomeReviews.map((review) => {
               const style = review.type === "Positive"
                 ? { color: "#166534", background: "#dcfce7" }
-                : review.type === "Negative"
+                : review.type === "Concern" || review.type === "Allegation"
                   ? { color: "#991b1b", background: "#fee2e2" }
                   : { color: "#1d4ed8", background: "#dbeafe" };
               return (
@@ -1450,7 +1442,7 @@ export default function Home() {
                   </div>
                   <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "#202124" }}>{review.title}</h3>
                   <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, fontWeight: 400, lineHeight: 1.65, overflowWrap: "anywhere" }}>{review.body}</p>
-                  {review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", margin: "10px 0 13px", maxWidth: "100%", maxHeight: 360, borderRadius: 11, border: "1px solid #e5e7eb", objectFit: "contain" }} />}
+                  {review.imageUrls && review.imageUrls.length > 0 && <div className="home-review-images">{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div>}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: 10, paddingTop: 12, borderTop: "1px solid #f0f1f3" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
                       <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 400 }}>{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
@@ -1466,7 +1458,7 @@ export default function Home() {
             })}
           </div>
         )}
-        <p style={{ margin: "14px 0 0", fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>Reviews are currently saved in this browser only. A shared public feed needs a server database.</p>
+        <p style={{ margin: "14px 0 0", fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>Discussions are loaded from the shared database. Allegations are claims, not findings of fact.</p>
       </section>
     </main>
   );
