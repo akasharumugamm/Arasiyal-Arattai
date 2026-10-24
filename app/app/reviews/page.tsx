@@ -229,11 +229,14 @@ export default function ReviewsPage() {
   }
 
   return <main className="aa-page">
-    <header className="aa-topbar">
-      <Link href="/" className="aa-brand"><span className="aa-brand-mark">அ</span><span><strong>அரசியல் அரட்டை</strong><small>ARASIYAL ARATTAI</small></span></Link>
-      <div className="aa-top-actions">
+    <header className="aa-topbar app-header aa-directory-header">
+      <Link href="/" className="aa-brand aa-home-brand">
+        <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" />
+        <h1 className="brand-heading app-title">Arasiyal Arattai</h1>
+      </Link>
+      <div className="aa-top-actions app-header-actions">
+        <Link href="/" className="app-share-feedback aa-directory-action">Explore directory</Link>
         {isAuthenticated && <button type="button" className="aa-profile-link" onClick={() => setEditProfile(!editProfile)}>{profileName || "Your profile"}　⌄</button>}
-        <Link href="/" className="aa-back-link">Explore directory</Link>
       </div>
     </header>
     {editProfile && <form className="aa-profile-editor" onSubmit={saveProfile}><label htmlFor="aa-display-name">Public display name</label><div><input id="aa-display-name" value={profileName} onChange={(e) => setProfileName(e.target.value)} minLength={2} maxLength={60} required /><button disabled={savingProfile}>{savingProfile ? "Saving…" : "Save name"}</button></div></form>}
