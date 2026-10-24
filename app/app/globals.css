@@ -768,3 +768,24 @@ option {
   .auth-backdrop, .auth-modal { animation: none; }
   .auth-close, .auth-form input, .auth-submit, .auth-google { transition: none; }
 }
+
+
+/* Use the supplied brand mark cleanly in the authentication modal. */
+.auth-mark {
+  overflow: hidden;
+  padding: 0;
+  background: #fff;
+  box-shadow: none;
+}
+.auth-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* Keep the primary action clean and confident without a decorative arrow. */
+.auth-submit {
+  gap: 0;
+  letter-spacing: -0.1px;
+}
+.auth-submit span { display: none; }
