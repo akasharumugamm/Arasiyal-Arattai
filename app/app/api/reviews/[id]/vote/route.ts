@@ -29,8 +29,8 @@ async function ensureUser(claims: CognitoClaims): Promise<string> {
      VALUES ($1, $2, $3, $4)
      ON CONFLICT (cognito_sub) DO UPDATE SET
        email = COALESCE(EXCLUDED.email, app_users.email),
-       display_name = COALESCE(EXCLUDED.display_name, app_users.display_name),
-       username = COALESCE(EXCLUDED.username, app_users.username),
+       display_name = COALESCE(app_users.display_name, EXCLUDED.display_name),
+       username = COALESCE(app_users.username, EXCLUDED.username),
        updated_at = now()
      RETURNING id`,
     [
