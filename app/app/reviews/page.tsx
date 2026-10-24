@@ -17,8 +17,6 @@ type Review = {
   myVote?: "up" | "down" | null;
 };
 
-const STORAGE_KEY = "tn-government-explorer-reviews-v1";
-const VOTES_KEY = "tn-government-explorer-review-votes-v1";
 const PROFILES = [
   "C. Joseph Vijay",
   "N. Anand",
@@ -235,10 +233,6 @@ export default function ReviewsPage() {
     }
   }
 
-  function removeReview(id: string) {
-    setNotice("Server-side review deletion is not enabled yet.");
-  }
-
   const panel: React.CSSProperties = { background: "white", border: "1px solid #e2e8f0", borderRadius: 18, padding: 22, boxShadow: "0 8px 28px #0f172a08" };
   const label: React.CSSProperties = { display: "block", fontSize: 12, fontWeight: 800, color: "#334155", marginBottom: 7 };
   const input: React.CSSProperties = { width: "100%", border: "1px solid #cbd5e1", borderRadius: 10, padding: "11px 12px", font: "inherit", fontSize: 14, background: "white", color: "#0f172a", boxSizing: "border-box" };
@@ -334,9 +328,9 @@ export default function ReviewsPage() {
                 <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={votes[review.id] === "up"} onClick={() => voteReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[review.id] === "up" ? "#dbeafe" : "transparent", color: votes[review.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{review.votes?.up ?? 0}</span></button>
                 <button type="button" aria-label="Downvote review" title="Downvote" aria-pressed={votes[review.id] === "down"} onClick={() => voteReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[review.id] === "down" ? "#ffedd5" : "transparent", color: votes[review.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{review.votes?.down ?? 0}</span></button>
               </div>
-              <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: "auto" }}>Your vote is saved in this browser</span>
+              <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: "auto" }}>Your vote is saved to PostgreSQL</span>
             </div>
-            <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 15, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><span style={{ fontSize: 11, color: "#64748b" }}>Community-submitted · not independently verified</span><button onClick={() => removeReview(review.id)} style={{ border: "1px solid #cbd5e1", background: "white", color: "#64748b", borderRadius: 8, padding: "6px 9px", fontSize: 11, cursor: "pointer" }}>Remove from this browser</button></div>
+            <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 15, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><span style={{ fontSize: 11, color: "#64748b" }}>Community-submitted · not independently verified</span></div>
           </article>)}</div>}
         </section>
         <footer style={{ marginTop: 28, color: "#94a3b8", fontSize: 11, lineHeight: 1.7 }}>Prototype note: reviews are stored in this browser only using local storage. They are not shared with other visitors or saved to a server yet. A backend and moderation system are needed for a public, shared review platform.</footer>
