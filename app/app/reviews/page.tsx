@@ -260,7 +260,7 @@ export default function ReviewsPage() {
           </div>
         </div>
         {selectedOfficials.length > 0 && <div className="aa-selected-chips">{selectedOfficials.map((item) => <button key={item.name} type="button" onClick={() => toggleOfficial(item)}>{item.name} <span>×</span></button>)}</div>}
-        <div className="aa-upload-row"><label className="aa-upload-button">＋ Add photos<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden onChange={(e) => chooseFiles(e.target.files)} disabled={files.length >= 4} /></label><span>{files.length}/4 attached</span><small>Up to 4 photos · 2 MB each</small></div>
+        <div className="aa-upload-row"><label className="aa-upload-button">＋ Add photos<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden onChange={(e) => chooseFiles(e.target.files)} disabled={files.length >= 4} /></label><span>{files.length}/4 attached</span></div>
         {oversized && <p className="aa-error">One or more selected photos exceed 2 MB. Remove them or choose smaller files.</p>}
         {previews.length > 0 && <div className="aa-compose-gallery">{previews.map((url, index) => <div key={url}><button type="button" aria-label={`Remove image ${index + 1}`} onClick={() => removeImage(index)}>×</button><img src={url} alt={`Preview ${index + 1}`} /></div>)}</div>}
         <div className="aa-submit-row"><span>Claims labelled as allegations are not treated as proven facts.</span><button type="submit" disabled={submitting}>{submitting ? "Publishing…" : "Publish discussion ↗"}</button></div>
