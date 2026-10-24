@@ -1350,10 +1350,16 @@ export default function Home() {
               { label: "Allegations", count: recentReviews.filter((review) => review.type === "Allegation").length, color: "#8b5cf6", type: "Allegation" },
               { label: "Requests", count: recentReviews.filter((review) => review.type === "Request").length, color: "#eabf36", type: "Request" },
             ].map((item) => (
-              <div className="feedback-overview-row" key={item.type}>
+              <button
+                type="button"
+                className={`feedback-overview-row${homeReviewType === item.type ? " is-selected" : ""}`}
+                key={item.type}
+                aria-pressed={homeReviewType === item.type}
+                onClick={() => setHomeReviewType(item.type as typeof homeReviewType)}
+              >
                 <span className="feedback-overview-label"><span className="feedback-overview-dot" style={{ background: item.color }} />{item.label}</span>
                 <span className="feedback-overview-count">{item.count}</span>
-              </div>
+              </button>
             ))}
           </section>
           <section className="discussion-overview-card" aria-label="Discussion overview">
