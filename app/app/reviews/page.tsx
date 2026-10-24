@@ -258,10 +258,10 @@ export default function ReviewsPage() {
     </header>
 
     <section className="aa-hero">
-      <div><div className="aa-eyebrow">PUBLIC VOICE · ACCOUNTABILITY</div><h1>Public discussions</h1><p>Recognise good work, raise concerns, ask for action, and discuss public service. Keep it respectful, specific and evidence-based.</p></div>
+      <div><div className="aa-eyebrow">PUBLIC VOICE · ACCOUNTABILITY</div><h1>People&apos;s Voice</h1><p>Share your views on public officials&apos; work, decisions, achievements and areas for improvement. Keep feedback respectful, specific and evidence-based.</p></div>
     </section>
     <section id="aa-composer" className="aa-composer">
-      <div className="aa-composer-heading"><div><span className="aa-eyebrow">YOUR VOICE MATTERS</span><h2>Start a discussion</h2></div><span className="aa-private-note">✦ Public by default</span></div>
+      <div className="aa-composer-heading"><div><span className="aa-eyebrow">YOUR VOICE MATTERS</span><h2>Write about a public official</h2></div><span className="aa-private-note">✦ Public by default</span></div>
       <form onSubmit={submitReview}>
         <label className="aa-field-label" htmlFor="aa-title">Title</label>
         <input id="aa-title" className="aa-text-input" placeholder="What should people know?" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} required />
