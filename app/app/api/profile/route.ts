@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     const claims = await getClaims(request);
     if (!claims) return NextResponse.json({ error: "Sign in to view your profile" }, { status: 401 });
     const user = await getUserId(claims);
-    return NextResponse.json({ profile: { name: user.display_name ?? user.username ?? "User", username: user.username, email: user.email } });
+    return NextResponse.json({ profile: { id: user.id, name: user.display_name ?? user.username ?? "User", username: user.username, email: user.email } });
   } catch (error) {
     console.error("Could not load profile:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Could not load profile" }, { status: 503 });
