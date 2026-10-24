@@ -5,14 +5,13 @@ const globalForPostgres = globalThis as typeof globalThis & {
   postgresPool?: Pool;
 };
 
-function createPool() {
+function createPool(): Pool {
   const configuredUrl = process.env.DATABASE_URL;
-
   if (!configuredUrl) {
     throw new Error("DATABASE_URL is not configured");
   }
 
-  // pg's URL SSL parameters can override the explicit SSL object below.
+  // pg URL SSL parameters can override the explicit SSL object below.
   // Remove them from this in-memory copy so the RDS CA bundle is used.
   const url = new URL(configuredUrl);
   const sslMode = url.searchParams.get("sslmode");
@@ -28,7 +27,6 @@ function createPool() {
   let ssl: Pool["options"]["ssl"];
 
   if (sslRootCert) {
-    // Respect an explicitly configured root certificate path.
     if (!existsSync(sslRootCert)) {
       throw new Error("The configured PostgreSQL SSL root certificate was not found");
     }
@@ -46,7 +44,6 @@ function createPool() {
       `RDS CA bundle not found. Set RDS_CA_CERT_PATH to the AWS RDS CA bundle file (currently expected at ${caPath}).`,
     );
   } else if (sslMode) {
-    // Non-RDS development databases may rely on the platform's trusted CAs.
     ssl = { rejectUnauthorized: true };
   }
 
@@ -59,20 +56,25 @@ function createPool() {
   });
 }
 
-export const db = globalForPostgres.postgresPool ?? createPool();
+function getPool(): Pool {
+  // Defer environment validation and pool creation until an API request
+  // actually queries the database. CI can then build without production secrets.
+  if (globalForPostgres.postgresPool) return globalForPostgres.postgresPool;
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPostgres.postgresPool = db;
+  const pool = createPool();
+  globalForPostgres.postgresPool = pool;
+
+  pool.on("error", (error) => {
+    // Never log connection strings or other secret configuration.
+    console.error("Unexpected PostgreSQL pool error:", error.message);
+  });
+
+  return pool;
 }
-
-db.on("error", (error) => {
-  // Do not log connection strings or other secret configuration.
-  console.error("Unexpected PostgreSQL pool error:", error.message);
-});
 
 export async function query<T extends QueryResultRow = QueryResultRow>(
   text: string,
   values?: unknown[],
 ): Promise<QueryResult<T>> {
-  return db.query<T>(text, values);
+  return getPool().query<T>(text, values);
 }
