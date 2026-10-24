@@ -106,7 +106,10 @@ export default function ReviewsPage() {
     const params = new URLSearchParams(window.location.search);
     const requestedAction = params.get("action");
     const requestedProfile = params.get("profile");
-    if (requestedProfile && PROFILES.includes(requestedProfile)) setProfile(requestedProfile);
+    if (requestedProfile && PROFILES.includes(requestedProfile)) {
+      // Defer URL-derived state until after the effect body to avoid a cascading render.
+      queueMicrotask(() => setProfile(requestedProfile));
+    }
 
     fetch("/api/reviews", { cache: "no-store" })
       .then(async (response) => {
