@@ -1,344 +1,295 @@
 "use client";
 
 import Link from "next/link";
+import mlaDirectory from "@/data/tn-mlas.json";
 import { useEffect, useMemo, useState } from "react";
 
-type ReviewType = "Positive" | "Negative" | "Allegation" | "Request";
+type ReviewType = "Positive" | "Concern" | "Allegation" | "Request";
+type Official = { name: string; category: string };
+type Comment = { id: string; parentCommentId?: string | null; body: string; date: string; name: string };
 type Review = {
-  id: string;
-  profile: string;
-  name: string;
-  type: ReviewType;
-  title: string;
-  body: string;
-  image?: string;
-  votes?: { up: number; down: number };
-  date: string;
-  myVote?: "up" | "down" | null;
+  id: string; name: string; type: ReviewType; title: string; body: string; date: string;
+  officials: Official[]; imageUrls: string[]; votes?: { up: number; down: number };
+  myVote?: "up" | "down" | null; commentCount?: number;
 };
-
-const PROFILES = [
-  "C. Joseph Vijay",
-  "N. Anand",
-  "Aadhav Arjuna",
-  "Dr. K.G. Arunraj",
-  "K.A. Sengottaiyan",
-  "P. Venkataramanan",
-  "R. Nirmalkumar",
-  "Rajmohan",
-  "Dr. T.K. Prabhu",
-  "Selvi S. Keerthana",
-  "P. Viswanathan",
-  "S. Rajesh Kumar",
-  "A.M. Shahjahan",
-  "Vanni Arasu",
-  "A. Vijay Tamilan Parthiban",
-  "B. Rajkumar",
-  "V. Sampath Kumar",
-  "M. Vijay Balaji",
-  "K. Vignesh",
-  "K. Thennarasu",
-  "J. Mohamed Farvas",
-  "V. Gandhiraj",
-  "Jagadeshwari K.",
-  "R. Vinoth",
-  "C. Vijayalakshmi",
-  "D. Sarathkumar",
-  "Ramesh",
-  "P. Mathan Raja",
-  "N. Marie Wilson",
-  "A. Srinath",
-  "S. Kamali",
-  "Dr. Kumar R",
-  "R.V. Ranjithkumar",
-  "D. Logesh Tamilselvan",
-  "Dr. V.K. Rajeev",
+const TYPE_OPTIONS: { value: ReviewType; label: string; detail: string; color: string; tint: string }[] = [
+  { value: "Positive", label: "Positive", detail: "Recognise a positive action or outcome", color: "#15803d", tint: "#dcfce7" },
+  { value: "Concern", label: "Concern", detail: "Describe a problem or poor outcome", color: "#b45309", tint: "#fef3c7" },
+  { value: "Allegation", label: "Allegation", detail: "Clearly label claims and share credible sources", color: "#b91c1c", tint: "#fee2e2" },
+  { value: "Request", label: "Request", detail: "Ask for action, clarity or a public response", color: "#1d4ed8", tint: "#dbeafe" },
 ];
+const FEATURED: Official[] = [
+  { name: "C. Joseph Vijay", category: "Chief Minister" },
+  { name: "Governor of Tamil Nadu", category: "Governor" },
+  { name: "N. Anand", category: "Minister" }, { name: "Aadhav Arjuna", category: "Minister" },
+  { name: "Dr. K.G. Arunraj", category: "Minister" }, { name: "K.A. Sengottaiyan", category: "Minister" },
+  { name: "P. Venkataramanan", category: "Minister" }, { name: "R. Nirmalkumar", category: "Minister" },
+  { name: "Rajmohan", category: "Minister" }, { name: "Dr. T.K. Prabhu", category: "Minister" },
+  { name: "Selvi S. Keerthana", category: "Minister" }, { name: "P. Viswanathan", category: "Minister" },
+  { name: "S. Rajesh Kumar", category: "Minister" }, { name: "A.M. Shahjahan", category: "Minister" },
+  { name: "Vanni Arasu", category: "Minister" }, { name: "A. Vijay Tamilan Parthiban", category: "Minister" },
+  { name: "B. Rajkumar", category: "Minister" }, { name: "V. Sampath Kumar", category: "Minister" },
+  { name: "M. Vijay Balaji", category: "Minister" }, { name: "K. Vignesh", category: "Minister" },
+  { name: "K. Thennarasu", category: "Minister" }, { name: "J. Mohamed Farvas", category: "Minister" },
+  { name: "V. Gandhiraj", category: "Minister" }, { name: "Jagadeshwari K.", category: "Minister" },
+  { name: "R. Vinoth", category: "Minister" }, { name: "C. Vijayalakshmi", category: "Minister" },
+  { name: "D. Sarathkumar", category: "Minister" }, { name: "Ramesh", category: "Minister" },
+  { name: "P. Mathan Raja", category: "Minister" }, { name: "N. Marie Wilson", category: "Minister" },
+  { name: "A. Srinath", category: "Minister" }, { name: "S. Kamali", category: "Minister" },
+  { name: "Dr. Kumar R", category: "Minister" }, { name: "R.V. Ranjithkumar", category: "Minister" },
+  { name: "D. Logesh Tamilselvan", category: "Minister" }, { name: "Dr. V.K. Rajeev", category: "Minister" },
+];
+const MLA_OFFICIALS: Official[] = (mlaDirectory.members as { name: string; constituency: string; status: string }[])
+  .filter((member) => member.status !== "Vacant")
+  .map((member) => ({ name: member.name, category: "MLA" }));
+const OFFICIALS = [...FEATURED, ...MLA_OFFICIALS]
+  .filter((item, index, all) => all.findIndex((other) => other.name.toLowerCase() === item.name.toLowerCase()) === index)
+  .sort((a, b) => a.category === "Chief Minister" ? -1 : b.category === "Chief Minister" ? 1 : a.name.localeCompare(b.name));
 
-const typeStyles: Record<ReviewType, { color: string; background: string; description: string }> = {
-  Positive: { color: "#166534", background: "#dcfce7", description: "Share a positive observation or outcome" },
-  Negative: { color: "#991b1b", background: "#fee2e2", description: "Describe a concern or poor outcome" },
-  Allegation: { color: "#991b1b", background: "#fee2e2", description: "State a claim clearly as an allegation and include evidence or sources" },
-  Request: { color: "#1d4ed8", background: "#dbeafe", description: "Suggest an action or ask for a response" },
-};
-
-function RatingGauge({ value }: { value: number | null }) {
-  const score = value === null ? null : Math.max(0, Math.min(100, Math.round(value)));
-  const sentiment = score === null ? "Awaiting feedback" : score >= 70 ? "Mostly positive" : score >= 45 ? "Mixed feedback" : "Needs improvement";
-  const color = score === null ? "#64748b" : score >= 70 ? "#15803d" : score >= 45 ? "#b45309" : "#b91c1c";
-  const background = score === null ? "#f1f5f9" : score >= 70 ? "#dcfce7" : score >= 45 ? "#fef3c7" : "#fee2e2";
-  return (
-    <div style={{ width: "100%", maxWidth: 300, margin: "0 auto", padding: 18, boxSizing: "border-box", border: "1px solid #e2e8f0", borderRadius: 16, background: "white" }}>
-      <div style={{ fontSize: 11, color: "#64748b", fontWeight: 800, letterSpacing: 0.5, textTransform: "uppercase" }}>Public sentiment</div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginTop: 6 }}>
-        <div><span style={{ fontSize: 32, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>{score === null ? "—" : score}</span><span style={{ fontSize: 13, color: "#64748b", fontWeight: 700 }}> / 100</span></div>
-        <span style={{ padding: "6px 9px", borderRadius: 999, background, color, fontSize: 10, fontWeight: 700, whiteSpace: "nowrap" }}>{sentiment}</span>
-      </div>
-      <div role="progressbar" aria-label="Positive public sentiment score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? 0} style={{ height: 9, borderRadius: 999, overflow: "hidden", background: "#e2e8f0", marginTop: 14 }}>
-        <div style={{ width: `${score ?? 0}%`, height: "100%", borderRadius: 999, background: score === null ? "#cbd5e1" : score >= 70 ? "#16a34a" : score >= 45 ? "#f59e0b" : "#ef4444", transition: "width 220ms ease" }} />
-      </div>
-      <p style={{ margin: "9px 0 0", fontSize: 11, color: "#64748b", lineHeight: 1.5 }}>{score === null ? "No positive or negative reviews yet." : "Based on positive and negative reviews only."}</p>
-    </div>
-  );
+function CustomDropdown<T extends string>({ value, options, onChange, label }: {
+  value: T; options: { value: T; label: string; detail?: string; color?: string; tint?: string }[];
+  onChange: (value: T) => void; label: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((item) => item.value === value) ?? options[0];
+  return <div className="aa-dropdown">
+    <button type="button" className="aa-dropdown-trigger" aria-expanded={open} aria-label={label} onClick={() => setOpen(!open)}>
+      <span>{selected.label}</span><span aria-hidden="true">{open ? "⌃" : "⌄"}</span>
+    </button>
+    {open && <><button className="aa-click-away" aria-label="Close menu" onClick={() => setOpen(false)} />
+      <div className="aa-dropdown-menu" role="listbox" aria-label={label}>
+        {options.map((option) => <button key={option.value} type="button" role="option" aria-selected={option.value === value}
+          className={option.value === value ? "aa-dropdown-option selected" : "aa-dropdown-option"}
+          onClick={() => { onChange(option.value); setOpen(false); }}>
+          <span className="aa-option-dot" style={{ background: option.tint ?? "#e2e8f0", color: option.color ?? "#334155" }}>{option.value === value ? "✓" : ""}</span>
+          <span><strong>{option.label}</strong>{option.detail && <small>{option.detail}</small>}</span>
+        </button>)}
+      </div></>}
+  </div>;
 }
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
-  const [profile, setProfile] = useState(PROFILES[0]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [notice, setNotice] = useState("");
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
-  const [sortOrder, setSortOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
-  const [name, setName] = useState("");
+  const [search, setSearch] = useState("");
+  const [selectedOfficials, setSelectedOfficials] = useState<Official[]>([]);
+  const [officialSearch, setOfficialSearch] = useState("");
+  const [officialCategory, setOfficialCategory] = useState("All officials");
+  const [officialPickerOpen, setOfficialPickerOpen] = useState(false);
   const [type, setType] = useState<ReviewType>("Positive");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [image, setImage] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [notice, setNotice] = useState("");
-  const [showForm, setShowForm] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"Sign Up" | "Log In">("Log In");
-  const [authSetupNotice, setAuthSetupNotice] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [oversized, setOversized] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [commentsByPost, setCommentsByPost] = useState<Record<string, Comment[]>>({});
+  const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
+  const [replyTo, setReplyTo] = useState<Record<string, string | null>>({});
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
+  const [lightbox, setLightbox] = useState<{ urls: string[]; index: number } | null>(null);
+  const [profileName, setProfileName] = useState("");
+  const [editProfile, setEditProfile] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
 
+  async function loadReviews() {
+    try {
+      const response = await fetch("/api/reviews", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not load public discussions");
+      setReviews(Array.isArray(data.reviews) ? data.reviews : []);
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not load discussions"); }
+  }
   useEffect(() => {
+    void loadReviews();
+    fetch("/api/auth/me", { cache: "no-store" }).then((response) => setIsAuthenticated(response.ok)).catch(() => setIsAuthenticated(false));
+    fetch("/api/profile", { cache: "no-store" }).then(async (response) => {
+      if (response.ok) { const data = await response.json(); setProfileName(data.profile?.name ?? ""); }
+    }).catch(() => undefined);
     const params = new URLSearchParams(window.location.search);
-    const requestedAction = params.get("action");
-    const requestedProfile = params.get("profile");
-    if (requestedProfile && PROFILES.includes(requestedProfile)) {
-      // Defer URL-derived state until after the effect body to avoid a cascading render.
-      queueMicrotask(() => setProfile(requestedProfile));
+    const requested = params.get("profile");
+    if (requested) {
+      const found = OFFICIALS.find((item) => item.name.toLowerCase() === requested.toLowerCase());
+      if (found) setSelectedOfficials([found]);
     }
-
-    fetch("/api/reviews", { cache: "no-store" })
-      .then(async (response) => {
-        const result = await response.json().catch(() => ({})) as { reviews?: Review[]; error?: string };
-        if (!response.ok) throw new Error(result.error || "Could not load reviews");
-        const loaded = Array.isArray(result.reviews) ? result.reviews : [];
-        setReviews(loaded);
-        setVotes(Object.fromEntries(loaded.filter((review) => review.myVote).map((review) => [review.id, review.myVote as "up" | "down"])));
-      })
-      .catch((error) => setNotice(error instanceof Error ? error.message : "Could not load reviews"));
-
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((response) => {
-        setIsAuthenticated(response.ok);
-        if (requestedAction === "write" && response.ok) {
-          setShowForm(true);
-        } else if (requestedAction === "write") {
-          setShowForm(false);
-          setAuthMode("Log In");
-          setAuthSetupNotice(false);
-          setAuthModalOpen(true);
-        }
-      })
-      .catch(() => {
-        setIsAuthenticated(false);
-        if (requestedAction === "write") {
-          setShowForm(false);
-          setAuthMode("Log In");
-          setAuthSetupNotice(false);
-          setAuthModalOpen(true);
-        }
-      });
+    if (params.get("action") === "write") {
+      fetch("/api/auth/me", { cache: "no-store" }).then((response) => {
+        if (response.ok) document.getElementById("aa-composer")?.scrollIntoView({ behavior: "smooth" });
+        else setAuthOpen(true);
+      }).catch(() => setAuthOpen(true));
+    }
   }, []);
+  const filteredOfficials = useMemo(() => OFFICIALS.filter((item) =>
+    (officialCategory === "All officials" || item.category === officialCategory) &&
+    item.name.toLowerCase().includes(officialSearch.toLowerCase().trim())
+  ).slice(0, 100), [officialCategory, officialSearch]);
+  const visibleReviews = useMemo(() => reviews.filter((review) =>
+    (filter === "All" || review.type === filter) &&
+    (!search.trim() || review.officials.some((official) => official.name.toLowerCase().includes(search.toLowerCase().trim())))
+  ), [reviews, filter, search]);
+  const scored = reviews.filter((review) => review.type === "Positive" || review.type === "Concern");
+  const score = scored.length ? Math.round(scored.filter((review) => review.type === "Positive").length / scored.length * 100) : null;
 
-  const profileReviews = useMemo(() => reviews.filter((review) => review.profile === profile), [reviews, profile]);
-  const visibleReviews = useMemo(() => profileReviews
-    .filter((review) => filter === "All" || (filter === "Negative" ? review.type === "Negative" || review.type === "Allegation" : review.type === filter))
-    .sort((a, b) => {
-      if (sortOrder === "Highest upvotes") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
-      if (sortOrder === "Highest downvotes") return (b.votes?.down ?? 0) - (a.votes?.down ?? 0) || new Date(b.date).getTime() - new Date(a.date).getTime();
-      return sortOrder === "Newest first" ? new Date(b.date).getTime() - new Date(a.date).getTime() : new Date(a.date).getTime() - new Date(b.date).getTime();
-    }), [profileReviews, filter, sortOrder]);
-  const scoredReviews = profileReviews.filter((review) => review.type !== "Request");
-  const positiveCount = scoredReviews.filter((review) => review.type === "Positive").length;
-  const negativeCount = scoredReviews.filter((review) => review.type === "Negative" || review.type === "Allegation").length;
-  const score = scoredReviews.length ? (positiveCount / scoredReviews.length) * 100 : null;
-  const overallScoredReviews = reviews.filter((review) => review.type !== "Request");
-  const overallPositive = overallScoredReviews.filter((review) => review.type === "Positive").length;
-  const overallScore = overallScoredReviews.length ? (overallPositive / overallScoredReviews.length) * 100 : null;
-
+  function toggleOfficial(item: Official) {
+    setSelectedOfficials((current) => current.some((chosen) => chosen.name === item.name)
+      ? current.filter((chosen) => chosen.name !== item.name)
+      : current.length >= 30 ? current : [...current, item]);
+  }
+  function chooseFiles(list: FileList | null) {
+    if (!list) return;
+    const picked = Array.from(list);
+    const tooLarge = picked.some((file) => file.size > 2 * 1024 * 1024);
+    setOversized(tooLarge);
+    if (tooLarge) return;
+    const next = [...files, ...picked].slice(0, 4);
+    setFiles(next);
+    setPreviews(next.map((file) => URL.createObjectURL(file)));
+  }
+  function removeImage(index: number) {
+    setFiles((current) => current.filter((_, i) => i !== index));
+    setPreviews((current) => current.filter((_, i) => i !== index));
+    setOversized(false);
+  }
   async function submitReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isSubmitting) return;
-    if (!name.trim() || !title.trim() || !body.trim()) {
-      setNotice("Please fill in your name, feedback headline and details.");
-      return;
+    if (!isAuthenticated) { setAuthOpen(true); return; }
+    if (!selectedOfficials.length || !title.trim() || !body.trim()) {
+      setNotice("Choose at least one official and add a title and discussion details."); return;
     }
-
-    setIsSubmitting(true);
-    setNotice("");
+    if (files.some((file) => file.size > 2 * 1024 * 1024)) { setOversized(true); return; }
+    setSubmitting(true); setNotice("");
     try {
-      let uploadedImageUrl: string | undefined;
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append("file", imageFile);
-        const response = await fetch("/api/uploads/images", {
-          method: "POST",
-          body: formData,
-          credentials: "same-origin",
-        });
-        const result = await response.json().catch(() => ({})) as { imageUrl?: string; error?: string };
-        if (!response.ok || !result.imageUrl) {
-          if (response.status === 401) {
-            throw new Error("Your sign-in session has expired. Please sign in again and retry.");
-          }
-          throw new Error(result.error || "Image upload failed. Please try again.");
-        }
-        uploadedImageUrl = result.imageUrl;
+      const imageUrls: string[] = [];
+      for (const file of files) {
+        const form = new FormData(); form.append("file", file);
+        const response = await fetch("/api/uploads/images", { method: "POST", body: form, credentials: "same-origin" });
+        const data = await response.json();
+        if (!response.ok || !data.imageUrl) throw new Error(data.error || "Image upload failed");
+        imageUrls.push(data.imageUrl);
       }
-
       const response = await fetch("/api/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
-        body: JSON.stringify({ profile, type, title: title.trim(), body: body.trim(), ...(uploadedImageUrl ? { image: uploadedImageUrl } : {}) }),
+        method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin",
+        body: JSON.stringify({ officials: selectedOfficials, type, title: title.trim(), body: body.trim(), imageUrls }),
       });
-      const result = await response.json().catch(() => ({})) as { review?: Review; error?: string };
-      if (!response.ok || !result.review) {
-        if (response.status === 401) throw new Error("Please sign in again to publish feedback.");
-        throw new Error(result.error || "Could not save your review to the database.");
-      }
-      const next: Review = { ...result.review, votes: result.review.votes ?? { up: 0, down: 0 } };
-      setReviews((current) => [next, ...current]);
-      setName(""); setTitle(""); setBody(""); setImage(null); setImageFile(null);
-      setNotice("Your review has been published and saved to PostgreSQL. Its image is stored in S3.");
-      setFilter("All"); setShowForm(false);
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not publish feedback. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+      const data = await response.json();
+      if (!response.ok || !data.review) throw new Error(data.error || "Could not publish discussion");
+      setReviews((current) => [data.review, ...current]);
+      setTitle(""); setBody(""); setFiles([]); setPreviews([]); setSelectedOfficials([]);
+      setNotice("Your discussion is published."); setOversized(false);
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not publish discussion"); }
+    finally { setSubmitting(false); }
   }
-
-  async function voteReview(id: string, direction: "up" | "down") {
-    if (!isAuthenticated) {
-      setAuthMode("Log In"); setAuthModalOpen(true);
-      return;
-    }
+  async function vote(review: Review, direction: "up" | "down") {
+    if (!isAuthenticated) { setAuthOpen(true); return; }
     try {
-      const response = await fetch(`/api/reviews/${encodeURIComponent(id)}/vote`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
-        body: JSON.stringify({ direction }),
+      const response = await fetch(`/api/reviews/${review.id}/vote`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ direction }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Vote could not be saved");
+      setReviews((current) => current.map((item) => item.id === review.id ? { ...item, myVote: direction, votes: { up: data.upvotes ?? 0, down: data.downvotes ?? 0 } } : item));
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Vote could not be saved"); }
+  }
+  async function loadComments(postId: string) {
+    if (commentsByPost[postId]) return;
+    try {
+      const response = await fetch(`/api/reviews/${postId}/comments`, { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not load comments");
+      setCommentsByPost((current) => ({ ...current, [postId]: data.comments ?? [] }));
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not load comments"); }
+  }
+  async function sendComment(review: Review) {
+    const text = (commentInputs[review.id] ?? "").trim();
+    if (!text) return;
+    if (!isAuthenticated) { setAuthOpen(true); return; }
+    try {
+      const response = await fetch(`/api/reviews/${review.id}/comments`, {
+        method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin",
+        body: JSON.stringify({ body: text, parentCommentId: replyTo[review.id] ?? null }),
       });
-      const result = await response.json().catch(() => ({})) as { direction?: "up" | "down"; upvotes?: number; downvotes?: number; error?: string };
-      if (!response.ok || !result.direction) throw new Error(result.error || "Could not save your vote.");
-      setVotes((current) => ({ ...current, [id]: result.direction as "up" | "down" }));
-      setReviews((current) => current.map((review) => review.id === id
-        ? { ...review, votes: { up: result.upvotes ?? 0, down: result.downvotes ?? 0 }, myVote: result.direction }
-        : review));
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not save your vote.");
-    }
+      const data = await response.json();
+      if (!response.ok || !data.comment) throw new Error(data.error || "Could not post comment");
+      setCommentsByPost((current) => ({ ...current, [review.id]: [...(current[review.id] ?? []), data.comment] }));
+      setCommentInputs((current) => ({ ...current, [review.id]: "" }));
+      setReplyTo((current) => ({ ...current, [review.id]: null }));
+      setReviews((current) => current.map((item) => item.id === review.id ? { ...item, commentCount: (item.commentCount ?? 0) + 1 } : item));
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not post comment"); }
+  }
+  async function saveProfile(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setSavingProfile(true);
+    try {
+      const response = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ name: profileName }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not save display name");
+      setProfileName(data.profile.name); setEditProfile(false); setNotice("Your display name has been updated.");
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not save profile"); }
+    finally { setSavingProfile(false); }
   }
 
-  const panel: React.CSSProperties = { background: "white", border: "1px solid #e2e8f0", borderRadius: 18, padding: 22, boxShadow: "0 8px 28px #0f172a08" };
-  const label: React.CSSProperties = { display: "block", fontSize: 12, fontWeight: 800, color: "#334155", marginBottom: 7 };
-  const input: React.CSSProperties = { width: "100%", border: "1px solid #cbd5e1", borderRadius: 10, padding: "11px 12px", font: "inherit", fontSize: 14, background: "white", color: "#0f172a", boxSizing: "border-box" };
-
-  return (
-    <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#0f172a", padding: "28px 18px 56px" }}>
-      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-        <Link href="/" style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "#1d4ed8", textDecoration: "none", fontSize: 13, fontWeight: 800, marginBottom: 22 }}>← Back to Arasiyal Arattai</Link>
-        <header style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 20, marginBottom: 24 }}>
-          <div>
-            <div style={{ color: "#64748b", fontSize: 11, fontWeight: 900, letterSpacing: 2, textTransform: "uppercase" }}>Public voice · Accountability</div>
-            <h1 style={{ fontSize: "clamp(30px, 4vw, 44px)", lineHeight: 1.1, letterSpacing: -1.5, margin: "9px 0", fontWeight: 900 }}>Public Feedback</h1>
-            <p style={{ maxWidth: 650, color: "#64748b", lineHeight: 1.65, margin: 0 }}>Share a public assessment, raise a concern, or request action about a government representative. Keep comments specific, respectful and evidence-based.</p>
-          </div>
-          <button onClick={() => {
-            if (showForm) {
-              setShowForm(false);
-            } else if (isAuthenticated) {
-              setShowForm(true);
-            } else {
-              setAuthMode("Sign Up");
-              setAuthModalOpen(true);
-            }
-          }} style={{ border: 0, borderRadius: 11, background: "#1d4ed8", color: "white", padding: "13px 18px", fontWeight: 700, cursor: "pointer" }}>{showForm ? "Close form" : "✍ Share feedback"}</button>
-        </header>
-
-        <section style={{ ...panel, marginBottom: 20 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 20, alignItems: "center" }}>
-            <div>
-              <label style={label} htmlFor="profile-select">Choose a representative</label>
-              <select id="profile-select" value={profile} onChange={(e) => { setProfile(e.target.value); setFilter("All"); setNotice(""); }} style={input}>{PROFILES.map((p) => <option key={p}>{p}</option>)}</select>
-              <p style={{ color: "#64748b", fontSize: 11, margin: "8px 0 0" }}>Reviews and scores are shown separately for each profile.</p>
-            </div>
-            <RatingGauge value={score} />
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.length}</div><div style={{ color: "#64748b", fontSize: 12 }}>Total feedback</div></div>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{positiveCount}</div><div style={{ color: "#166534", fontSize: 12 }}>Positive feedback</div></div>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{negativeCount}</div><div style={{ color: "#991b1b", fontSize: 12 }}>Negative feedback</div></div>
-              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 15 }}><div style={{ fontSize: 25, fontWeight: 900 }}>{profileReviews.filter((review) => review.type === "Request").length}</div><div style={{ color: "#1d4ed8", fontSize: 12 }}>Requests</div></div>
-              <div style={{ gridColumn: "1 / -1", color: "#64748b", fontSize: 11 }}>Explorer-wide feedback score: {overallScore === null ? "Not enough positive/negative reviews yet" : `${Math.round(overallScore)} / 100 from ${overallScoredReviews.length} positive/negative submission(s)`}. Requests are counted separately and do not change the score.</div>
-            </div>
-          </div>
-        </section>
-
-        {showForm && <section style={{ ...panel, marginBottom: 20 }}>
-          <h2 style={{ margin: "0 0 5px", fontSize: 21, fontWeight: 900 }}>Share your feedback</h2>
-          <p style={{ margin: "0 0 20px", color: "#64748b", fontSize: 13 }}>You can submit more than one review, including multiple reviews for the same person.</p>
-          <form onSubmit={submitReview}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
-              <div><label style={label} htmlFor="review-name">Your display name</label><input id="review-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter a name" maxLength={60} style={input} required /></div>
-              <div><label style={label} htmlFor="review-type">Feedback type</label><select id="review-type" value={type} onChange={(e) => setType(e.target.value as ReviewType)} style={input}>{(["Positive", "Negative", "Allegation", "Request"] as ReviewType[]).map((t) => <option key={t} value={t}>{t} — {typeStyles[t].description}</option>)}</select></div>
-            </div>
-                        <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-title">Review headline</label><input id="review-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Summarise your point" maxLength={100} style={input} required /></div>
-            <div style={{ marginTop: 18 }}><label style={label} htmlFor="review-body">Details and evidence</label><textarea id="review-body" value={body} onChange={(e) => setBody(e.target.value)} placeholder="Explain the experience, outcome, source or action requested..." minLength={10} maxLength={1500} rows={5} style={{ ...input, resize: "vertical" }} required /></div>
-            <div style={{ marginTop: 18 }}>
-              <label style={label} htmlFor="review-image">Attach an image (optional)</label>
-              <input id="review-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) { setImage(null); setImageFile(null); return; }
-                if (file.size > 2 * 1024 * 1024) { setNotice("Please choose an image smaller than 2 MB."); e.target.value = ""; setImage(null); setImageFile(null); return; }
-                setImageFile(file);
-                const reader = new FileReader();
-                reader.onload = () => { if (typeof reader.result === "string") { setImage(reader.result); setNotice(""); } };
-                reader.onerror = () => { setNotice("Could not preview this image. Please try another file."); setImage(null); setImageFile(null); };
-                reader.readAsDataURL(file);
-              }} style={{ ...input, padding: 9 }} />
-              <p style={{ margin: "6px 0 0", fontSize: 11, color: "#64748b" }}>JPG, PNG, WEBP or GIF · maximum 2 MB. Images are uploaded to S3 when you publish feedback.</p>
-              {image && <div style={{ marginTop: 10 }}><img src={image} alt="Review attachment preview" style={{ display: "block", maxWidth: "100%", maxHeight: 260, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} /><button type="button" onClick={() => { setImage(null); setImageFile(null); const fileInput = document.getElementById("review-image") as HTMLInputElement | null; if (fileInput) fileInput.value = ""; }} style={{ marginTop: 7, border: "1px solid #cbd5e1", borderRadius: 8, background: "white", padding: "6px 10px", cursor: "pointer", fontSize: 12 }}>Remove image</button></div>}
-            </div>
-            <p style={{ fontSize: 11, color: "#64748b", lineHeight: 1.6 }}>Do not post private information, threats, or unverified allegations as established facts. Clearly identify claims as allegations and include public sources where possible.</p>
-            {notice && <p role="status" style={{ color: "#1d4ed8", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
-            <button type="submit" disabled={isSubmitting} style={{ border: 0, borderRadius: 10, background: isSubmitting ? "#93c5fd" : "#1d4ed8", color: "white", padding: "12px 18px", fontWeight: 600, cursor: isSubmitting ? "wait" : "pointer" }}>{isSubmitting ? "Uploading and publishing…" : "Publish feedback"}</button>
-          </form>
-        </section>}
-
-        <section>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 14 }}>
-            <h2 style={{ margin: 0, fontSize: 23, fontWeight: 900 }}>Public feedback</h2>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 7, flexWrap: "wrap" }}>
-              <select aria-label="Sort reviews" value={sortOrder} onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)} style={{ border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontSize: 12, background: "white", color: "#334155" }}><option>Newest first</option><option>Oldest first</option><option>Highest upvotes</option><option>Highest downvotes</option></select>
-              {(["All", "Positive", "Negative", "Allegation", "Request"] as const).map((t) => <button key={t} onClick={() => setFilter(t)} style={{ border: filter === t ? "1px solid #1d4ed8" : "1px solid #cbd5e1", background: filter === t ? "#dbeafe" : "white", color: filter === t ? "#1d4ed8" : "#475569", borderRadius: 999, padding: "8px 13px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{t}</button>)}
-            </div>
-          </div>
-          {notice && !showForm && <p role="status" style={{ color: "#166534", fontSize: 13, fontWeight: 700 }}>{notice}</p>}
-          {visibleReviews.length === 0 ? <div style={{ ...panel, textAlign: "center", padding: "42px 20px" }}><div style={{ fontSize: 34 }}>✦</div><h3 style={{ fontSize: 18, fontWeight: 900, margin: "10px 0 6px" }}>No public feedback yet</h3><p style={{ maxWidth: 430, margin: "0 auto 18px", color: "#64748b", fontSize: 13, lineHeight: 1.6 }}>Be the first to share specific, constructive feedback of {profile}.</p><button onClick={() => { setShowForm(false); setType("Positive"); setAuthMode("Sign Up"); setAuthModalOpen(true); }} style={{ border: 0, borderRadius: 10, background: "#1d4ed8", color: "white", padding: "11px 16px", fontWeight: 850, cursor: "pointer" }}>Share the first feedback</button></div> : <div style={{ display: "grid", gap: 12 }}>{visibleReviews.map((review) => <article key={review.id} className="feedback-card" style={panel}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
-              <div style={{ display: "flex", gap: 12, alignItems: "center" }}><div style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "#e2e8f0", color: "#334155", fontWeight: 400 }}>{review.name.slice(0, 1).toUpperCase()}</div><div><div style={{ fontWeight: 400 }}>{review.name}</div><div style={{ fontSize: 11, color: "#64748b", fontWeight: 400, marginTop: 3 }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · {review.profile}</div></div></div>
-              <span style={{ borderRadius: 999, padding: "6px 10px", fontSize: 11, fontWeight: 400, color: typeStyles[review.type].color, background: typeStyles[review.type].background }}>{review.type}</span>
-            </div>
-            <div style={{ marginTop: 15 }}><h3 style={{ margin: "7px 0", fontSize: 17, fontWeight: 900 }}>{review.title}</h3><p style={{ margin: 0, color: "#475569", fontSize: 14, fontWeight: 400, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{review.body}</p>{review.image && <img src={review.image} alt={`Image attached to review: ${review.title}`} style={{ display: "block", marginTop: 12, maxWidth: "100%", maxHeight: 440, borderRadius: 12, border: "1px solid #e2e8f0", objectFit: "contain" }} />}</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
-              <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
-                <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={votes[review.id] === "up"} onClick={() => voteReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[review.id] === "up" ? "#dbeafe" : "transparent", color: votes[review.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{review.votes?.up ?? 0}</span></button>
-                <button type="button" aria-label="Downvote review" title="Downvote" aria-pressed={votes[review.id] === "down"} onClick={() => voteReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: votes[review.id] === "down" ? "#ffedd5" : "transparent", color: votes[review.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{review.votes?.down ?? 0}</span></button>
-              </div>
-              <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: "auto" }}>Your vote is saved to PostgreSQL</span>
-            </div>
-            <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 15, paddingTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><span style={{ fontSize: 11, color: "#64748b" }}>Community-submitted · not independently verified</span></div>
-          </article>)}</div>}
-        </section>
-        <footer style={{ marginTop: 28, color: "#94a3b8", fontSize: 11, lineHeight: 1.7 }}>Prototype note: reviews are stored in this browser only using local storage. They are not shared with other visitors or saved to a server yet. A backend and moderation system are needed for a public, shared review platform.</footer>
+  return <main className="aa-page">
+    <header className="aa-topbar">
+      <Link href="/" className="aa-brand"><span className="aa-brand-mark">அ</span><span><strong>அரசியல் அரட்டை</strong><small>ARASIYAL ARATTAI</small></span></Link>
+      <div className="aa-top-actions">
+        {isAuthenticated && <button type="button" className="aa-profile-link" onClick={() => setEditProfile(!editProfile)}>{profileName || "Your profile"}　⌄</button>}
+        <Link href="/" className="aa-back-link">Explore directory</Link>
       </div>
-      {authModalOpen && <div role="presentation" onClick={() => setAuthModalOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 1000, display: "grid", placeItems: "center", padding: 20, background: "#0f172a99", backdropFilter: "blur(4px)", overflowY: "auto" }}><section role="dialog" aria-modal="true" aria-label={authMode === "Log In" ? "Log in" : "Create an account"} onClick={(event) => event.stopPropagation()} style={{ position: "relative", width: "min(100%, 430px)", boxSizing: "border-box", padding: "34px 32px 28px", background: "white", borderRadius: 8, boxShadow: "0 24px 80px #0005" }}><button type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)} style={{ position: "absolute", top: 10, right: 10, width: 30, height: 30, border: 0, borderRadius: 999, background: "#f1f5f9", color: "#334155", fontSize: 22, cursor: "pointer" }}>×</button><h2 style={{ margin: "0 0 24px", fontSize: 24, fontWeight: 900, color: "#111827" }}>{authMode === "Log In" ? "Login to your account" : "Create an account"}</h2><form onSubmit={(event) => { event.preventDefault(); window.location.href = "/auth/login"; }}><label style={{ display: "block", marginBottom: 7, fontSize: 13, color: "#64748b" }}>Email</label><input required type="email" aria-label="Email" placeholder="Enter your email" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "2px solid #bfdbfe", borderRadius: 7, marginBottom: 17, color: "#111827", background: "white" }}/><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}><label style={{ fontSize: 13, color: "#64748b" }}>Password</label>{authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, background: "transparent", color: "#0784f9", fontSize: 12, cursor: "pointer" }}>Forgot?</button>}</div><input required type="password" aria-label="Password" placeholder="Enter your password" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "1px solid #d1d5db", borderRadius: 7, marginBottom: 22, color: "#111827", background: "white" }}/><button type="submit" style={{ width: "100%", border: 0, borderRadius: 7, padding: "13px", background: "#0784f9", color: "white", fontWeight: 700, cursor: "pointer" }}>{authMode === "Log In" ? "Login now" : "Create account"}</button></form><button type="button" onClick={() => { window.location.href = "/auth/login?provider=Google"; }} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 7, padding: "13px", background: "#e0efff", color: "#0784f9", fontWeight: 700, cursor: "pointer" }}>🌐　Continue with Google</button><p style={{ margin: "20px 0 0", textAlign: "center", color: "#9ca3af", fontSize: 12 }}>{authMode === "Log In" ? "Don’t have an account?" : "Already have an account?"} <button type="button" onClick={() => { setAuthMode(authMode === "Log In" ? "Sign Up" : "Log In"); setAuthSetupNotice(false); }} style={{ border: 0, background: "transparent", color: "#0784f9", cursor: "pointer" }}>{authMode === "Log In" ? "Sign up" : "Log in"}</button></p>{authSetupNotice && <p role="status" style={{ marginTop: 14, padding: 10, borderRadius: 8, background: "#fff7ed", color: "#9a3412", fontSize: 12 }}>Use the sign-in form above to continue through Amazon Cognito.</p>}</section></div>}
-    </main>
-  );
+    </header>
+    {editProfile && <form className="aa-profile-editor" onSubmit={saveProfile}><label htmlFor="aa-display-name">Public display name</label><div><input id="aa-display-name" value={profileName} onChange={(e) => setProfileName(e.target.value)} minLength={2} maxLength={60} required /><button disabled={savingProfile}>{savingProfile ? "Saving…" : "Save name"}</button></div></form>}
+    <section className="aa-hero">
+      <div><div className="aa-eyebrow">PUBLIC VOICE · ACCOUNTABILITY</div><h1>Public discussions</h1><p>Recognise good work, raise concerns, ask for action, and discuss public service. Keep it respectful, specific and evidence-based.</p></div>
+      <div className="aa-score"><span>Community sentiment</span><strong>{score === null ? "—" : score}<small>{score === null ? "" : " / 100"}</small></strong><div className="aa-score-track"><i style={{ width: `${score ?? 0}%` }} /></div><small>Based on Positive and Concern posts only</small></div>
+    </section>
+    <section id="aa-composer" className="aa-composer">
+      <div className="aa-composer-heading"><div><span className="aa-eyebrow">YOUR VOICE MATTERS</span><h2>Start a discussion</h2></div><span className="aa-private-note">✦ Public by default</span></div>
+      <form onSubmit={submitReview}>
+        <label className="aa-field-label" htmlFor="aa-title">Title</label>
+        <input id="aa-title" className="aa-text-input" placeholder="What should people know?" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} required />
+        <label className="aa-field-label" htmlFor="aa-body">Details</label>
+        <textarea id="aa-body" className="aa-textarea" placeholder="Add context, facts, links or what action you want to see…" value={body} onChange={(e) => setBody(e.target.value)} maxLength={10000} rows={4} required />
+        <div className="aa-composer-controls">
+          <div className="aa-control-block"><label className="aa-field-label">Category</label><CustomDropdown value={type} options={TYPE_OPTIONS} onChange={setType} label="Choose discussion category" /></div>
+          <div className="aa-control-block aa-official-block"><label className="aa-field-label">Officials tagged ({selectedOfficials.length})</label>
+            <button type="button" className="aa-dropdown-trigger" onClick={() => setOfficialPickerOpen(!officialPickerOpen)} aria-expanded={officialPickerOpen}><span>{selectedOfficials.length ? `${selectedOfficials.length} official${selectedOfficials.length === 1 ? "" : "s"} selected` : "Choose officials"}</span><span>⌄</span></button>
+            {officialPickerOpen && <div className="aa-official-picker"><input value={officialSearch} onChange={(e) => setOfficialSearch(e.target.value)} placeholder="Search by name…" aria-label="Search officials" />
+              <div className="aa-official-categories">{["All officials", "Chief Minister", "Governor", "Minister", "MLA"].map((category) => <button key={category} type="button" className={officialCategory === category ? "active" : ""} onClick={() => setOfficialCategory(category)}>{category}</button>)}</div>
+              <div className="aa-official-results">{filteredOfficials.map((item) => <label key={item.name}><input type="checkbox" checked={selectedOfficials.some((selected) => selected.name === item.name)} onChange={() => toggleOfficial(item)} /><span><strong>{item.name}</strong><small>{item.category}</small></span></label>)}</div>
+              <div className="aa-picker-footer"><small>Up to 30 officials per post</small><button type="button" onClick={() => setOfficialPickerOpen(false)}>Done</button></div>
+            </div>}
+          </div>
+        </div>
+        {selectedOfficials.length > 0 && <div className="aa-selected-chips">{selectedOfficials.map((item) => <button key={item.name} type="button" onClick={() => toggleOfficial(item)}>{item.name} <span>×</span></button>)}</div>}
+        <div className="aa-upload-row"><label className="aa-upload-button">＋ Add photos<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden onChange={(e) => chooseFiles(e.target.files)} disabled={files.length >= 4} /></label><span>{files.length}/4 attached</span><small>Up to 4 photos · 2 MB each</small></div>
+        {oversized && <p className="aa-error">One or more selected photos exceed 2 MB. Remove them or choose smaller files.</p>}
+        {previews.length > 0 && <div className="aa-compose-gallery">{previews.map((url, index) => <div key={url}><button type="button" aria-label={`Remove image ${index + 1}`} onClick={() => removeImage(index)}>×</button><img src={url} alt={`Preview ${index + 1}`} /></div>)}</div>}
+        <div className="aa-submit-row"><span>Claims labelled as allegations are not treated as proven facts.</span><button type="submit" disabled={submitting}>{submitting ? "Publishing…" : "Publish discussion ↗"}</button></div>
+      </form>
+    </section>
+    {notice && <div role="status" className="aa-notice">{notice}<button type="button" onClick={() => setNotice("")} aria-label="Dismiss notice">×</button></div>}
+    <section className="aa-feed-section">
+      <div className="aa-feed-heading"><div><span className="aa-eyebrow">THE PUBLIC CONVERSATION</span><h2>Explore discussions</h2><p>Search by the name of any official to find related posts.</p></div><span className="aa-feed-count">{visibleReviews.length} posts</span></div>
+      <div className="aa-feed-controls"><CustomDropdown value={filter} options={[{value:"All" as const,label:"All categories"},{value:"Positive" as const,label:"Positive"},{value:"Concern" as const,label:"Concern"},{value:"Allegation" as const,label:"Allegation"},{value:"Request" as const,label:"Request"}]} onChange={setFilter} label="Filter discussion category" /><div className="aa-search"><span>⌕</span><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search officials by name…" aria-label="Search officials by name" />{search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search">×</button>}</div></div>
+      {visibleReviews.length === 0 ? <div className="aa-empty"><span>✦</span><h3>No discussions found</h3><p>Try another category or search for a different official. Be the first to start a constructive conversation.</p></div> :
+      <div className="aa-feed">{visibleReviews.map((review) => {
+        const category = TYPE_OPTIONS.find((item) => item.value === review.type)!;
+        const comments = commentsByPost[review.id] ?? [];
+        const roots = comments.filter((comment) => !comment.parentCommentId);
+        return <article key={review.id} className="aa-post">
+          <div className="aa-post-top"><div className="aa-avatar">{(review.name || "U").trim().slice(0,1).toUpperCase()}</div><div className="aa-post-author"><strong>{review.name || "Community member"}</strong><span>{new Date(review.date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</span></div><span className="aa-type-pill" style={{ color: category.color, background: category.tint }}>{category.label}</span></div>
+          <div className="aa-tagged-officials">{review.officials.map((official) => <Link key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>@ {official.name}</Link>)}</div>
+          <h3>{review.title}</h3><p className="aa-post-body">{review.body}</p>
+          {review.imageUrls?.length > 0 && <div className={`aa-post-gallery count-${Math.min(review.imageUrls.length,4)}`}>{review.imageUrls.map((url,index) => <button key={url} type="button" onClick={() => setLightbox({urls:review.imageUrls,index})} aria-label={`View photo ${index+1}`}><img src={url} alt={`Discussion attachment ${index+1}`} loading="lazy" /></button>)}</div>}
+          <div className="aa-post-actions"><button type="button" className={review.myVote === "up" ? "voted" : ""} onClick={() => vote(review,"up")}>↑ <span>{review.votes?.up ?? 0}</span></button><button type="button" className={review.myVote === "down" ? "voted" : ""} onClick={() => vote(review,"down")}>↓ <span>{review.votes?.down ?? 0}</span></button><button type="button" onClick={() => { setExpandedComments((current) => ({...current,[review.id]:!current[review.id]})); void loadComments(review.id); }}>♡ <span>{review.commentCount ?? 0} comments</span></button></div>
+          {expandedComments[review.id] && <div className="aa-comments"><div className="aa-comment-list">{roots.map((comment) => <div className="aa-comment" key={comment.id}><div className="aa-comment-avatar">{comment.name.slice(0,1).toUpperCase()}</div><div className="aa-comment-content"><div><strong>{comment.name}</strong><time>{new Date(comment.date).toLocaleDateString()}</time></div><p>{comment.body}</p><button type="button" onClick={() => setReplyTo((current) => ({...current,[review.id]:comment.id}))}>Reply</button>{comments.filter((child) => child.parentCommentId === comment.id).map((child) => <div className="aa-reply" key={child.id}><strong>{child.name}</strong><p>{child.body}</p></div>)}</div></div>)}
+          {comments.length === 0 && <p className="aa-no-comments">No comments yet. Start the conversation.</p>}</div>
+          {replyTo[review.id] && <div className="aa-replying">Replying to a comment <button type="button" onClick={() => setReplyTo((current) => ({...current,[review.id]:null}))}>Cancel</button></div>}
+          <form className="aa-comment-form" onSubmit={(e) => {e.preventDefault(); void sendComment(review);}}><input value={commentInputs[review.id] ?? ""} onChange={(e) => setCommentInputs((current) => ({...current,[review.id]:e.target.value}))} placeholder={replyTo[review.id] ? "Write a reply…" : "Add a respectful comment…"} maxLength={3000} /><button type="submit">Reply ↗</button></form></div>}
+        </article>;
+      })}</div>}
+    </section>
+    <footer className="aa-footer"><Link href="/">← Back to the Government Explorer</Link><span>Public discussion · Verify claims before sharing</span></footer>
+    {lightbox && <div className="aa-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" onClick={() => setLightbox(null)}><button className="aa-lightbox-close" type="button" onClick={() => setLightbox(null)} aria-label="Close image viewer">×</button><button className="aa-lightbox-prev" type="button" aria-label="Previous image" onClick={(e) => {e.stopPropagation();setLightbox((current) => current ? {...current,index:(current.index+current.urls.length-1)%current.urls.length}:null);}}>‹</button><img src={lightbox.urls[lightbox.index]} alt={`Full-size attachment ${lightbox.index+1}`} onClick={(e) => e.stopPropagation()} /><button className="aa-lightbox-next" type="button" aria-label="Next image" onClick={(e) => {e.stopPropagation();setLightbox((current) => current ? {...current,index:(current.index+1)%current.urls.length}:null);}}>›</button><span className="aa-lightbox-count">{lightbox.index+1} / {lightbox.urls.length}</span></div>}
+    {authOpen && <div className="aa-auth-backdrop" role="presentation" onClick={() => setAuthOpen(false)}><section className="aa-auth-modal" role="dialog" aria-modal="true" aria-label="Sign in" onClick={(e) => e.stopPropagation()}><button type="button" className="aa-auth-close" onClick={() => setAuthOpen(false)} aria-label="Close">×</button><div className="aa-auth-symbol">அ</div><h2>Join the conversation</h2><p>Sign in to publish discussions, vote and comment.</p><Link href="/auth/login">Continue to sign in ↗</Link><button type="button" className="aa-google-login" onClick={() => {window.location.href="/auth/login?provider=Google";}}>Continue with Google</button></section></div>}
+  </main>;
 }
