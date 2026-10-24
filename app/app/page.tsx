@@ -1150,6 +1150,7 @@ export default function Home() {
           <h1 className="brand-heading app-title" style={{ fontSize: 27, fontWeight: 650, margin: 0 }}>Arasiyal Arattai</h1>
         </div>
         <div className="app-header-actions">
+          <a className="app-share-feedback" href="/reviews?action=write"><span className="share-icon" aria-hidden="true">＋</span><span>Share feedback</span></a>
         <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
             type="button"
@@ -1181,7 +1182,6 @@ export default function Home() {
             </div>
           )}
         </div>
-          <a className="app-share-feedback" href="/reviews?action=write"><span className="share-icon" aria-hidden="true">＋</span><span>Share feedback</span></a>
         </div>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
