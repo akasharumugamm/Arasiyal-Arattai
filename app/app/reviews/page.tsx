@@ -72,6 +72,7 @@ export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [notice, setNotice] = useState("");
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [search, setSearch] = useState("");
@@ -236,21 +237,41 @@ export default function ReviewsPage() {
       </Link>
       <div className="aa-top-actions app-header-actions">
         <Link href="/" className="app-share-feedback aa-directory-action">Explore directory</Link>
-        <button
-          type="button"
-          className="aa-header-profile-icon"
-          aria-label={isAuthenticated ? "Open profile settings" : "Sign in to your account"}
-          title={isAuthenticated ? "Profile" : "Sign in"}
-          onClick={() => isAuthenticated ? setEditProfile(!editProfile) : setAuthOpen(true)}
-        >
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <circle cx="12" cy="8" r="3.5" />
-            <path d="M5 20c.5-3.4 3.2-5.5 7-5.5s6.5 2.1 7 5.5" />
-          </svg>
-        </button>
+        <div className="aa-header-profile-wrap">
+          <button
+            type="button"
+            className="aa-header-profile-icon"
+            aria-label="Open profile menu"
+            aria-haspopup="menu"
+            aria-expanded={profileMenuOpen}
+            title="Profile"
+            onClick={() => setProfileMenuOpen((open) => !open)}
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5 20c.5-3.4 3.2-5.5 7-5.5s6.5 2.1 7 5.5" />
+            </svg>
+          </button>
+          {profileMenuOpen && <>
+            <button type="button" className="aa-profile-menu-away" aria-label="Close profile menu" onClick={() => setProfileMenuOpen(false)} />
+            <div className="aa-profile-menu" role="menu" aria-label="Profile menu">
+              <div className="aa-profile-menu-heading">
+                <strong>Your account</strong>
+                <span>{isAuthenticated ? "Signed in to Arasiyal Arattai." : "Sign in to share feedback and vote."}</span>
+              </div>
+              {isAuthenticated ? <>
+                <Link href="/profile" role="menuitem" onClick={() => setProfileMenuOpen(false)}>View profile</Link>
+                <Link href="/auth/logout" role="menuitem">Sign out</Link>
+              </> : <>
+                <button type="button" role="menuitem" onClick={() => { setAuthOpen(true); setProfileMenuOpen(false); }}>Sign in</button>
+                <button type="button" role="menuitem" onClick={() => { setAuthOpen(true); setProfileMenuOpen(false); }}>Create account</button>
+              </>}
+            </div>
+          </>}
+        </div>
       </div>
     </header>
-    {editProfile && <form className="aa-profile-editor" onSubmit={saveProfile}><label htmlFor="aa-display-name">Public display name</label><div><input id="aa-display-name" value={profileName} onChange={(e) => setProfileName(e.target.value)} minLength={2} maxLength={60} required /><button disabled={savingProfile}>{savingProfile ? "Saving…" : "Save name"}</button></div></form>}
+
     <section className="aa-hero">
       <div><div className="aa-eyebrow">PUBLIC VOICE · ACCOUNTABILITY</div><h1>Public discussions</h1><p>Recognise good work, raise concerns, ask for action, and discuss public service. Keep it respectful, specific and evidence-based.</p></div>
       <div className="aa-score"><span>Community sentiment</span><strong>{score === null ? "—" : score}<small>{score === null ? "" : " / 100"}</small></strong><div className="aa-score-track"><i style={{ width: `${score ?? 0}%` }} /></div><small>Based on Positive and Concern posts only</small></div>
