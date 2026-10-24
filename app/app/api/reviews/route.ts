@@ -111,6 +111,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const userId = await ensureUser(claims);
+    const authorResult = await query<{ display_name: string | null; username: string | null }>("SELECT display_name, username FROM app_users WHERE id = $1", [userId]);
+    const authorName = authorResult.rows[0]?.display_name ?? authorResult.rows[0]?.username ?? "User";
     const created = await query<{ id: string; date: string }>(
       `INSERT INTO review_posts (author_id, review_type, title, body)
        VALUES ($1, $2, $3, $4) RETURNING id, created_at AS date`,
@@ -125,7 +127,7 @@ export async function POST(request: NextRequest) {
     }
     const review = {
       id: postId, type, title, body: reviewBody, date: created.rows[0].date,
-      name: claims.name ?? claims.username ?? "User", officials: cleanOfficials,
+      name: authorName, officials: cleanOfficials,
       imageUrls: cleanImages, votes: { up: 0, down: 0 }, myVote: null, commentCount: 0,
     };
     return NextResponse.json({ review }, { status: 201 });
