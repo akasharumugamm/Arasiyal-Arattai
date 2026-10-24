@@ -819,53 +819,6 @@ const categoryDescriptions: Record<Category, string> = {
   "Schemes & Projects": "Explore schemes, projects and documented outcomes.",
 };
 
-type ReviewSortOrder = "Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes";
-
-function ReviewSortMenu({
-  value,
-  onChange,
-}: {
-  value: ReviewSortOrder;
-  onChange: (value: ReviewSortOrder) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const options: ReviewSortOrder[] = ["Newest first", "Oldest first", "Highest upvotes", "Highest downvotes"];
-
-  return (
-    <div className="review-sort-menu" style={{ position: "relative", fontFamily: "Inter, sans-serif" }}>
-      <button
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        onClick={() => setOpen((isOpen) => !isOpen)}
-        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, minWidth: 148, border: "1px solid #cbd5e1", borderRadius: 9, padding: "9px 10px", fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 400, background: "white", color: "#475569", cursor: "pointer" }}
-      >
-        <span>{value}</span>
-        <span aria-hidden="true" style={{ fontSize: 10 }}>⌄</span>
-      </button>
-      {open && (
-        <div role="listbox" aria-label="Sort reviews" style={{ position: "absolute", zIndex: 20, top: "calc(100% + 4px)", right: 0, minWidth: 180, padding: 4, border: "1px solid #cbd5e1", borderRadius: 9, background: "white", boxShadow: "0 8px 20px #0f172a24" }}>
-          {options.map((option) => (
-            <button
-              key={option}
-              type="button"
-              role="option"
-              aria-selected={value === option}
-              onClick={() => {
-                onChange(option);
-                setOpen(false);
-              }}
-              style={{ display: "block", width: "100%", border: 0, borderRadius: 6, padding: "7px 8px", fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 400, textAlign: "left", background: value === option ? "#e2e8f0" : "white", color: "#475569", cursor: "pointer" }}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function HomeCategoryMenu({ value, onChange }: {
   value: "All" | "Positive" | "Concern" | "Allegation" | "Request";
   onChange: (value: "All" | "Positive" | "Concern" | "Allegation" | "Request") => void;
@@ -1386,20 +1339,9 @@ export default function Home() {
             <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
           </div>
           </aside>
-          <section aria-label="Feedback Overview" style={{ boxSizing: "border-box", width: "100%", border: "1px solid #e5e7eb", borderRadius: 16, padding: 14, background: "#fff", boxShadow: "0 5px 18px #0f172a08" }}>
-            <h3 style={{ margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 700, color: "#172554" }}><span aria-hidden="true">▤</span> Feedback Overview</h3>
-            {([
-              { label: "All feedback", type: "All" as const, count: recentReviews.length, dot: "#9ca3af" },
-              { label: "Positive", type: "Positive" as const, count: recentReviews.filter((r) => r.type === "Positive").length, dot: "#45a879" },
-              { label: "Negative", type: "Negative" as const, count: recentReviews.filter((r) => r.type === "Negative").length, dot: "#d96b52" },
-              { label: "Allegations", type: "Allegation" as const, count: recentReviews.filter((r) => r.type === "Allegation").length, dot: "#8b5cf6" },
-              { label: "Requests", type: "Request" as const, count: recentReviews.filter((r) => r.type === "Request").length, dot: "#eabf45" },
-            ]).map((item) => (
-              <button key={item.type} type="button" onClick={() => { setHomeReviewType(item.type); document.getElementById("community-feedback")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 9px", marginTop: 4, border: homeReviewType === item.type ? "1px solid #e5e7eb" : "1px solid transparent", borderRadius: 10, background: homeReviewType === item.type ? "#f8fafc" : "white", color: "#475569", textAlign: "left", cursor: "pointer", fontSize: 12 }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 9 }}><span style={{ width: 7, height: 7, flexShrink: 0, borderRadius: 99, background: item.dot }} />{item.label}</span>
-                <span style={{ minWidth: 30, textAlign: "center", borderRadius: 8, background: "#f3f4f6", color: "#374151", padding: "3px 7px", fontSize: 11, fontWeight: 700 }}>{item.count}</span>
-              </button>
-            ))}
+          <section aria-label="Discussion overview" style={{ boxSizing: "border-box", width: "100%", border: "1px solid #e5e7eb", borderRadius: 16, padding: 14, background: "#fff", boxShadow: "0 5px 18px #0f172a08" }}>
+            <h3 style={{ margin: "0 0 8px", fontSize: 14, fontWeight: 700, color: "#172554" }}>Discussion overview</h3>
+            <p style={{ margin: 0, color: "#64748b", fontSize: 12, lineHeight: 1.7 }}>{recentReviews.length} public posts across the directory. Positive and Concern posts contribute to sentiment; allegations are not treated as proven facts.</p>
           </section>
         </div>
       </div>
