@@ -1342,7 +1342,7 @@ export default function Home() {
           </div>
           </aside>
           <section className="feedback-overview-card" aria-label="Feedback overview">
-            <h3 className="feedback-overview-title"><span aria-hidden="true">▤</span> Feedback Overview</h3>
+            <h3 className="feedback-overview-title">Feedback Overview</h3>
             {[
               { label: "All feedback", count: recentReviews.length, color: "#9ca3af", type: "All" },
               { label: "Positive", count: recentReviews.filter((review) => review.type === "Positive").length, color: "#43a779", type: "Positive" },
