@@ -104,7 +104,7 @@ export default function ReviewsPage() {
     } catch (error) { setNotice(error instanceof Error ? error.message : "Could not load discussions"); }
   }
   useEffect(() => {
-    void loadReviews();
+    queueMicrotask(() => { void loadReviews(); });
     fetch("/api/auth/me", { cache: "no-store" }).then((response) => setIsAuthenticated(response.ok)).catch(() => setIsAuthenticated(false));
     fetch("/api/profile", { cache: "no-store" }).then(async (response) => {
       if (response.ok) { const data = await response.json(); setProfileName(data.profile?.name ?? ""); }
