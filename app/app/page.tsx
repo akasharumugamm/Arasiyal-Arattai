@@ -889,7 +889,7 @@ export default function Home() {
         const response = await fetch("/api/reviews", { cache: "no-store" });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Could not load discussions");
-        const loaded = (Array.isArray(data.reviews) ? data.reviews : []).map((review: Record<string, unknown>) => {
+        const loaded: ReviewSummary[] = (Array.isArray(data.reviews) ? data.reviews : []).map((review: Record<string, unknown>): ReviewSummary => {
           const officials = Array.isArray(review.officials) ? review.officials as { name: string; category: string }[] : [];
           const imageUrls = Array.isArray(review.imageUrls) ? review.imageUrls as string[] : [];
           return { ...review, profile: officials.map((official) => official.name).join(", "), officials, imageUrls, image: imageUrls[0] } as ReviewSummary;
