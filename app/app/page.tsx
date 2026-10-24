@@ -1147,8 +1147,9 @@ export default function Home() {
       <div className={`app-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
-          <h1 className="brand-heading app-title" style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>Arasiyal Arattai</h1>
+          <h1 className="brand-heading app-title" style={{ fontSize: 27, fontWeight: 650, margin: 0 }}>Arasiyal Arattai</h1>
         </div>
+        <div className="app-header-actions">
         <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
             type="button"
@@ -1180,7 +1181,8 @@ export default function Home() {
             </div>
           )}
         </div>
-        <a className="app-share-feedback" href="/reviews?action=write">＋ Share feedback</a>
+          <a className="app-share-feedback" href="/reviews?action=write"><span className="share-icon" aria-hidden="true">＋</span><span>Share feedback</span></a>
+        </div>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
         Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback with Arasiyal Arattai.
