@@ -789,3 +789,17 @@ option {
   letter-spacing: -0.1px;
 }
 .auth-submit span { display: none; }
+
+
+/* Compact version of the shared auth design for sign-in prompts in feedback. */
+.auth-compact-modal {
+  width: min(100%, 440px);
+}
+.auth-signin-link {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.auth-signin-link:hover { color: #fff; }
