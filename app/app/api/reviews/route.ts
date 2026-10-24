@@ -45,9 +45,17 @@ async function ensureUser(claims: CognitoClaims): Promise<string> {
 
 export async function GET(request: NextRequest) {
   try {
+    let voterId: string | null = null;
+    try {
+      const claims = await getClaims(request);
+      if (claims) voterId = await ensureUser(claims);
+    } catch {
+      // Public review listing remains available if optional authentication fails.
+    }
+
     const profile = request.nextUrl.searchParams.get("profile");
     const type = request.nextUrl.searchParams.get("type");
-    const values: unknown[] = [];
+    const values: unknown[] = [voterId];
     const filters = ["p.deleted_at IS NULL"];
     if (profile) {
       values.push(profile);
@@ -61,12 +69,16 @@ export async function GET(request: NextRequest) {
     const result = await query(
       `SELECT p.id, p.profile_name AS profile, p.review_type AS type,
               p.title, p.body, p.image_url AS image, p.created_at AS date,
-              u.display_name AS name, u.username,
-              COUNT(v.post_id) FILTER (WHERE v.direction = 'up')::int AS upvotes,
-              COUNT(v.post_id) FILTER (WHERE v.direction = 'down')::int AS downvotes
+              COALESCE(u.display_name, u.username, 'User') AS name,
+              json_build_object(
+                'up', COUNT(v.post_id) FILTER (WHERE v.direction = 'up')::int,
+                'down', COUNT(v.post_id) FILTER (WHERE v.direction = 'down')::int
+              ) AS votes,
+              MAX(myv.direction) AS "myVote"
        FROM review_posts p
        JOIN app_users u ON u.id = p.author_id
        LEFT JOIN review_votes v ON v.post_id = p.id
+       LEFT JOIN review_votes myv ON myv.post_id = p.id AND myv.voter_id = $1
        WHERE ${filters.join(" AND ")}
        GROUP BY p.id, u.display_name, u.username
        ORDER BY p.created_at DESC
@@ -80,7 +92,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Could not load reviews" }, { status: 503 });
   }
 }
-
 export async function POST(request: NextRequest) {
   let claims: CognitoClaims | null;
   try {
