@@ -14,6 +14,7 @@ type Review = {
   image?: string;
   votes?: { up: number; down: number };
   date: string;
+  myVote?: "up" | "down" | null;
 };
 
 const STORAGE_KEY = "tn-government-explorer-reviews-v1";
@@ -84,29 +85,9 @@ function RatingGauge({ value }: { value: number | null }) {
 }
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState<Review[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) as Review[] : [];
-    } catch {
-      return [];
-    }
-  });
-  const [votes, setVotes] = useState<Record<string, "up" | "down">>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const savedVotes = localStorage.getItem(VOTES_KEY);
-      return savedVotes ? JSON.parse(savedVotes) as Record<string, "up" | "down"> : {};
-    } catch {
-      return {};
-    }
-  });
-  const [profile, setProfile] = useState(() => {
-    if (typeof window === "undefined") return PROFILES[0];
-    const requestedProfile = new URLSearchParams(window.location.search).get("profile");
-    return requestedProfile && PROFILES.includes(requestedProfile) ? requestedProfile : PROFILES[0];
-  });
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [votes, setVotes] = useState<Record<string, "up" | "down">>({});
+  const [profile, setProfile] = useState(PROFILES[0]);
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [sortOrder, setSortOrder] = useState<"Newest first" | "Oldest first" | "Highest upvotes" | "Highest downvotes">("Newest first");
   const [name, setName] = useState("");
@@ -126,6 +107,19 @@ export default function ReviewsPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const requestedAction = params.get("action");
+    const requestedProfile = params.get("profile");
+    if (requestedProfile && PROFILES.includes(requestedProfile)) setProfile(requestedProfile);
+
+    fetch("/api/reviews", { cache: "no-store" })
+      .then(async (response) => {
+        const result = await response.json().catch(() => ({})) as { reviews?: Review[]; error?: string };
+        if (!response.ok) throw new Error(result.error || "Could not load reviews");
+        const loaded = Array.isArray(result.reviews) ? result.reviews : [];
+        setReviews(loaded);
+        setVotes(Object.fromEntries(loaded.filter((review) => review.myVote).map((review) => [review.id, review.myVote as "up" | "down"])));
+      })
+      .catch((error) => setNotice(error instanceof Error ? error.message : "Could not load reviews"));
+
     fetch("/api/auth/me", { cache: "no-store" })
       .then((response) => {
         setIsAuthenticated(response.ok);
@@ -195,17 +189,21 @@ export default function ReviewsPage() {
         uploadedImageUrl = result.imageUrl;
       }
 
-      const next: Review = {
-        id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
-        profile, name: name.trim(), type, title: title.trim(), body: body.trim(),
-        ...(uploadedImageUrl ? { image: uploadedImageUrl } : {}),
-        date: new Date().toISOString(),
-      };
-      const updated = [next, ...reviews];
-      setReviews(updated);
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { /* The current session still works if storage is unavailable. */ }
+      const response = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ profile, type, title: title.trim(), body: body.trim(), ...(uploadedImageUrl ? { image: uploadedImageUrl } : {}) }),
+      });
+      const result = await response.json().catch(() => ({})) as { review?: Review; error?: string };
+      if (!response.ok || !result.review) {
+        if (response.status === 401) throw new Error("Please sign in again to publish feedback.");
+        throw new Error(result.error || "Could not save your review to the database.");
+      }
+      const next: Review = { ...result.review, votes: result.review.votes ?? { up: 0, down: 0 } };
+      setReviews((current) => [next, ...current]);
       setName(""); setTitle(""); setBody(""); setImage(null); setImageFile(null);
-      setNotice("Your review has been added in this browser. Its image is stored in S3.");
+      setNotice("Your review has been published and saved to PostgreSQL. Its image is stored in S3.");
       setFilter("All"); setShowForm(false);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not publish feedback. Please try again.");
@@ -214,37 +212,31 @@ export default function ReviewsPage() {
     }
   }
 
-  function voteReview(id: string, direction: "up" | "down") {
+  async function voteReview(id: string, direction: "up" | "down") {
     if (!isAuthenticated) {
       setAuthMode("Log In"); setAuthModalOpen(true);
       return;
     }
-    const previous = votes[id];
-    const nextDirection = previous === direction ? undefined : direction;
-    const nextVotes = { ...votes };
-    if (nextDirection) nextVotes[id] = nextDirection;
-    else delete nextVotes[id];
-    const updated = reviews.map((review) => {
-      if (review.id !== id) return review;
-      const counts = { up: review.votes?.up ?? 0, down: review.votes?.down ?? 0 };
-      if (previous === "up") counts.up = Math.max(0, counts.up - 1);
-      if (previous === "down") counts.down = Math.max(0, counts.down - 1);
-      if (nextDirection === "up") counts.up += 1;
-      if (nextDirection === "down") counts.down += 1;
-      return { ...review, votes: counts };
-    });
-    setVotes(nextVotes);
-    setReviews(updated);
     try {
-      localStorage.setItem(VOTES_KEY, JSON.stringify(nextVotes));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    } catch { /* Keep current UI state. */ }
+      const response = await fetch(`/api/reviews/${encodeURIComponent(id)}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ direction }),
+      });
+      const result = await response.json().catch(() => ({})) as { direction?: "up" | "down"; upvotes?: number; downvotes?: number; error?: string };
+      if (!response.ok || !result.direction) throw new Error(result.error || "Could not save your vote.");
+      setVotes((current) => ({ ...current, [id]: result.direction as "up" | "down" }));
+      setReviews((current) => current.map((review) => review.id === id
+        ? { ...review, votes: { up: result.upvotes ?? 0, down: result.downvotes ?? 0 }, myVote: result.direction }
+        : review));
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not save your vote.");
+    }
   }
 
   function removeReview(id: string) {
-    const updated = reviews.filter((review) => review.id !== id);
-    setReviews(updated);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { /* Keep current UI state. */ }
+    setNotice("Server-side review deletion is not enabled yet.");
   }
 
   const panel: React.CSSProperties = { background: "white", border: "1px solid #e2e8f0", borderRadius: 18, padding: 22, boxShadow: "0 8px 28px #0f172a08" };
