@@ -1366,7 +1366,47 @@ export default function Home() {
         </div>
       </div>
 
-      {authModalOpen && <div role="presentation" onClick={() => setAuthModalOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 1000, display: "grid", placeItems: "center", padding: 20, background: "#0f172a99", backdropFilter: "blur(4px)", overflowY: "auto" }}><section role="dialog" aria-modal="true" aria-label={authMode === "Log In" ? "Log in" : "Create an account"} onClick={(event) => event.stopPropagation()} style={{ position: "relative", width: "min(100%, 430px)", boxSizing: "border-box", padding: "34px 32px 28px", background: "white", borderRadius: 8, boxShadow: "0 24px 80px #0005" }}><button type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)} style={{ position: "absolute", top: 10, right: 10, width: 30, height: 30, border: 0, borderRadius: 999, background: "#f1f5f9", color: "#334155", fontSize: 22, cursor: "pointer" }}>×</button><h2 style={{ margin: "0 0 24px", fontSize: 24, fontWeight: 900, color: "#111827" }}>{authMode === "Log In" ? "Login to your account" : "Create an account"}</h2><form onSubmit={(event) => { event.preventDefault(); window.location.href = "/auth/login"; }}><label style={{ display: "block", marginBottom: 7, fontSize: 13, color: "#64748b" }}>Email</label><input required type="email" aria-label="Email" placeholder="Enter your email" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "2px solid #bfdbfe", borderRadius: 7, marginBottom: 17, color: "#111827", background: "white" }}/><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}><label style={{ fontSize: 13, color: "#64748b" }}>Password</label>{authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)} style={{ border: 0, background: "transparent", color: "#0784f9", fontSize: 12, cursor: "pointer" }}>Forgot?</button>}</div><input required type="password" aria-label="Password" placeholder="Enter your password" style={{ width: "100%", boxSizing: "border-box", padding: "12px", border: "1px solid #d1d5db", borderRadius: 7, marginBottom: 22, color: "#111827", background: "white" }}/><button type="submit" style={{ width: "100%", border: 0, borderRadius: 7, padding: "13px", background: "#0784f9", color: "white", fontWeight: 700, cursor: "pointer" }}>{authMode === "Log In" ? "Login now" : "Create account"}</button></form><button type="button" onClick={() => { window.location.href = "/auth/login?provider=Google"; }} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 7, padding: "13px", background: "#e0efff", color: "#0784f9", fontWeight: 700, cursor: "pointer" }}>🌐　Continue with Google</button><p style={{ margin: "20px 0 0", textAlign: "center", color: "#9ca3af", fontSize: 12 }}>{authMode === "Log In" ? "Don’t have an account?" : "Already have an account?"} <button type="button" onClick={() => { setAuthMode(authMode === "Log In" ? "Sign Up" : "Log In"); setAuthSetupNotice(false); }} style={{ border: 0, background: "transparent", color: "#0784f9", cursor: "pointer" }}>{authMode === "Log In" ? "Sign up" : "Log in"}</button></p>{authSetupNotice && <p role="status" style={{ marginTop: 14, padding: 10, borderRadius: 8, background: "#fff7ed", color: "#9a3412", fontSize: 12 }}>Authentication is not connected yet. Amazon Cognito setup is required before you can continue.</p>}</section></div>}
+      {authModalOpen && (
+        <div className="auth-backdrop" role="presentation" onClick={() => setAuthModalOpen(false)}>
+          <section
+            className="auth-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={authMode === "Log In" ? "Log in" : "Create an account"}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button className="auth-close" type="button" aria-label="Close authentication" onClick={() => setAuthModalOpen(false)}>×</button>
+            <div className="auth-mark" aria-hidden="true">அ</div>
+            <p className="auth-eyebrow">{authMode === "Log In" ? "WELCOME BACK" : "JOIN THE CONVERSATION"}</p>
+            <h2 className="auth-title">{authMode === "Log In" ? "Login to your account" : "Create your account"}</h2>
+            <p className="auth-subtitle">{authMode === "Log In" ? "Sign in to continue to Arasiyal Arattai." : "Join the community and share your perspective."}</p>
+            <form className="auth-form" onSubmit={(event) => { event.preventDefault(); window.location.href = "/auth/login"; }}>
+              <label htmlFor="auth-email">Email address</label>
+              <input id="auth-email" required type="email" autoComplete="email" aria-label="Email" placeholder="you@example.com" />
+              <div className="auth-password-label">
+                <label htmlFor="auth-password">Password</label>
+                {authMode === "Log In" && <button type="button" onClick={() => setAuthSetupNotice(true)}>Forgot password?</button>}
+              </div>
+              <input id="auth-password" required type="password" autoComplete={authMode === "Log In" ? "current-password" : "new-password"} aria-label="Password" placeholder="Enter your password" />
+              <button className="auth-submit" type="submit">{authMode === "Log In" ? "Log in" : "Create account"}<span aria-hidden="true">→</span></button>
+            </form>
+            <div className="auth-divider"><span>or continue with</span></div>
+            <button className="auth-google" type="button" onClick={() => { window.location.href = "/auth/login?provider=Google"; }}>
+              <svg width="19" height="19" viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 3.1 13.22l7.98 6.19C12.98 13.72 18.04 9.5 24 9.5Z" transform="translate(0 4)"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.42 38.03 46.98 31.9 46.98 24.55Z"/>
+                <path fill="#FBBC05" d="M10.08 28.59A14.4 14.4 0 0 1 9.3 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.58 10.78l7.5-6.19Z" transform="translate(0 0)"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.94-2.13 15.91-5.8l-7.73-6c-2.14 1.44-4.88 2.3-8.18 2.3-5.96 0-11.02-4.02-12.92-9.44l-7.98 6.19C6.51 42.62 14.62 48 24 48Z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+            <p className="auth-switch">{authMode === "Log In" ? "New to Arasiyal Arattai?" : "Already have an account?"}
+              <button type="button" onClick={() => { setAuthMode(authMode === "Log In" ? "Sign Up" : "Log In"); setAuthSetupNotice(false); }}>{authMode === "Log In" ? "Create account" : "Log in"}</button>
+            </p>
+            {authSetupNotice && <p className="auth-notice" role="status">Password recovery requires the authentication provider to be configured.</p>}
+          </section>
+        </div>
+      )}
 
       <section className="community-feedback" id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
