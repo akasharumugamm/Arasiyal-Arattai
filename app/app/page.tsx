@@ -1341,9 +1341,24 @@ export default function Home() {
             <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
           </div>
           </aside>
-          <section aria-label="Discussion overview" style={{ boxSizing: "border-box", width: "100%", border: "1px solid #e5e7eb", borderRadius: 16, padding: 14, background: "#fff", boxShadow: "0 5px 18px #0f172a08" }}>
-            <h3 style={{ margin: "0 0 8px", fontSize: 14, fontWeight: 700, color: "#172554" }}>Discussion overview</h3>
-            <p style={{ margin: 0, color: "#64748b", fontSize: 12, lineHeight: 1.7 }}>{recentReviews.length} public posts across the directory. Positive and Concern posts contribute to sentiment; allegations are not treated as proven facts.</p>
+          <section className="feedback-overview-card" aria-label="Feedback overview">
+            <h3 className="feedback-overview-title"><span aria-hidden="true">▤</span> Feedback Overview</h3>
+            {[
+              { label: "All feedback", count: recentReviews.length, color: "#9ca3af", type: "All" },
+              { label: "Positive", count: recentReviews.filter((review) => review.type === "Positive").length, color: "#43a779", type: "Positive" },
+              { label: "Concern", count: recentReviews.filter((review) => review.type === "Concern").length, color: "#e36a55", type: "Concern" },
+              { label: "Allegations", count: recentReviews.filter((review) => review.type === "Allegation").length, color: "#8b5cf6", type: "Allegation" },
+              { label: "Requests", count: recentReviews.filter((review) => review.type === "Request").length, color: "#eabf36", type: "Request" },
+            ].map((item) => (
+              <div className="feedback-overview-row" key={item.type}>
+                <span className="feedback-overview-label"><span className="feedback-overview-dot" style={{ background: item.color }} />{item.label}</span>
+                <span className="feedback-overview-count">{item.count}</span>
+              </div>
+            ))}
+          </section>
+          <section className="discussion-overview-card" aria-label="Discussion overview">
+            <h3>Discussion overview</h3>
+            <p>{recentReviews.length} public {recentReviews.length === 1 ? "post" : "posts"} across the directory. Positive and Concern posts contribute to sentiment; allegations are not treated as proven facts.</p>
           </section>
         </div>
       </div>
