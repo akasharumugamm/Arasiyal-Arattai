@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
+import { getOfficialIdentityKey } from "@/lib/official-identity";
 
 type CognitoClaims = { sub?: string; email?: string; name?: string; preferred_username?: string; username?: string };
 type OfficialInput = { name: string; category?: string };
@@ -44,8 +45,8 @@ export async function GET(request: NextRequest) {
     const values: unknown[] = [viewerId];
     const filters = ["p.deleted_at IS NULL"];
     if (official) {
-      values.push(official);
-      filters.push(`EXISTS (SELECT 1 FROM review_post_officials po WHERE po.post_id = p.id AND po.official_name = $${values.length})`);
+      values.push(getOfficialIdentityKey(official));
+      filters.push(`EXISTS (SELECT 1 FROM review_post_officials po WHERE po.post_id = p.id AND po.official_key = ${values.length})`);
     }
     if (type && REVIEW_TYPES.includes(type as typeof REVIEW_TYPES[number])) {
       values.push(type);
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
     const result = await query(
       `SELECT p.id, p.author_id AS "authorId", p.review_type AS type, p.title, p.body, p.created_at AS date,
               COALESCE(u.display_name, u.username, 'User') AS name,
-              COALESCE((SELECT json_agg(json_build_object('name', po.official_name, 'category', po.official_category) ORDER BY po.official_name)
+              COALESCE((SELECT json_agg(json_build_object('name', po.official_name, 'category', po.official_category, 'officialId', po.official_key) ORDER BY po.official_name)
                         FROM review_post_officials po WHERE po.post_id = p.id), '[]'::json) AS officials,
               COALESCE((SELECT json_agg(ri.image_url ORDER BY ri.sort_order)
                         FROM review_images ri WHERE ri.post_id = p.id), '[]'::json) AS "imageUrls",
@@ -99,8 +100,12 @@ export async function POST(request: NextRequest) {
   const imageUrls = Array.isArray(input.imageUrls) ? input.imageUrls : [];
   const cleanOfficials = officials
     .filter((item) => item && typeof item.name === "string" && item.name.trim())
-    .map((item) => ({ name: item.name.trim(), category: typeof item.category === "string" ? item.category.trim().slice(0, 40) : "Other" }))
-    .filter((item, index, list) => list.findIndex((candidate) => candidate.name.toLowerCase() === item.name.toLowerCase()) === index);
+    .map((item) => ({
+      name: item.name.trim(),
+      officialId: getOfficialIdentityKey(item.name),
+      category: typeof item.category === "string" ? item.category.trim().slice(0, 40) : "Other",
+    }))
+    .filter((item, index, list) => list.findIndex((candidate) => candidate.officialId === item.officialId) === index);
   const cleanImages = imageUrls.filter((url): url is string => typeof url === "string" && url.length <= 2048);
 
   if (!cleanOfficials.length || cleanOfficials.length > 30 ||
@@ -121,7 +126,10 @@ export async function POST(request: NextRequest) {
     );
     const postId = created.rows[0].id;
     for (const official of cleanOfficials) {
-      await query("INSERT INTO review_post_officials (post_id, official_name, official_category) VALUES ($1, $2, $3)", [postId, official.name, official.category || "Other"]);
+      await query(
+        "INSERT INTO review_post_officials (post_id, official_name, official_key, official_category) VALUES ($1, $2, $3, $4)",
+        [postId, official.name, official.officialId, official.category || "Other"],
+      );
     }
     for (const [index, imageUrl] of cleanImages.entries()) {
       await query("INSERT INTO review_images (post_id, image_url, sort_order) VALUES ($1, $2, $3)", [postId, imageUrl, index]);
