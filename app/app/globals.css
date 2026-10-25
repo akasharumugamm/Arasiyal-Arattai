@@ -2169,10 +2169,7 @@ option {
 .aa-social-comment-count { font-weight: 650; }
 
 
-/* Lighter author profile text and breathing room for official tags below post content. */
-.aa-social-author strong {
-  font-weight: 500;
-}
+/* Spacing for official tags below post content. */
 .aa-social-officials {
   margin-top: 12px;
   margin-bottom: 8px;
@@ -2180,4 +2177,9 @@ option {
 .aa-social-media + .aa-social-officials {
   margin-top: 12px;
   margin-bottom: 0;
+}
+
+/* Keep author name typography unchanged; soften only the initials inside the profile avatar. */
+.aa-social-avatar {
+  font-weight: 500;
 }
