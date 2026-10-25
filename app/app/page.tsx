@@ -1341,27 +1341,7 @@ export default function Home() {
             <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
           </div>
           </aside>
-          <section className="feedback-overview-card" aria-label="Feedback overview">
-            <h3 className="feedback-overview-title">Feedback Overview</h3>
-            {[
-              { label: "All feedback", count: recentReviews.length, color: "#9ca3af", type: "All" },
-              { label: "Positive", count: recentReviews.filter((review) => review.type === "Positive").length, color: "#43a779", type: "Positive" },
-              { label: "Concern", count: recentReviews.filter((review) => review.type === "Concern").length, color: "#e36a55", type: "Concern" },
-              { label: "Allegations", count: recentReviews.filter((review) => review.type === "Allegation").length, color: "#8b5cf6", type: "Allegation" },
-              { label: "Requests", count: recentReviews.filter((review) => review.type === "Request").length, color: "#eabf36", type: "Request" },
-            ].map((item) => (
-              <button
-                type="button"
-                className={`feedback-overview-row${homeReviewType === item.type ? " is-selected" : ""}`}
-                key={item.type}
-                aria-pressed={homeReviewType === item.type}
-                onClick={() => setHomeReviewType(item.type as typeof homeReviewType)}
-              >
-                <span className="feedback-overview-label"><span className="feedback-overview-dot" style={{ background: item.color }} />{item.label}</span>
-                <span className="feedback-overview-count">{item.count}</span>
-              </button>
-            ))}
-          </section>
+
 
         </div>
       </div>
@@ -1408,7 +1388,7 @@ export default function Home() {
         </div>
       )}
 
-      <section className="community-feedback" id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+      <section className="community-feedback" id="community-feedback" style={{ width: "100%", boxSizing: "border-box", margin: "16px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
@@ -1420,6 +1400,31 @@ export default function Home() {
           <HomeCategoryMenu value={homeReviewType} onChange={setHomeReviewType} />
           <div className="home-discussion-search"><span aria-hidden="true">⌕</span><input aria-label="Search discussions by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name…" />{homeReviewName && <button type="button" onClick={() => setHomeReviewName("")} aria-label="Clear search">×</button>}</div>
         </div>
+        <div className="community-feedback-layout">
+          <div className="community-feedback-overview-column">
+          <section className="feedback-overview-card" aria-label="Feedback overview">
+            <h3 className="feedback-overview-title">Feedback Overview</h3>
+            {[
+              { label: "All feedback", count: recentReviews.length, color: "#9ca3af", type: "All" },
+              { label: "Positive", count: recentReviews.filter((review) => review.type === "Positive").length, color: "#43a779", type: "Positive" },
+              { label: "Concern", count: recentReviews.filter((review) => review.type === "Concern").length, color: "#e36a55", type: "Concern" },
+              { label: "Allegations", count: recentReviews.filter((review) => review.type === "Allegation").length, color: "#8b5cf6", type: "Allegation" },
+              { label: "Requests", count: recentReviews.filter((review) => review.type === "Request").length, color: "#eabf36", type: "Request" },
+            ].map((item) => (
+              <button
+                type="button"
+                className={`feedback-overview-row${homeReviewType === item.type ? " is-selected" : ""}`}
+                key={item.type}
+                aria-pressed={homeReviewType === item.type}
+                onClick={() => setHomeReviewType(item.type as typeof homeReviewType)}
+              >
+                <span className="feedback-overview-label"><span className="feedback-overview-dot" style={{ background: item.color }} />{item.label}</span>
+                <span className="feedback-overview-count">{item.count}</span>
+              </button>
+            ))}
+          </section>
+          </div>
+          <div className="community-discussions-column">
         {recentReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center", border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
             <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No feedback added yet</p>
@@ -1462,6 +1467,8 @@ export default function Home() {
           </div>
         )}
         <p style={{ margin: "14px 0 0", fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>Discussions are loaded from the shared database. Allegations are claims, not findings of fact.</p>
+          </div>
+        </div>
       </section>
     </main>
   );
