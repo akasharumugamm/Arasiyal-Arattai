@@ -4980,13 +4980,24 @@ option {
 }
 .aa-official-block { position: relative; }
 
-/* Profile contribution cards stay visually still; no hover lift or highlight. */
+/* Profile contribution cards: override the shared feed hover rule explicitly. */
 .aa-profile-post,
-.aa-profile-post:hover {
-  border-color: #dfe3e8;
-  box-shadow: 0 1px 2px rgb(15 23 42 / 3%);
-  transform: none;
+.aa-profile-post:hover,
+.aa-profile-post:focus,
+.aa-profile-post:focus-within,
+.aa-profile-post:active {
+  border-color: #dfe3e8 !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 3%) !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+  animation: none !important;
 }
-.aa-profile-post {
-  transition: none;
+.aa-profile-post::before,
+.aa-profile-post::after,
+.aa-profile-post:hover::before,
+.aa-profile-post:hover::after {
+  box-shadow: none !important;
+  transform: none !important;
+  animation: none !important;
 }
