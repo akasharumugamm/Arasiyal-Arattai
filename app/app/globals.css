@@ -2662,3 +2662,11 @@ option {
     column-gap: 48px !important;
   }
 }
+
+
+/* Reserve real space for the fixed profile so the graph cannot touch it. */
+@media (min-width: 761px) {
+  .explorer-layout {
+    padding-right: 368px !important;
+  }
+}
