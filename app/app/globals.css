@@ -4040,3 +4040,130 @@ option {
     width: calc(100% - 340px);
   }
 }
+
+
+/* Modern custom discussion sort dropdown */
+.home-discussion-sort-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  z-index: 25;
+}
+
+.home-discussion-sort-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 13px;
+  border: 1px solid #dbe4f2;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+  color: #344563;
+  box-shadow: 0 2px 5px rgb(35 61 117 / 3%);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.home-discussion-sort-trigger:hover,
+.home-discussion-sort-trigger[aria-expanded="true"] {
+  border-color: #9db5ff;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(49 91 232 / 8%);
+}
+
+.home-discussion-sort-trigger svg {
+  flex: 0 0 auto;
+  color: #64748b;
+  transition: transform 150ms ease;
+}
+
+.home-discussion-sort-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.home-discussion-sort-menu {
+  position: absolute;
+  z-index: 100;
+  top: calc(100% + 7px);
+  right: 0;
+  left: 0;
+  padding: 6px;
+  border: 1px solid #e1e8f5;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 98%);
+  box-shadow: 0 16px 38px rgb(27 47 91 / 14%), 0 3px 8px rgb(27 47 91 / 5%);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  animation: home-sort-menu-in 130ms ease-out;
+}
+
+.home-discussion-sort-option {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 11px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: #334155;
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.home-discussion-sort-option:hover {
+  background: #f5f7ff;
+}
+
+.home-discussion-sort-option.is-selected {
+  background: linear-gradient(110deg, #eef3ff 0%, #f6f8ff 100%);
+  color: #244bd2;
+}
+
+.home-sort-option-copy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.home-sort-option-copy strong {
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.home-sort-option-copy small {
+  color: #8490a7;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.home-discussion-sort-option.is-selected .home-sort-option-copy small {
+  color: #6479ba;
+}
+
+.home-discussion-sort-option > svg {
+  flex: 0 0 auto;
+  color: #315be8;
+}
+
+@keyframes home-sort-menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-discussion-sort-trigger,
+  .home-discussion-sort-trigger svg,
+  .home-discussion-sort-option { transition: none; }
+  .home-discussion-sort-menu { animation: none; }
+}
