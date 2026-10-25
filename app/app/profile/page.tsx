@@ -101,9 +101,13 @@ export default function ProfilePage() {
     <div className="aa-profile-layout">
       <section className="aa-profile-card aa-profile-summary-card">
         <div className="aa-profile-card-heading">
-          <div>
-            <span className="aa-eyebrow">YOUR ACCOUNT</span>
-            <h1>Profile</h1>
+          <div className="aa-profile-heading-identity">
+            <div className="aa-profile-monogram" aria-label="Arasiyal Arattai profile">AA</div>
+            <div className="aa-profile-heading-copy">
+              <span className="aa-eyebrow">YOUR ACCOUNT</span>
+              <h1>Profile</h1>
+              <p>Manage your account details</p>
+            </div>
           </div>
           <button type="button" className="aa-profile-edit-trigger" aria-label={editingProfile ? "Close profile editor" : "Edit profile"} aria-expanded={editingProfile} onClick={() => { setEditingProfile((value) => !value); setName(profile.name ?? ""); setNotice(""); }}>
             {editingProfile ? <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="m6 6 12 12M18 6 6 18" /></svg> : <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="m14 5 5 5M4 20l4.5-1 10.7-10.7a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z" /></svg>}
