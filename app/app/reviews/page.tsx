@@ -67,7 +67,7 @@ function CustomDropdown<T extends string>({ value, options, onChange, label }: {
     <button type="button" className="aa-dropdown-trigger" aria-expanded={open} aria-label={label} onClick={() => setOpen(!open)}>
       <span>{selected.label}</span><span className={open ? "aa-dropdown-chevron is-open" : "aa-dropdown-chevron"} aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16" fill="none"><path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
     </button>
-    {open && <><button className="aa-click-away" aria-label="Close menu" onClick={() => setOpen(false)} />
+    {open && <>
       <div className="aa-dropdown-menu" role="listbox" aria-label={label}>
         {options.map((option) => <button key={option.value} type="button" role="option" aria-selected={option.value === value}
           className={option.value === value ? "aa-dropdown-option selected" : "aa-dropdown-option"}
