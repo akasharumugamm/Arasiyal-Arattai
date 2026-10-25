@@ -2181,5 +2181,5 @@ option {
 
 /* Keep author name typography unchanged; soften only the initials inside the profile avatar. */
 .aa-social-avatar {
-  font-weight: 500;
+  font-weight: 800;
 }
