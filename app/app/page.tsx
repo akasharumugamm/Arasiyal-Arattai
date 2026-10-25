@@ -849,6 +849,7 @@ export default function Home() {
   const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Concern" | "Allegation" | "Request">("All");
   const [homeReviewName, setHomeReviewName] = useState("");
+  const [homeReviewSort, setHomeReviewSort] = useState<"up" | "down" | "recent" | "oldest">("recent");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1140,7 +1141,14 @@ export default function Home() {
 
   const filteredHomeReviews = recentReviews
     .filter((review) => homeReviewType === "All" || review.type === homeReviewType)
-    .filter((review) => !homeReviewName.trim() || (review.officials ?? []).some((official) => official.name.toLowerCase().includes(homeReviewName.trim().toLowerCase())));
+    .filter((review) => !homeReviewName.trim() || (review.officials ?? []).some((official) => official.name.toLowerCase().includes(homeReviewName.trim().toLowerCase())))
+    .slice()
+    .sort((a, b) => {
+      if (homeReviewSort === "up") return (b.votes?.up ?? 0) - (a.votes?.up ?? 0);
+      if (homeReviewSort === "down") return (b.votes?.down ?? 0) - (a.votes?.down ?? 0);
+      const dateDifference = new Date(b.date).getTime() - new Date(a.date).getTime();
+      return homeReviewSort === "oldest" ? -dateDifference : dateDifference;
+    });
 
   return (
     <main className="app-shell" style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
@@ -1362,10 +1370,6 @@ export default function Home() {
             <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Recent community posts about public officials and service.</p>
           </div>
         </div>
-        <div className="home-discussion-controls">
-          <HomeCategoryMenu value={homeReviewType} onChange={setHomeReviewType} />
-          <div className="home-discussion-search"><span aria-hidden="true">⌕</span><input aria-label="Search discussions by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name…" />{homeReviewName && <button type="button" onClick={() => setHomeReviewName("")} aria-label="Clear search">×</button>}</div>
-        </div>
         <div className="community-feedback-layout">
           <div className="community-feedback-overview-column">
           <section className="feedback-overview-card" aria-label="Feedback overview">
@@ -1391,6 +1395,18 @@ export default function Home() {
           </section>
           </div>
           <div className="community-discussions-column">
+            <div className="home-discussion-controls community-discussion-tools">
+              <div className="home-discussion-search"><span aria-hidden="true">⌕</span><input aria-label="Search discussions by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name…" />{homeReviewName && <button type="button" onClick={() => setHomeReviewName("")} aria-label="Clear search">×</button>}</div>
+              <label className="home-discussion-sort-wrap">
+                <span className="sr-only">Sort discussions</span>
+                <select className="home-discussion-sort" aria-label="Sort discussions" value={homeReviewSort} onChange={(e) => setHomeReviewSort(e.target.value as typeof homeReviewSort)}>
+                  <option value="up">Most upvoted</option>
+                  <option value="down">Most downvoted</option>
+                  <option value="recent">Recent</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </label>
+            </div>
         {recentReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center", border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
             <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No feedback added yet</p>
