@@ -2,6 +2,7 @@
 
 import PostActionsMenu from "@/components/PostActionsMenu";
 import { getAvatarColors, getAvatarInitials } from "@/lib/avatar";
+import { getOfficialIdentityKey } from "@/lib/official-identity";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -907,7 +908,15 @@ export default function Home() {
         if (cancelled) return;
         setRecentReviews(loaded);
         setHomeVotes(Object.fromEntries(loaded.filter((review) => review.myVote).map((review) => [review.id, review.myVote as "up" | "down"])));
-        const relevant = loaded.filter((review) => review.officials?.some((official) => official.name === selected.label) && (review.type === "Positive" || review.type === "Concern"));
+        const selectedIdentity = getOfficialIdentityKey(selected.label);
+        const relevant = loaded.filter((review) =>
+          review.officials?.some((official) => {
+            const officialId = (official as { officialId?: string }).officialId;
+            return officialId
+              ? officialId === selectedIdentity
+              : getOfficialIdentityKey(official.name) === selectedIdentity;
+          }) && (review.type === "Positive" || review.type === "Concern")
+        );
         const positive = relevant.filter((review) => review.type === "Positive").length;
         setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
       } catch { if (!cancelled) { setRecentReviews([]); setReviewScore(null); } }
