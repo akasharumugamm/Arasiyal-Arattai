@@ -4011,3 +4011,24 @@ option {
     overscroll-behavior: auto !important;
   }
 }
+
+
+/* Homepage navbar aligns with the graph/main column, not the selected-profile sidebar. */
+@media (min-width: 1100px) {
+  .aa-home-header {
+    width: calc(100% - 398px);
+    max-width: none;
+    box-sizing: border-box;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+}
+
+@media (max-width: 1099px) {
+  .aa-home-header {
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
