@@ -4302,3 +4302,34 @@ option {
     box-sizing: border-box;
   }
 }
+
+
+/* Refined sort trigger interaction: subtle lift and surface tint, no harsh blue outline. */
+.home-discussion-sort-trigger {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 3%);
+  transform: translateY(0);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.home-discussion-sort-trigger:hover {
+  border-color: #d5def0;
+  background: linear-gradient(180deg, #ffffff 0%, #f7f9ff 100%);
+  box-shadow: 0 4px 12px rgb(30 55 110 / 7%);
+  transform: translateY(-1px);
+}
+
+.home-discussion-sort-trigger[aria-expanded="true"] {
+  border-color: #c8d5f6;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
+  box-shadow: 0 3px 10px rgb(30 55 110 / 6%);
+  transform: none;
+}
+
+.home-discussion-sort-trigger:focus-visible {
+  outline: 2px solid rgb(49 91 232 / 55%);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-discussion-sort-trigger { transition: none; }
+}
