@@ -1328,6 +1328,22 @@ export default function Home() {
             maxZoom={1.5}
             onNodeClick={(_, node) => {
               if (node.id === "council-summary") { changeCategory("Ministers"); return; }
+              if (node.id === "mla-summary") {
+                changeCategory("MLAs");
+                setExpandedMlaParty(null);
+                setMlaSearch("");
+                setMlaPartyFilter("All parties");
+                setSelected(node.data as Profile);
+                return;
+              }
+              if (node.id === "tvk") {
+                setCategory("MLAs");
+                setExpandedMlaParty(null);
+                setMlaSearch("");
+                setMlaPartyFilter("TVK");
+                setSelected(node.data as Profile);
+                return;
+              }
               if (category === "MLAs" && node.id.startsWith("mla-party-")) {
                 const party = (node.data as Profile).mlaParty ?? null;
                 setExpandedMlaParty((current) => current === party ? null : party);
