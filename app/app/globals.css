@@ -2991,3 +2991,41 @@ option {
     border-right: 0;
   }
 }
+
+
+/* Community Voice: independently scrolling posts with no card hover highlight. */
+@media (min-width: 761px) {
+  .community-feedback {
+    min-height: 0;
+    height: calc(100dvh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .community-feedback > .community-feedback-layout {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .community-discussions-column {
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  .community-discussions-column .home-discussion-feed {
+    display: grid;
+    grid-auto-rows: max-content;
+    align-content: start;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+  }
+}
+.community-feedback .aa-social-post,
+.community-feedback .aa-social-post:hover {
+  border-color: #e4e8ef;
+  box-shadow: 0 4px 14px rgb(15 23 42 / 4%);
+  transform: none;
+  transition: none;
+}
