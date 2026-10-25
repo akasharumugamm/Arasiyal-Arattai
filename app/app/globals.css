@@ -3999,3 +3999,15 @@ option {
 .aa-social-avatar {
   border-radius: 10px;
 }
+
+
+/* Let the browser page handle scrolling when the pointer is over Selected Profile. */
+@media (min-width: 761px) {
+  .page-with-profile > .profile-column {
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overscroll-behavior: auto !important;
+  }
+}
