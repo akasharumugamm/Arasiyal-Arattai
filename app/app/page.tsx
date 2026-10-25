@@ -1470,7 +1470,6 @@ export default function Home() {
         <aside style={{ width: "100%", boxSizing: "border-box", padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a0a" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>Selected profile</span>
-            <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "5px 8px", borderRadius: 999 }}>{isPerson ? "PERSON" : "PUBLIC RECORD"}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 18 }}>
             {selected.photoUrl ? (
