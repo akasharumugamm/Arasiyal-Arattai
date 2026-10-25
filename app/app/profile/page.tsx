@@ -25,6 +25,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [signedOut, setSignedOut] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,7 +82,8 @@ export default function ProfilePage() {
       if (!response.ok) throw new Error(data.error || "Could not save your display name");
       setProfile((current) => current ? { ...current, name: data.profile.name } : current);
       setName(data.profile.name);
-      setNotice("Your public display name is saved and will be used on future discussions.");
+      setEditingProfile(false);
+      setNotice("Your display name has been updated.");
     } catch (error) { setNotice(error instanceof Error ? error.message : "Could not save your name"); }
     finally { setSaving(false); }
   }
@@ -95,14 +97,32 @@ export default function ProfilePage() {
         <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" />
         <span className="brand-heading">Arasiyal Arattai</span>
       </Link>
-      <Link href="/reviews" className="aa-profile-discussions-link">Public discussions</Link>
     </header>
     <div className="aa-profile-layout">
-      <section className="aa-profile-card"><span className="aa-eyebrow">YOUR ACCOUNT</span><h1>Your profile</h1><p className="aa-profile-email">{profile.email || "Signed in with Cognito"}</p>
-        <form onSubmit={saveName} className="aa-profile-form"><label htmlFor="aa-profile-name">Public display name</label><p>This name appears next to your public discussions and comments.</p><input id="aa-profile-name" value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={60} required /><button type="submit" disabled={saving}>{saving ? "Saving…" : "Save display name"}</button></form>
+      <section className="aa-profile-card aa-profile-summary-card">
+        <div className="aa-profile-card-heading">
+          <div>
+            <span className="aa-eyebrow">YOUR ACCOUNT</span>
+            <h1>Profile</h1>
+          </div>
+          <button type="button" className="aa-profile-edit-trigger" aria-label={editingProfile ? "Close profile editor" : "Edit profile"} aria-expanded={editingProfile} onClick={() => { setEditingProfile((value) => !value); setName(profile.name ?? ""); setNotice(""); }}>
+            {editingProfile ? <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="m6 6 12 12M18 6 6 18" /></svg> : <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="m14 5 5 5M4 20l4.5-1 10.7-10.7a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z" /></svg>}
+          </button>
+        </div>
+        {!editingProfile ? <div className="aa-profile-details">
+          <div className="aa-profile-detail-row"><span className="aa-profile-detail-icon"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.4 3.1-5.2 7-5.2s6.3 1.8 7 5.2"/></svg></span><span className="aa-profile-detail-copy"><small>Display name</small><strong>{profile.name || "User"}</strong></span></div>
+          <div className="aa-profile-detail-row"><span className="aa-profile-detail-icon"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span><span className="aa-profile-detail-copy"><small>Email address</small><strong>{profile.email || "No email available"}</strong></span></div>
+        </div> : <form onSubmit={saveName} className="aa-profile-form aa-profile-edit-form">
+          <label htmlFor="aa-profile-name">Display name</label>
+          <input id="aa-profile-name" value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={60} required autoComplete="name" />
+          <label htmlFor="aa-profile-email">Email address</label>
+          <input id="aa-profile-email" value={profile.email || ""} readOnly aria-describedby="aa-profile-email-note" />
+          <p id="aa-profile-email-note" className="aa-profile-email-note">Email changes require account verification and aren’t available here yet.</p>
+          <div className="aa-profile-edit-actions"><button type="button" className="aa-profile-cancel-button" onClick={() => { setEditingProfile(false); setName(profile.name ?? ""); setNotice(""); }}>Cancel</button><button type="submit" disabled={saving}>{saving ? "Saving…" : "Save changes"}</button></div>
+        </form>}
         {notice && <p role="status" className="aa-profile-notice">{notice}</p>}
       </section>
-      <section className="aa-profile-posts"><div className="aa-feed-heading"><div><span className="aa-eyebrow">YOUR CONTRIBUTIONS</span><h2>Your discussions</h2><p>Posts you have published across the directory.</p></div><span className="aa-feed-count">{posts.length} posts</span></div>
+      <section className="aa-profile-posts"><div className="aa-feed-heading"><div><span className="aa-eyebrow">YOUR CONTRIBUTIONS</span><h2>Your discussions</h2><p>Posts you have published across the directory.</p></div></div>
         {posts.length === 0 ? <div className="aa-empty"><span>✦</span><h3>No discussions yet</h3><p>Share a constructive observation, raise a concern or request action.</p><Link href="/reviews?action=write">Start a discussion ↗</Link></div> :
           <div className="aa-profile-post-list">{posts.map((post) => {
             const style = typeColors[post.type];
