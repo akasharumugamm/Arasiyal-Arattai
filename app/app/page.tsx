@@ -1450,8 +1450,8 @@ export default function Home() {
                     {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div> : null}
                     <div className="aa-social-actions">
                       <div className="aa-social-votes">
-                        <button type="button" className={homeVotes[review.id] === "up" ? "is-upvoted" : ""} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><span aria-hidden="true">▲</span>{review.votes?.up ?? 0}</button>
-                        <button type="button" className={homeVotes[review.id] === "down" ? "is-downvoted" : ""} aria-label="Downvote post" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")}><span aria-hidden="true">▼</span>{review.votes?.down ?? 0}</button>
+                        <button type="button" className={homeVotes[review.id] === "up" ? "is-upvoted" : ""} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 14 6-6 6 6" /></svg><span className="aa-social-vote-count">{review.votes?.up ?? 0}</span></button>
+                        <button type="button" className={homeVotes[review.id] === "down" ? "is-downvoted" : ""} aria-label="Downvote post" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")}><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 10 6 6 6-6" /></svg><span className="aa-social-vote-count">{review.votes?.down ?? 0}</span></button>
                       </div>
                     </div>
                   </div>
