@@ -1242,3 +1242,10 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-upload-button { transition: none; }
 }
+
+
+/* Remove the duplicated plus: the upload button already has a text plus. */
+.aa-upload-button::before {
+  content: none;
+  display: none;
+}
