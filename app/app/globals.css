@@ -3993,3 +3993,9 @@ option {
 .aa-profile-edit-trigger svg {
   display: block;
 }
+
+
+/* Restore the rounded-square initials avatar shape across all post cards. */
+.aa-social-avatar {
+  border-radius: 10px;
+}
