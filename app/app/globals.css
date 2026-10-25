@@ -2036,3 +2036,97 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-social-post, .aa-social-votes button, .aa-social-comment-button { transition: none; }
 }
+
+/* Keep each section feeling like one continuous, thumb-friendly social feed. */
+.home-discussion-feed,
+.aa-feed,
+.aa-profile-post-list {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+  max-height: min(620px, calc(100vh - 190px));
+  overflow-y: auto;
+  padding: 2px 7px 8px 2px;
+  overscroll-behavior: contain;
+  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-width: thin;
+}
+.home-discussion-feed {
+  height: 620px;
+  box-sizing: border-box;
+}
+.aa-feed {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.aa-profile-post-list {
+  max-height: 620px;
+}
+.home-discussion-feed::-webkit-scrollbar,
+.aa-feed::-webkit-scrollbar,
+.aa-profile-post-list::-webkit-scrollbar { width: 7px; }
+.home-discussion-feed::-webkit-scrollbar-thumb,
+.aa-feed::-webkit-scrollbar-thumb,
+.aa-profile-post-list::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #cbd5e1;
+  background-clip: padding-box;
+}
+.community-feedback {
+  color: #172033;
+}
+.community-feedback .aa-social-post,
+.aa-feed .aa-social-post,
+.aa-profile-post-list .aa-profile-post {
+  border-color: #e4e8ef;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgb(15 23 42 / 4%);
+}
+.community-feedback .aa-social-post:hover,
+.aa-feed .aa-social-post:hover,
+.aa-profile-post-list .aa-profile-post:hover {
+  border-color: #bfd0e7;
+  box-shadow: 0 10px 24px rgb(15 23 42 / 8%);
+  transform: translateY(-1px);
+}
+.community-feedback .aa-social-post-main,
+.aa-feed .aa-social-post-main,
+.aa-profile-post-list .aa-profile-post {
+  padding: 18px;
+}
+.aa-profile-post-list .aa-profile-post {
+  min-width: 0;
+}
+.aa-profile-post-list .aa-social-officials span {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: #f2f4f7;
+  color: #596579;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.aa-profile-post-date {
+  display: block;
+  margin-top: 12px;
+  color: #94a3b8;
+  font-size: 10px;
+}
+@media (max-width: 760px) {
+  .home-discussion-feed,
+  .aa-feed,
+  .aa-profile-post-list {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+  .home-discussion-feed { height: auto; }
+  .aa-feed { grid-template-columns: 1fr; }
+  .community-feedback .aa-social-post-main,
+  .aa-feed .aa-social-post-main,
+  .aa-profile-post-list .aa-profile-post { padding: 15px 13px 13px; }
+}

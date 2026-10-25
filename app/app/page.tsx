@@ -1429,7 +1429,7 @@ export default function Home() {
         ) : filteredHomeReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "grid", placeItems: "center", padding: 20, textAlign: "center", color: "#64748b", fontSize: 13 }}>No feedback matches these filters.</div>
         ) : (
-          <div style={{ display: "grid", alignContent: "start", gap: 12, height: 620, overflowY: "auto", paddingRight: 5, overscrollBehavior: "contain", overflowAnchor: "none" }}>
+          <div className="home-discussion-feed">
             {filteredHomeReviews.map((review) => {
               const categoryStyle = review.type === "Positive"
                 ? { color: "#15803d", background: "#dcfce7" }
