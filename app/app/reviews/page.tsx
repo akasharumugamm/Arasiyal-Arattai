@@ -261,7 +261,7 @@ export default function ReviewsPage() {
       <div><div className="aa-eyebrow">PUBLIC VOICE · ACCOUNTABILITY</div><h1>People&apos;s Voice</h1><p>Share your views on public officials&apos; work, decisions, achievements and areas for improvement. Keep feedback respectful, specific and evidence-based.</p></div>
     </section>
     <section id="aa-composer" className="aa-composer">
-      <div className="aa-composer-heading"><div><span className="aa-eyebrow">YOUR VOICE MATTERS</span><h2>Write about a public official</h2></div><span className="aa-private-note">✦ Public by default</span></div>
+      <div className="aa-composer-heading"><div><span className="aa-eyebrow">YOUR VOICE MATTERS</span><h2>Write about a public official</h2></div></div>
       <form onSubmit={submitReview}>
         <label className="aa-field-label" htmlFor="aa-title">Title</label>
         <input id="aa-title" className="aa-text-input" placeholder="What should people know?" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} required />
@@ -287,7 +287,7 @@ export default function ReviewsPage() {
     </section>
     {notice && <div role="status" className="aa-notice">{notice}<button type="button" onClick={() => setNotice("")} aria-label="Dismiss notice">×</button></div>}
     <section className="aa-feed-section">
-      <div className="aa-feed-heading"><div><span className="aa-eyebrow">THE PUBLIC CONVERSATION</span><h2>Explore discussions</h2><p>Search by the name of any official to find related posts.</p></div><span className="aa-feed-count">{visibleReviews.length} posts</span></div>
+      <div className="aa-feed-heading"><div><span className="aa-eyebrow">THE PUBLIC CONVERSATION</span><h2>Explore discussions</h2><p>Search by the name of any official to find related posts.</p></div></div>
       <div className="aa-feed-controls"><CustomDropdown value={filter} options={[{value:"All" as const,label:"All categories"},{value:"Positive" as const,label:"Positive"},{value:"Concern" as const,label:"Concern"},{value:"Allegation" as const,label:"Allegation"},{value:"Request" as const,label:"Request"}]} onChange={setFilter} label="Filter discussion category" /><div className="aa-search"><span>⌕</span><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search officials by name…" aria-label="Search officials by name" />{search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search">×</button>}</div></div>
       {visibleReviews.length === 0 ? <div className="aa-empty"><span>✦</span><h3>No discussions found</h3><p>Try another category or search for a different official. Be the first to start a constructive conversation.</p></div> :
       <div className="aa-feed">{visibleReviews.map((review) => {
