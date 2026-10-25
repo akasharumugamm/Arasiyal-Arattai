@@ -4791,3 +4791,28 @@ option {
   .aa-auth-glass-card { animation: none; }
   .aa-auth-primary, .aa-auth-secondary, .aa-auth-link { transition: none; }
 }
+
+
+/* Distribute every section tab evenly across the full graph-width navigation. */
+@media (min-width: 1100px) {
+  .category-nav {
+    display: flex;
+    width: calc(100% - 397px);
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .category-nav-button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-right: 10px;
+    padding-left: 10px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1099px) {
+  .category-nav-button {
+    flex: 1 1 auto;
+  }
+}
