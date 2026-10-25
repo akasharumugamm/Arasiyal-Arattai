@@ -2454,3 +2454,45 @@ option {
   .aa-comment-form input { height: 40px !important; padding: 0 10px !important; }
   .aa-comment-form button { height: 40px !important; padding: 0 11px !important; }
 }
+
+
+/* Refined comment CTA to match the app's cleaner modern buttons. */
+.aa-comment-form button {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 14px !important;
+  border: 1px solid #1b2c60 !important;
+  border-radius: 11px !important;
+  background: linear-gradient(180deg, #24376f 0%, #192a5b 100%) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.1px !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 10%), inset 0 1px 0 rgb(255 255 255 / 12%) !important;
+  transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease !important;
+}
+.aa-comment-form button:hover {
+  background: #263d7e !important;
+  box-shadow: 0 3px 8px rgb(23 37 84 / 18%) !important;
+}
+.aa-comment-form button:focus-visible {
+  outline: 3px solid rgb(96 135 220 / 35%) !important;
+  outline-offset: 2px !important;
+}
+.aa-comment-form button:active {
+  transform: translateY(1px) !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 10%) !important;
+}
+.aa-comment-form button svg {
+  width: 14px !important;
+  height: 14px !important;
+  opacity: .9;
+  transition: transform 150ms ease !important;
+}
+.aa-comment-form button:hover svg {
+  transform: translateX(2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .aa-comment-form button,
+  .aa-comment-form button svg { transition: none !important; }
+}
