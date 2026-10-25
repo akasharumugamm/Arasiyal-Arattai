@@ -3029,3 +3029,80 @@ option {
   transform: none;
   transition: none;
 }
+
+
+/* Final Community Voice behavior: pin the full panel at the viewport top and keep only the post feed scrolling. */
+@media (min-width: 761px) {
+  #community-feedback.community-feedback {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20;
+    height: calc(100vh - 16px) !important;
+    height: calc(100dvh - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    align-self: start;
+  }
+
+  #community-feedback .community-feedback-layout {
+    display: grid !important;
+    grid-template-columns: minmax(220px, 2fr) minmax(0, 3fr) !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #community-feedback .community-discussions-column {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #community-feedback .home-discussion-feed {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* Remove hover highlighting/animation from Community Voice post cards only. */
+#community-feedback .aa-social-post,
+#community-feedback .aa-social-post:hover,
+#community-feedback .aa-social-post:focus-within {
+  border-color: #e4e8ef !important;
+  box-shadow: 0 4px 14px rgb(15 23 42 / 4%) !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+@media (max-width: 760px) {
+  #community-feedback.community-feedback {
+    position: static !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #community-feedback .community-feedback-layout {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #community-feedback .community-discussions-column {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #community-feedback .home-discussion-feed {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
