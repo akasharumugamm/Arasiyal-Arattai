@@ -4517,3 +4517,115 @@ option {
   .mla-controls .reset-graph-button { transition: none; }
   .mla-party-menu { animation: none; }
 }
+
+
+/* Unified, neutral post reactions: one segmented vote control plus a matching comment action. */
+.aa-social-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aa-social-votes {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #e3e8f1;
+  border-radius: 13px;
+  background: #f7f9fc;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 85%);
+}
+
+.aa-social-votes button {
+  display: inline-flex;
+  min-width: 48px;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid transparent !important;
+  border-radius: 9px;
+  background: transparent !important;
+  color: #59677e !important;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.aa-social-votes button:hover {
+  background: #e9eef7 !important;
+  color: #263957 !important;
+}
+
+.aa-social-votes button.is-upvoted,
+.aa-social-votes button.is-downvoted {
+  background: #e9eef7 !important;
+  color: #263957 !important;
+}
+
+.aa-social-votes button > svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.aa-social-vote-count {
+  color: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.aa-social-comment-button {
+  display: inline-flex;
+  min-width: 48px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid #e3e8f1;
+  border-radius: 13px;
+  background: #f7f9fc;
+  color: #59677e;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 85%);
+  text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.aa-social-comment-button:hover {
+  border-color: #d7dfeb;
+  background: #e9eef7;
+  color: #263957;
+}
+
+.aa-social-comment-button > svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+.aa-social-comment-count {
+  color: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.aa-social-votes button:active,
+.aa-social-comment-button:active {
+  transform: scale(.97);
+}
+
+@media (max-width: 520px) {
+  .aa-social-actions { gap: 6px; }
+  .aa-social-votes { padding: 2px; border-radius: 12px; }
+  .aa-social-votes button { min-width: 42px; min-height: 33px; padding: 0 7px; }
+  .aa-social-comment-button { min-width: 42px; min-height: 38px; padding: 0 9px; border-radius: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aa-social-votes button,
+  .aa-social-comment-button { transition: none; }
+}
