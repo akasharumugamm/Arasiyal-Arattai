@@ -2535,3 +2535,73 @@ option {
     position: static;
   }
 }
+
+
+/* Community Voice refinements: complete post cards, slim divider, and sticky selected profile. */
+.community-feedback-layout {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 0;
+}
+.community-feedback-overview-column {
+  padding-right: 18px;
+  border-right: 1px solid #e7ebf2;
+}
+.community-discussions-column {
+  padding-left: 18px;
+}
+.community-discussions-column .home-discussion-feed {
+  height: min(680px, calc(100vh - 250px));
+  max-height: min(680px, calc(100vh - 250px));
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-content: start;
+  grid-auto-rows: max-content;
+}
+.community-discussions-column .aa-social-post {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  align-self: start;
+}
+.community-discussions-column .aa-social-post-main {
+  height: auto;
+  min-height: 0;
+}
+.community-discussions-column .aa-social-body {
+  display: block;
+  overflow: visible;
+  max-height: none;
+  white-space: pre-wrap;
+}
+.profile-column {
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+@media (max-width: 760px) {
+  .community-feedback-overview-column {
+    padding-right: 0;
+    border-right: 0;
+    border-bottom: 1px solid #e7ebf2;
+    padding-bottom: 14px;
+  }
+  .community-discussions-column {
+    padding-left: 0;
+    padding-top: 14px;
+  }
+  .community-discussions-column .home-discussion-feed {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+  .profile-column {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
