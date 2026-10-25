@@ -3583,3 +3583,208 @@ option {
   .aa-profile-home-brand .brand-heading { font-size: 15px; }
   .aa-profile-discussions-link { padding: 0 8px; font-size: 9px; }
 }
+
+
+/* Compact profile summary with primary-colour edit affordance. */
+.aa-profile-summary-card {
+  padding: 22px !important;
+  border: 1px solid #e3e9f3;
+  border-radius: 22px !important;
+  background: #fff;
+  box-shadow: 0 10px 30px rgb(23 37 84 / 5%);
+}
+
+.aa-profile-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.aa-profile-card-heading .aa-eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: #5369a5;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+
+.aa-profile-card-heading h1 {
+  margin: 0;
+  color: #172554;
+  font-size: 27px;
+  font-weight: 750;
+  letter-spacing: -.9px;
+  line-height: 1.2;
+}
+
+.aa-profile-edit-trigger {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #dce4f3;
+  border-radius: 13px;
+  background: #f3f6ff;
+  color: #172554;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.aa-profile-edit-trigger:hover {
+  border-color: #b9c8ed;
+  background: #e8eeff;
+}
+
+.aa-profile-edit-trigger:active {
+  transform: scale(.97);
+}
+
+.aa-profile-details {
+  display: grid;
+  gap: 10px;
+}
+
+.aa-profile-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid #edf0f7;
+  border-radius: 14px;
+  background: #fbfcff;
+}
+
+.aa-profile-detail-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: #edf2ff;
+  color: #172554;
+}
+
+.aa-profile-detail-copy {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.aa-profile-detail-copy small {
+  color: #7b879d;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.aa-profile-detail-copy strong {
+  overflow-wrap: anywhere;
+  color: #172554;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.aa-profile-edit-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.aa-profile-edit-form label {
+  margin-top: 7px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.aa-profile-edit-form input {
+  margin: 0 0 4px;
+  padding: 12px 13px;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  background: #fff;
+  color: #172554;
+  font-size: 13px;
+}
+
+.aa-profile-edit-form input:focus {
+  border-color: #667fc5;
+  outline: 3px solid rgb(23 37 84 / 9%);
+}
+
+.aa-profile-edit-form input[readonly] {
+  background: #f8fafc;
+  color: #64748b;
+  cursor: default;
+}
+
+.aa-profile-edit-form .aa-profile-email-note {
+  margin: -1px 0 4px;
+  color: #7b879d;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.aa-profile-edit-actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 8px;
+}
+
+.aa-profile-edit-actions button {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.aa-profile-edit-actions button[type="submit"] {
+  flex: 1;
+  background: #172554;
+  color: #fff;
+}
+
+.aa-profile-edit-actions button[type="submit"]:hover:not(:disabled) {
+  background: #22366f;
+}
+
+.aa-profile-edit-actions button:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+.aa-profile-edit-actions .aa-profile-cancel-button {
+  border-color: #dbe3ef;
+  background: #fff;
+  color: #475569;
+}
+
+.aa-profile-edit-actions .aa-profile-cancel-button:hover {
+  background: #f8fafc;
+}
+
+.aa-profile-summary-card .aa-profile-notice {
+  margin-bottom: 0;
+}
+
+.aa-profile-posts .aa-feed-count {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .aa-profile-summary-card { padding: 18px !important; border-radius: 18px !important; }
+  .aa-profile-card-heading h1 { font-size: 24px; }
+  .aa-profile-edit-trigger { width: 39px; height: 39px; border-radius: 12px; }
+  .aa-profile-detail-row { padding: 11px; }
+}
