@@ -1143,6 +1143,48 @@ export default function Home() {
     setSelected(profile);
   }
 
+  function openTaggedOfficial(name: string) {
+    const identity = getOfficialIdentityKey(name);
+    const node = allNodes.find((item) => getOfficialIdentityKey(item.data.label) === identity);
+    if (node) {
+      const nodeCategory = (Object.entries(categoryNodes) as [Category, string[]][]).find(([, ids]) => ids.includes(node.id))?.[0] ?? "Government";
+      setCategory(nodeCategory);
+      if (nodeCategory !== "MLAs") {
+        setExpandedMlaParty(null);
+        setMlaSearch("");
+        setMlaPartyFilter("All parties");
+      }
+      setSelected(node.data);
+      window.history.replaceState(null, "", `/?profile=${encodeURIComponent(name)}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    const member = mlaRecords.find((item) => getOfficialIdentityKey(item.name) === identity);
+    if (member) {
+      setCategory("MLAs");
+      setExpandedMlaParty(null);
+      setMlaPartyFilter("All parties");
+      setMlaSearch(member.name);
+      setSelected({
+        label: member.status === "Vacant" ? `${member.constituency} — Vacant` : member.name,
+        role: `${member.constituency} · ${member.party || "No party listed"}`,
+        description: member.status === "Vacant"
+          ? `Constituency: ${member.constituency}. This seat is listed as vacant. Source: ${member.source}`
+          : `Member listed by the Tamil Nadu Legislative Assembly for constituency ${member.constituency}. Party: ${member.party || "Not listed"}. Official Assembly email: ${member.email || "Not listed"}.`,
+        isPerson: member.status !== "Vacant",
+        mlaNumber: member.number,
+        mlaParty: member.party,
+        mlaEmail: member.email,
+        mlaStatus: member.status,
+        photoUrl: member.photoUrl,
+        partyLogoUrl: getPartyLogoPath(member.party),
+      });
+      window.history.replaceState(null, "", `/?profile=${encodeURIComponent(name)}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
   async function voteHomeReview(id: string, direction: "up" | "down") {
@@ -1498,11 +1540,11 @@ export default function Home() {
                       <span className="aa-social-flair" style={{ color: categoryStyle.color, background: categoryStyle.background }}>{review.type}</span>
                       <PostActionsMenu postId={review.id} canDelete={!!review.canDelete} onDeleted={(id) => setRecentReviews((current) => current.filter((item) => item.id !== id))} />
                     </div>
-                    {review.imageUrls?.length ? null : (review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</a>)}</div> : null)}
+                    {review.imageUrls?.length ? null : (review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}</a>)}</div> : null)}
                     <h3 className="aa-social-title">{review.title}</h3>
                     <p className="aa-social-body">{review.body}</p>
                     {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div> : null}
-                    {review.imageUrls?.length && review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</a>)}</div> : null}
+                    {review.imageUrls?.length && review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}</a>)}</div> : null}
                     <div className="aa-social-actions">
                       <div className="aa-social-votes">
                         <button type="button" className={homeVotes[review.id] === "up" ? "is-upvoted" : ""} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><svg aria-hidden="true" className="vote-icon" viewBox="0 0 18 19" width="18" height="19" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g transform={homeVotes[review.id] === "up" ? "rotate(180 9 9.5)" : "none"}><path d={homeVotes[review.id] === "up" ? "M9.00389 19C8.67056 19 8.39056 18.8733 8.16389 18.62L0.283889 9.88C0.137222 9.72 0.0472222 9.53 0.0138889 9.31C-0.0194444 9.09 0.00722223 8.87667 0.0938889 8.67C0.180556 8.46333 0.317222 8.3 0.503889 8.18C0.690556 8.06 0.897222 8 1.12389 8H4.88389V1.12C4.88389 0.813334 4.99389 0.549999 5.21389 0.33C5.43389 0.110001 5.69722 0 6.00389 0H12.0039C12.3106 0 12.5739 0.110001 12.7939 0.33C13.0139 0.549999 13.1239 0.813334 13.1239 1.12V8H16.8839C17.0972 8 17.2972 8.06 17.4839 8.18C17.6706 8.3 17.8106 8.46333 17.9039 8.67C17.9972 8.87667 18.0272 9.09 17.9939 9.31C17.9606 9.53 17.8706 9.72 17.7239 9.88L9.84389 18.62C9.61722 18.8733 9.33722 19 9.00389 19Z" : "M9.00316 0C9.33649 0 9.61649 0.126667 9.84316 0.38L17.7232 9.12C17.8698 9.28 17.9598 9.47 17.9932 9.69C18.0265 9.91 17.9998 10.1233 17.9132 10.33C17.8265 10.5367 17.6898 10.7 17.5032 10.82C17.3165 10.94 17.1098 11 16.8832 11H13.1232L13.1232 17.88C13.1232 18.1867 13.0132 18.45 12.7932 18.67C12.5732 18.89 12.3098 19 12.0032 19L6.00316 19C5.69649 19 5.43316 18.89 5.21316 18.67C4.99316 18.45 4.88316 18.1867 4.88316 17.88L4.88316 11L1.12316 11C0.909826 11 0.709826 10.94 0.523159 10.82C0.336493 10.7 0.196493 10.5367 0.103159 10.33C0.00982666 10.1233 -0.020174 9.91 0.0131588 9.69C0.0464916 9.47 0.136492 9.28 0.283159 9.12L8.16316 0.38C8.38983 0.126667 8.66983 0 9.00316 0ZM16.6032 9.74L9.00316 1.32L1.40316 9.74L6.12316 9.74L6.12316 17.76L11.8832 17.76L11.8832 9.76L16.6032 9.74Z"} /></g></svg><span className="aa-social-vote-count">{review.votes?.up ?? 0}</span></button>
