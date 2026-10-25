@@ -1443,6 +1443,10 @@ export default function Home() {
                         <button type="button" className={homeVotes[review.id] === "up" ? "is-upvoted" : ""} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3.2 4.8 10.7h4.1v8.8h6.2v-8.8h4.1L12 3.2Z" /></svg><span className="aa-social-vote-count">{review.votes?.up ?? 0}</span></button>
                         <button type="button" className={homeVotes[review.id] === "down" ? "is-downvoted" : ""} aria-label="Downvote post" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")}><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20.8 4.8 13.3h4.1V4.5h6.2v8.8h4.1L12 20.8Z" /></svg><span className="aa-social-vote-count">{review.votes?.down ?? 0}</span></button>
                       </div>
+                      <a href="/reviews" className="aa-social-comment-button" aria-label={`View ${review.commentCount ?? 0} comments`}>
+                        <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M9.6 21.56a.72.72 0 0 1-.51-.21.72.72 0 0 1-.21-.51v-3.16H6.5a3.62 3.62 0 0 1-3.62-3.62V6.06A3.62 3.62 0 0 1 6.5 2.44h11a3.62 3.62 0 0 1 3.62 3.62v8a3.62 3.62 0 0 1-3.62 3.62h-3.26l-4.16 3.7a.8.8 0 0 1-.48.18ZM6.5 3.68a2.38 2.38 0 0 0-2.38 2.38v8a2.38 2.38 0 0 0 2.38 2.38h3.62v3.22l3.64-3.22h3.74a2.38 2.38 0 0 0 2.38-2.38v-8a2.38 2.38 0 0 0-2.38-2.38h-11Z"/></svg>
+                        <span className="aa-social-comment-count">{review.commentCount ?? 0}</span>
+                      </a>
                     </div>
                   </div>
                 </article>
