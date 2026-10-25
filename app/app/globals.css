@@ -3031,15 +3031,15 @@ option {
 }
 
 
-/* Final Community Voice behavior: pin the full panel at the viewport top and keep only the post feed scrolling. */
+/* Match the Selected Profile sticky behavior: engage only when Community Voice reaches 16px from the viewport top. */
 @media (min-width: 761px) {
   #community-feedback.community-feedback {
     position: sticky !important;
-    top: 0 !important;
+    top: 16px !important;
     z-index: 20;
-    height: calc(100vh - 16px) !important;
-    height: calc(100dvh - 16px) !important;
-    max-height: calc(100dvh - 16px) !important;
+    height: calc(100vh - 32px) !important;
+    height: calc(100dvh - 32px) !important;
+    max-height: calc(100dvh - 32px) !important;
     min-height: 0 !important;
     overflow: hidden !important;
     align-self: start;
