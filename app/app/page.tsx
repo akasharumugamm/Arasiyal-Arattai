@@ -1547,9 +1547,9 @@ export default function Home() {
                       <span className="aa-social-flair" style={{ color: categoryStyle.color, background: categoryStyle.background }}>{review.type}</span>
                       <PostActionsMenu postId={review.id} canDelete={!!review.canDelete} onDeleted={(id) => setRecentReviews((current) => current.filter((item) => item.id !== id))} />
                     </div>
-                    {review.imageUrls?.length ? null : (review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}</a>)}</div> : null)}
                     <h3 className="aa-social-title">{review.title}</h3>
                     <p className="aa-social-body">{review.body}</p>
+                    {review.imageUrls?.length ? null : (review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}</a>)}</div> : null)}
                     {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div> : null}
                     {review.imageUrls?.length && review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}</a>)}</div> : null}
                     <div className="aa-social-actions">
