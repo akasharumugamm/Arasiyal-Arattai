@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import PostActionsMenu from "@/components/PostActionsMenu";
+import { getAvatarColors, getAvatarInitials } from "@/lib/avatar";
 import { useEffect, useState } from "react";
 
 type Profile = { id: string; name: string; email?: string; username?: string };
@@ -106,7 +107,7 @@ export default function ProfilePage() {
       <section className="aa-profile-card aa-profile-summary-card">
         <div className="aa-profile-card-heading">
           <div className="aa-profile-heading-identity">
-            <div className="aa-profile-monogram" aria-label="Arasiyal Arattai profile">AA</div>
+            <div className="aa-profile-monogram" aria-label="Arasiyal Arattai profile" style={{ background: getAvatarColors(profile.name).background, color: getAvatarColors(profile.name).foreground, borderColor: getAvatarColors(profile.name).border }}>AA</div>
             <div className="aa-profile-heading-copy">
               <span className="aa-eyebrow">YOUR ACCOUNT</span>
               <h1>Profile</h1>
@@ -114,7 +115,7 @@ export default function ProfilePage() {
             </div>
           </div>
           <button type="button" className="aa-profile-edit-trigger" aria-label={editingProfile ? "Close profile editor" : "Edit profile"} aria-expanded={editingProfile} onClick={() => { setEditingProfile((value) => !value); setName(profile.name ?? ""); setNotice(""); }}>
-            {editingProfile ? <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="m6 6 12 12M18 6 6 18" /></svg> : <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="m14 5 5 5M4 20l4.5-1 10.7-10.7a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z" /></svg>}
+            {editingProfile ? <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="m6 6 12 12M18 6 6 18" /></svg> : <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z" /></svg>}
           </button>
         </div>
         {!editingProfile ? <div className="aa-profile-details">
@@ -134,11 +135,12 @@ export default function ProfilePage() {
         {posts.length === 0 ? <div className="aa-empty"><span>✦</span><h3>No discussions yet</h3><p>Share a constructive observation, raise a concern or request action.</p><Link href="/reviews?action=write">Start a discussion ↗</Link></div> :
           <div className="aa-profile-post-list">{posts.map((post) => {
             const style = typeColors[post.type];
-            const initials = (post.name || profile.name || "U").trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+            const initials = getAvatarInitials(post.name || profile.name);
+            const avatarColors = getAvatarColors(post.name || profile.name);
             return <article key={post.id} className="aa-social-post aa-profile-post">
               <div className="aa-social-post-main">
                 <div className="aa-social-post-header">
-                  <div className="aa-social-avatar">{initials}</div>
+                  <div className="aa-social-avatar" style={{ background: avatarColors.background, color: avatarColors.foreground, borderColor: avatarColors.border }}>{initials}</div>
                   <div className="aa-social-author"><strong>{post.name || profile.name}</strong><span>{new Date(post.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
                   <span className="aa-social-flair" style={{ color: style.color, background: style.background }}>{post.type}</span><PostActionsMenu postId={post.id} canDelete={post.authorId === profile.id} onDeleted={(id) => setPosts((current) => current.filter((item) => item.id !== id))} />
                 </div>
