@@ -3,7 +3,7 @@
 import Link from "next/link";
 import mlaDirectory from "@/data/tn-mlas.json";
 import { getOfficialIdentityKey } from "@/lib/official-identity";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ReviewType = "Positive" | "Concern" | "Allegation" | "Request";
 type Official = { name: string; category: string; officialId?: string };
@@ -53,10 +53,19 @@ function CustomDropdown<T extends string>({ value, options, onChange, label }: {
   onChange: (value: T) => void; label: string;
 }) {
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const selected = options.find((item) => item.value === value) ?? options[0];
-  return <div className="aa-dropdown">
+  useEffect(() => {
+    if (!open) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, [open]);
+  return <div className="aa-dropdown" ref={rootRef}>
     <button type="button" className="aa-dropdown-trigger" aria-expanded={open} aria-label={label} onClick={() => setOpen(!open)}>
-      <span>{selected.label}</span><span aria-hidden="true">{open ? "⌃" : "⌄"}</span>
+      <span>{selected.label}</span><span className={open ? "aa-dropdown-chevron is-open" : "aa-dropdown-chevron"} aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16" fill="none"><path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
     </button>
     {open && <><button className="aa-click-away" aria-label="Close menu" onClick={() => setOpen(false)} />
       <div className="aa-dropdown-menu" role="listbox" aria-label={label}>
@@ -89,6 +98,7 @@ export default function ReviewsPage() {
   const [officialSearch, setOfficialSearch] = useState("");
   const [officialCategory, setOfficialCategory] = useState("All officials");
   const [officialPickerOpen, setOfficialPickerOpen] = useState(false);
+  const officialPickerRef = useRef<HTMLDivElement>(null);
   const [type, setType] = useState<ReviewType>("Positive");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -147,6 +157,15 @@ export default function ReviewsPage() {
     (officialCategory === "All officials" || item.category === officialCategory) &&
     item.name.toLowerCase().includes(officialSearch.toLowerCase().trim())
   ).slice(0, 100), [officialCategory, officialSearch]);
+
+  useEffect(() => {
+    if (!officialPickerOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !officialPickerRef.current?.contains(event.target)) setOfficialPickerOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, [officialPickerOpen]);
   const visibleReviews = useMemo(() => reviews.filter((review) =>
     (filter === "All" || review.type === filter) &&
     (!search.trim() || review.officials.some((official) => official.name.toLowerCase().includes(search.toLowerCase().trim())))
@@ -295,8 +314,8 @@ export default function ReviewsPage() {
         <textarea id="aa-body" className="aa-textarea" placeholder="Add context, facts, links or what action you want to see…" value={body} onChange={(e) => setBody(e.target.value)} maxLength={10000} rows={4} required />
         <div className="aa-composer-controls">
           <div className="aa-control-block"><label className="aa-field-label">Category</label><CustomDropdown value={type} options={TYPE_OPTIONS} onChange={setType} label="Choose discussion category" /></div>
-          <div className="aa-control-block aa-official-block"><label className="aa-field-label">Officials tagged</label>
-            <button type="button" className="aa-dropdown-trigger" onClick={() => setOfficialPickerOpen(!officialPickerOpen)} aria-expanded={officialPickerOpen}><span>{selectedOfficials.length ? `${selectedOfficials.length} official${selectedOfficials.length === 1 ? "" : "s"} selected` : "Choose officials"}</span><span>⌄</span></button>
+          <div className="aa-control-block aa-official-block" ref={officialPickerRef}><label className="aa-field-label">Officials tagged</label>
+            <button type="button" className="aa-dropdown-trigger" onClick={() => setOfficialPickerOpen(!officialPickerOpen)} aria-expanded={officialPickerOpen}><span>{selectedOfficials.length ? `${selectedOfficials.length} official${selectedOfficials.length === 1 ? "" : "s"} selected` : "Choose officials"}</span><span className={officialPickerOpen ? "aa-dropdown-chevron is-open" : "aa-dropdown-chevron"} aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16" fill="none"><path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span></button>
             {officialPickerOpen && <div className="aa-official-picker"><input value={officialSearch} onChange={(e) => setOfficialSearch(e.target.value)} placeholder="Search by name…" aria-label="Search officials" />
               <div className="aa-official-categories">{["All officials", "Chief Minister", "Governor", "Minister", "MLA"].map((category) => <button key={category} type="button" className={officialCategory === category ? "active" : ""} onClick={() => setOfficialCategory(category)}>{category}</button>)}</div>
               <div className="aa-official-results">{filteredOfficials.map((item) => <label key={item.name}><input type="checkbox" checked={selectedOfficials.some((selected) => selected.name === item.name)} onChange={() => toggleOfficial(item)} /><span><strong>{item.name}</strong><small>{item.category}</small></span></label>)}</div>
