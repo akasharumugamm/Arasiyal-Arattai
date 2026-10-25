@@ -109,8 +109,7 @@ export default function ProfilePage() {
           <div className="aa-profile-heading-identity">
             <div className="aa-profile-monogram" aria-label="Arasiyal Arattai profile" style={{ background: getAvatarColors(profile.name).background, color: getAvatarColors(profile.name).foreground, borderColor: getAvatarColors(profile.name).border }}>AA</div>
             <div className="aa-profile-heading-copy">
-              <span className="aa-eyebrow">YOUR ACCOUNT</span>
-              <h1>Profile</h1>
+                            <h1>Profile</h1>
               <p>Manage your account details</p>
             </div>
           </div>
