@@ -1249,3 +1249,59 @@ option {
   content: none;
   display: none;
 }
+
+
+/* Modern consistent chevron treatment for every custom dropdown trigger. */
+.aa-dropdown-trigger {
+  min-height: 49px;
+  padding: 0 15px;
+  border: 1px solid #dce4f0;
+  border-radius: 14px;
+  background: #fff;
+  color: #233554;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 2%);
+  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+.aa-dropdown-trigger > span:last-child {
+  display: inline-flex;
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e8edf5;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1;
+  transition: transform 150ms ease, background 150ms ease, color 150ms ease;
+}
+.aa-dropdown-trigger[aria-expanded="true"] {
+  border-color: #9bb2fa;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(49 91 232 / 9%);
+}
+.aa-dropdown-trigger[aria-expanded="true"] > span:last-child {
+  border-color: #dbe5ff;
+  background: #eef3ff;
+  color: #315be8;
+}
+.aa-control-block:has(.aa-dropdown-trigger[aria-expanded="true"]) .aa-dropdown-trigger > span:last-child {
+  transform: rotate(180deg);
+}
+.aa-dropdown-trigger:hover {
+  border-color: #c3d0e3;
+  background: #fcfdff;
+}
+.aa-dropdown-trigger:focus-visible {
+  outline: none;
+  border-color: #8ba7fa;
+  box-shadow: 0 0 0 4px rgb(49 91 232 / 10%);
+}
+.aa-dropdown-trigger:active { background: #f8faff; }
+.aa-official-picker > .aa-dropdown-trigger {
+  min-height: 49px;
+}
