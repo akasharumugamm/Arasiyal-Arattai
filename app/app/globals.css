@@ -4178,3 +4178,97 @@ option {
     margin-right: 0 !important;
   }
 }
+
+
+/* Modern section switcher with a sliding active-state feel. */
+.category-nav {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 4px;
+  border: 1px solid #e4eaf6;
+  border-radius: 17px;
+  background: linear-gradient(135deg, rgb(255 255 255 / 94%), rgb(246 249 255 / 94%));
+  box-shadow: 0 5px 18px rgb(36 68 145 / 4%);
+}
+
+.category-nav-button {
+  position: relative;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #42516f;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.category-nav-button:hover:not(.is-active) {
+  border-color: #dce5ff;
+  background: #f0f4ff;
+  color: #244bd2;
+  transform: translateY(-1px);
+}
+
+.category-nav-button:focus-visible {
+  outline: 3px solid rgb(49 91 232 / 28%);
+  outline-offset: 2px;
+}
+
+.category-nav-button.is-active {
+  border-color: rgb(255 255 255 / 28%);
+  background: linear-gradient(135deg, #315be8 0%, #2048d4 100%);
+  box-shadow: 0 5px 13px rgb(49 91 232 / 23%), inset 0 1px 0 rgb(255 255 255 / 20%);
+  color: #fff;
+  animation: category-tab-activate 220ms cubic-bezier(.2,.8,.2,1);
+}
+
+.category-view-transition {
+  animation: category-view-enter 260ms cubic-bezier(.2,.75,.25,1);
+  transform-origin: top center;
+}
+
+@keyframes category-tab-activate {
+  0% { transform: scale(.97); }
+  65% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
+@keyframes category-view-enter {
+  from { opacity: .72; transform: translateY(7px) scale(.996); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 760px) {
+  .category-nav {
+    gap: 6px;
+    padding: 4px;
+    border-radius: 14px;
+  }
+  .category-nav-button {
+    min-height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-nav-button,
+  .category-nav-button.is-active,
+  .category-view-transition {
+    animation: none !important;
+    transition: none !important;
+  }
+}
