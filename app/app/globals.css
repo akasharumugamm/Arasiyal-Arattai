@@ -2783,3 +2783,35 @@ option {
     margin: 16px 0 0 !important;
   }
 }
+
+
+/* Selected Profile: wider right column and natural sticky positioning across the full page. */
+@media (min-width: 761px) {
+  .page-with-profile {
+    grid-template-columns: minmax(0, 1fr) 380px !important;
+    gap: 28px !important;
+    align-items: start !important;
+  }
+  .page-with-profile > .profile-column {
+    position: sticky !important;
+    top: 16px !important;
+    width: 380px !important;
+    min-width: 0 !important;
+    max-height: calc(100vh - 32px) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    align-self: start !important;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 760px) {
+  .page-with-profile {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .page-with-profile > .profile-column {
+    position: static !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
