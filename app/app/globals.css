@@ -5001,3 +5001,24 @@ option {
   transform: none !important;
   animation: none !important;
 }
+
+
+/* Profile edit actions: equal-width side-by-side buttons. */
+.aa-profile-edit-actions {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  gap: 10px;
+}
+.aa-profile-edit-actions > button,
+.aa-profile-edit-actions > button[type="submit"],
+.aa-profile-edit-actions > .aa-profile-cancel-button {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 12px;
+  white-space: normal;
+}
