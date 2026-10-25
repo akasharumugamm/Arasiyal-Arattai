@@ -2167,3 +2167,17 @@ option {
 }
 .aa-social-comment-button:hover { background: #f1f5f9; color: #243247; }
 .aa-social-comment-count { font-weight: 650; }
+
+
+/* Lighter author profile text and breathing room for official tags below post content. */
+.aa-social-author strong {
+  font-weight: 500;
+}
+.aa-social-officials {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+.aa-social-media + .aa-social-officials {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
