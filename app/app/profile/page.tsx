@@ -89,7 +89,19 @@ export default function ProfilePage() {
     finally { setSaving(false); }
   }
 
-  if (loading) return <main className="aa-page"><div className="aa-empty">Loading your profile…</div></main>;
+  if (loading) return (
+    <main className="aa-profile-loading-screen" aria-live="polite" aria-busy="true">
+      <section className="aa-profile-loading-card">
+        <div className="aa-profile-loading-mark">
+          <img src="/aa-logo.svg" alt="" />
+        </div>
+        <span className="aa-profile-loading-spinner" aria-hidden="true" />
+        <h1>Loading your profile</h1>
+        <p>Getting your account details ready…</p>
+        <div className="aa-profile-loading-track" aria-hidden="true"><span /></div>
+      </section>
+    </main>
+  );
   if (signedOut || !profile) return (
     <main className="aa-auth-screen">
       <section className="aa-auth-glass-card">
@@ -121,7 +133,7 @@ export default function ProfilePage() {
       <section className="aa-profile-card aa-profile-summary-card">
         <div className="aa-profile-card-heading">
           <div className="aa-profile-heading-identity">
-            <div className="aa-profile-monogram" aria-label="Arasiyal Arattai profile" style={{ background: getAvatarColors(profile.name).background, color: getAvatarColors(profile.name).foreground, borderColor: getAvatarColors(profile.name).border }}>AA</div>
+            <div className="aa-profile-monogram" aria-label={`${profile.name || "User"} initials`} style={{ background: getAvatarColors(profile.name).background, color: getAvatarColors(profile.name).foreground, borderColor: getAvatarColors(profile.name).border }}>{getAvatarInitials(profile.name)}</div>
             <div className="aa-profile-heading-copy">
                             <h1>Profile</h1>
               <p>Manage your account details</p>
