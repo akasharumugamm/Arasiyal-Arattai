@@ -2505,3 +2505,33 @@ option {
   .aa-comment-form button,
   .aa-comment-form button svg { transition: none !important; }
 }
+
+
+/* Community Voice: feedback summary on the left (40%), discussions on the right (60%). */
+.community-feedback-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  align-items: start;
+  gap: 18px;
+  min-width: 0;
+}
+.community-feedback-overview-column,
+.community-discussions-column {
+  min-width: 0;
+}
+.community-feedback-overview-column .feedback-overview-card {
+  position: sticky;
+  top: 16px;
+}
+.community-discussions-column .home-discussion-feed {
+  min-width: 0;
+}
+@media (max-width: 760px) {
+  .community-feedback-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .community-feedback-overview-column .feedback-overview-card {
+    position: static;
+  }
+}
