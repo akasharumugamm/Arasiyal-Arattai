@@ -3953,3 +3953,29 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-profile-home-header .aa-profile-share-feedback { transition: none; }
 }
+
+
+/* Align profile navbar to the same content width as the profile panels. */
+.aa-profile-home-header {
+  width: calc(100% - 36px);
+  max-width: 1120px;
+  box-sizing: border-box;
+  margin: 20px auto 24px;
+}
+
+.aa-profile-monogram {
+  background: linear-gradient(135deg, #5b78d6 0%, #4965c4 100%);
+  border-color: rgb(255 255 255 / 55%);
+  box-shadow: 0 5px 13px rgb(73 101 196 / 17%), inset 0 1px 0 rgb(255 255 255 / 22%);
+}
+
+.aa-profile-posts .aa-feed-heading .aa-eyebrow {
+  color: #315be8;
+}
+
+@media (max-width: 600px) {
+  .aa-profile-home-header {
+    width: calc(100% - 24px);
+    margin: 12px auto 18px;
+  }
+}
