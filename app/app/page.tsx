@@ -80,6 +80,7 @@ function getPartyLogoPath(party?: string) {
 function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
   const [imageFailed, setImageFailed] = useState(false);
   const showAvatar = !["cm-admin", "cm-home", "cm-special", "cm-other", "council-summary", "mla-summary"].includes(id);
+  const avatarColors = getAvatarColors(data.label);
   const initials = data.label
     .replace(/^(Honourable|Honorable|Thiru|Justice)\s+/i, "")
     .split(/\s+/)
@@ -153,8 +154,9 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
             borderRadius: 20,
             margin: "0 auto 10px",
             border: "4px solid #e5e7eb",
-            background: "linear-gradient(135deg, #dbeafe, #f8fafc)",
-            color: "#1e3a8a",
+            background: avatarColors.background,
+            color: avatarColors.foreground,
+            borderColor: avatarColors.border,
             fontSize: 24,
             fontWeight: 850,
           }}
