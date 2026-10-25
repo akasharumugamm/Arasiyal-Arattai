@@ -1155,7 +1155,7 @@ export default function Home() {
         setMlaPartyFilter("All parties");
       }
       setSelected(node.data);
-      window.history.replaceState(null, "", `/?profile=${encodeURIComponent(name)}`);
+      window.history.replaceState(null, "", "/");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -1184,6 +1184,13 @@ export default function Home() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
+
+  useEffect(() => {
+    const taggedOfficial = new URLSearchParams(window.location.search).get("profile");
+    if (taggedOfficial) openTaggedOfficial(taggedOfficial);
+    // This is a one-time deep-link handoff from tagged names in profile posts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
