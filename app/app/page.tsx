@@ -1450,7 +1450,6 @@ export default function Home() {
             })}
           </div>
         )}
-        <p style={{ margin: "14px 0 0", fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>Discussions are loaded from the shared database. Allegations are claims, not findings of fact.</p>
           </div>
         </div>
       </section>
