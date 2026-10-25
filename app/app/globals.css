@@ -2858,3 +2858,16 @@ option {
     min-width: 380px !important;
   }
 }
+
+
+/* Slightly widen the Selected Profile column to balance the space on the right. */
+@media (min-width: 761px) {
+  .page-with-profile {
+    grid-template-columns: minmax(0, 1fr) 420px !important;
+    column-gap: 28px !important;
+  }
+  .page-with-profile > .profile-column {
+    width: 420px !important;
+    min-width: 420px !important;
+  }
+}
