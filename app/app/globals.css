@@ -4032,3 +4032,11 @@ option {
     margin-right: 0 !important;
   }
 }
+
+
+/* Restore a fuller homepage navbar while retaining its graph-column alignment. */
+@media (min-width: 1100px) {
+  .aa-home-header {
+    width: calc(100% - 340px);
+  }
+}
