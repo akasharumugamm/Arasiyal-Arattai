@@ -1363,6 +1363,8 @@ export default function Home() {
       )}
 
       <section className="community-feedback" id="community-feedback" style={{ width: "100%", boxSizing: "border-box", margin: "16px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+        <div className="community-feedback-layout">
+          <div className="community-feedback-overview-column">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
@@ -1370,8 +1372,18 @@ export default function Home() {
             <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 13 }}>Recent community posts about public officials and service.</p>
           </div>
         </div>
-        <div className="community-feedback-layout">
-          <div className="community-feedback-overview-column">
+            <div className="home-discussion-controls community-discussion-tools">
+              <div className="home-discussion-search"><span aria-hidden="true">⌕</span><input aria-label="Search discussions by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name…" />{homeReviewName && <button type="button" onClick={() => setHomeReviewName("")} aria-label="Clear search">×</button>}</div>
+              <label className="home-discussion-sort-wrap">
+                <span className="sr-only">Sort discussions</span>
+                <select className="home-discussion-sort" aria-label="Sort discussions" value={homeReviewSort} onChange={(e) => setHomeReviewSort(e.target.value as typeof homeReviewSort)}>
+                  <option value="up">Most upvoted</option>
+                  <option value="down">Most downvoted</option>
+                  <option value="recent">Recent</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </label>
+            </div>
           <section className="feedback-overview-card" aria-label="Feedback overview">
             <h3 className="feedback-overview-title">Feedback Overview</h3>
             {[
@@ -1393,20 +1405,10 @@ export default function Home() {
               </button>
             ))}
           </section>
+
+
           </div>
           <div className="community-discussions-column">
-            <div className="home-discussion-controls community-discussion-tools">
-              <div className="home-discussion-search"><span aria-hidden="true">⌕</span><input aria-label="Search discussions by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name…" />{homeReviewName && <button type="button" onClick={() => setHomeReviewName("")} aria-label="Clear search">×</button>}</div>
-              <label className="home-discussion-sort-wrap">
-                <span className="sr-only">Sort discussions</span>
-                <select className="home-discussion-sort" aria-label="Sort discussions" value={homeReviewSort} onChange={(e) => setHomeReviewSort(e.target.value as typeof homeReviewSort)}>
-                  <option value="up">Most upvoted</option>
-                  <option value="down">Most downvoted</option>
-                  <option value="recent">Recent</option>
-                  <option value="oldest">Oldest</option>
-                </select>
-              </label>
-            </div>
         {recentReviews.length === 0 ? (
           <div style={{ height: 620, boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center", border: "1px dashed #cbd5e1", borderRadius: 12, padding: "26px 16px", textAlign: "center" }}>
             <p style={{ margin: 0, color: "#475569", fontWeight: 800 }}>No feedback added yet</p>
