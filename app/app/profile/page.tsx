@@ -90,7 +90,22 @@ export default function ProfilePage() {
   }
 
   if (loading) return <main className="aa-page"><div className="aa-empty">Loading your profile…</div></main>;
-  if (signedOut || !profile) return <main className="aa-page"><section className="aa-auth-modal"><h1>Sign in required</h1><p>Sign in to manage your public display name and discussions.</p><Link href="/auth/login">Continue to sign in ↗</Link><Link href="/" className="aa-back-link">Back to Explorer</Link></section></main>;
+  if (signedOut || !profile) return (
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-12 text-slate-900">
+      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">Arasiyal Arattai</p>
+        <h1 className="brand-heading mt-3 text-2xl font-black">Sign in to Arasiyal Arattai</h1>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Sign in securely to manage your public display name and discussions.</p>
+        <a href="/auth/login" className="mt-6 flex w-full items-center justify-center rounded-xl bg-blue-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Continue with Cognito</a>
+        <a href="/auth/login?provider=Google" className="mt-3 flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Continue with Google</a>
+        <p className="mt-4 text-xs leading-5 text-slate-500">You will be redirected to Amazon Cognito or Google to sign in or create an account.</p>
+        <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5 text-sm">
+          <Link href="/" className="font-medium text-slate-600 hover:text-slate-900">Back to Explorer</Link>
+          <Link href="/login" className="font-medium text-blue-700 hover:text-blue-900">Main sign-in page</Link>
+        </div>
+      </section>
+    </main>
+  );
 
   return <main className="aa-page">
     <header className="app-header app-header-visible aa-profile-home-header">
