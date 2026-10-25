@@ -1388,7 +1388,7 @@ export default function Home() {
         </div>
       )}
 
-      <section className="community-feedback" id="community-feedback" style={{ width: "100%", boxSizing: "border-box", margin: "16px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+      <section className="community-feedback" id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
