@@ -4934,3 +4934,59 @@ option {
   .aa-profile-loading-card { animation: none; }
   .aa-profile-loading-spinner, .aa-profile-loading-track span { animation: none; }
 }
+
+
+/* Consistent, centered dropdown chevrons for category and official pickers. */
+.aa-dropdown-trigger {
+  min-height: 49px;
+}
+.aa-dropdown-chevron {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin-left: auto;
+  border: 1px solid #e5ebf5;
+  border-radius: 9px;
+  background: #f8faff;
+  color: #71809b;
+  line-height: 0;
+  transform: none;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+.aa-dropdown-chevron svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  transform: rotate(0deg);
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+.aa-dropdown-chevron.is-open svg {
+  transform: rotate(180deg);
+}
+.aa-dropdown-trigger:hover .aa-dropdown-chevron {
+  border-color: #d5e0ff;
+  background: #eff4ff;
+  color: #315be8;
+}
+.aa-dropdown-trigger:focus-visible {
+  outline: 3px solid rgb(49 91 232 / 16%);
+  outline-offset: 2px;
+}
+.aa-official-block { position: relative; }
+
+/* Profile contribution cards stay visually still; no hover lift or highlight. */
+.aa-profile-post,
+.aa-profile-post:hover {
+  border-color: #dfe3e8;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 3%);
+  transform: none;
+}
+.aa-profile-post {
+  transition: none;
+}
