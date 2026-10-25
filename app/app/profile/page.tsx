@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import PostActionsMenu from "@/components/PostActionsMenu";
 import { useEffect, useState } from "react";
 
 type Profile = { id: string; name: string; email?: string; username?: string };
@@ -105,7 +106,7 @@ export default function ProfilePage() {
                 <div className="aa-social-post-header">
                   <div className="aa-social-avatar">{initials}</div>
                   <div className="aa-social-author"><strong>{post.name || profile.name}</strong><span>{new Date(post.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
-                  <span className="aa-social-flair" style={{ color: style.color, background: style.background }}>{post.type}</span>
+                  <span className="aa-social-flair" style={{ color: style.color, background: style.background }}>{post.type}</span><PostActionsMenu postId={post.id} canDelete={post.authorId === profile.id} onDeleted={(id) => setPosts((current) => current.filter((item) => item.id !== id))} />
                 </div>
                 {post.imageUrls?.length ? null : <div className="aa-social-officials">{post.officials?.map((official) => <Link key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</Link>)}</div>}
                 <h3 className="aa-social-title">{post.title}</h3>
