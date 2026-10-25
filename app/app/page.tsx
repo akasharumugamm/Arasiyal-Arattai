@@ -1279,6 +1279,8 @@ export default function Home() {
         </section>
       )}
 
+      <div className="page-with-profile">
+        <div className="page-main-column">
       <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
         <div className="graph-panel" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
           <ReactFlow
@@ -1307,43 +1309,7 @@ export default function Home() {
           </ReactFlow>
         </div>
 
-        <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
-        <aside style={{ width: "100%", boxSizing: "border-box", padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a0a" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>Selected profile</span>
-            <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "5px 8px", borderRadius: 999 }}>{isPerson ? "PERSON" : "PUBLIC RECORD"}</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 18 }}>
-            {selected.photoUrl ? (
-              <img src={selected.photoUrl} alt={selected.label} style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, objectFit: "cover", objectPosition: "center", border: "4px solid #e2e8f0" }} />
-            ) : (
-              <div style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, background: "#eff6ff", display: "grid", placeItems: "center", color: "#2563eb", fontSize: 28, fontWeight: 800 }}>{selected.label.slice(0, 1)}</div>
-            )}
-            <div style={{ minWidth: 0 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 850, lineHeight: 1.25 }}>{selected.label}</h2>
-              <p style={{ color: "#64748b", fontSize: 13, marginTop: 5 }}>{selected.description?.startsWith("Minister for ") ? "Minister" : selected.role}</p>
-              {isPerson && (selected.xHandle ? (
-                <a href={selected.xHandle.startsWith("http") ? selected.xHandle : `https://x.com/${selected.xHandle.replace(/^@/, "")}`} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, color: "#2563eb", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>View 𝕏 profile ↗</a>
-              ) : <span style={{ display: "block", marginTop: 8, color: "#94a3b8", fontSize: 12 }}>𝕏 Handle not added</span>)}
-            </div>
-          </div>
-          {isPerson && (
-            <div style={{ marginTop: 18, padding: 14, borderRadius: 12, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
-              </div>
-              <RatingGauge value={reviewScore} />
-              <div style={{ marginTop: 12, color: "#64748b", fontSize: 12, lineHeight: 1.5 }}>Community discussions tagged to this official appear in Public Discussions below.</div>
-            </div>
-          )}
-          <div style={{ marginTop: 18 }}>
-            <h3 style={{ fontWeight: 700, fontSize: 14 }}>About</h3>
-            <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
-          </div>
-          </aside>
 
-
-        </div>
       </div>
 
       {authModalOpen && (
@@ -1388,7 +1354,7 @@ export default function Home() {
         </div>
       )}
 
-      <section className="community-feedback" id="community-feedback" style={{ width: "calc(100% - 336px)", boxSizing: "border-box", margin: "16px 336px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
+      <section className="community-feedback" id="community-feedback" style={{ width: "100%", boxSizing: "border-box", margin: "16px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
           <div>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: 1 }}>Community voice</p>
@@ -1470,6 +1436,45 @@ export default function Home() {
           </div>
         </div>
       </section>
+        </div>
+        <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
+        <aside style={{ width: "100%", boxSizing: "border-box", padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a0a" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>Selected profile</span>
+            <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "5px 8px", borderRadius: 999 }}>{isPerson ? "PERSON" : "PUBLIC RECORD"}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 18 }}>
+            {selected.photoUrl ? (
+              <img src={selected.photoUrl} alt={selected.label} style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, objectFit: "cover", objectPosition: "center", border: "4px solid #e2e8f0" }} />
+            ) : (
+              <div style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, background: "#eff6ff", display: "grid", placeItems: "center", color: "#2563eb", fontSize: 28, fontWeight: 800 }}>{selected.label.slice(0, 1)}</div>
+            )}
+            <div style={{ minWidth: 0 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 850, lineHeight: 1.25 }}>{selected.label}</h2>
+              <p style={{ color: "#64748b", fontSize: 13, marginTop: 5 }}>{selected.description?.startsWith("Minister for ") ? "Minister" : selected.role}</p>
+              {isPerson && (selected.xHandle ? (
+                <a href={selected.xHandle.startsWith("http") ? selected.xHandle : `https://x.com/${selected.xHandle.replace(/^@/, "")}`} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, color: "#2563eb", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>View 𝕏 profile ↗</a>
+              ) : <span style={{ display: "block", marginTop: 8, color: "#94a3b8", fontSize: 12 }}>𝕏 Handle not added</span>)}
+            </div>
+          </div>
+          {isPerson && (
+            <div style={{ marginTop: 18, padding: 14, borderRadius: 12, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
+              </div>
+              <RatingGauge value={reviewScore} />
+              <div style={{ marginTop: 12, color: "#64748b", fontSize: 12, lineHeight: 1.5 }}>Community discussions tagged to this official appear in Public Discussions below.</div>
+            </div>
+          )}
+          <div style={{ marginTop: 18 }}>
+            <h3 style={{ fontWeight: 700, fontSize: 14 }}>About</h3>
+            <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
+          </div>
+          </aside>
+
+
+        </div>
+      </div>
     </main>
   );
 }
