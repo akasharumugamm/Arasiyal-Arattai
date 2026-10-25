@@ -75,6 +75,12 @@ export default function ReviewsPage() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [headerHidden, setHeaderHidden] = useState(false);
   const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    if (!notice) return;
+    const timeoutId = window.setTimeout(() => setNotice(""), 5000);
+    return () => window.clearTimeout(timeoutId);
+  }, [notice]);
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [search, setSearch] = useState("");
   const [selectedOfficials, setSelectedOfficials] = useState<Official[]>([]);
