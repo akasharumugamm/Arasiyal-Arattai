@@ -1492,7 +1492,6 @@ export default function Home() {
                 <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
               </div>
               <RatingGauge value={reviewScore} />
-              <div style={{ marginTop: 12, color: "#64748b", fontSize: 12, lineHeight: 1.5 }}>Community discussions tagged to this official appear in Public Discussions below.</div>
             </div>
           )}
           <div style={{ marginTop: 18 }}>
