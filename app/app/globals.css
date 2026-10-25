@@ -2461,7 +2461,7 @@ option {
   min-height: 40px !important;
   height: 40px !important;
   padding: 0 14px !important;
-  border: 1px solid #1b2c60 !important;
+  border: 1px solid transparent !important;
   border-radius: 11px !important;
   background: linear-gradient(135deg, #315be8, #2048d4) !important;
   color: #fff !important;
@@ -2472,8 +2472,17 @@ option {
   transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease !important;
 }
 .aa-comment-form button:hover {
-  background: #263d7e !important;
-  box-shadow: 0 3px 8px rgb(23 37 84 / 18%) !important;
+  background: linear-gradient(135deg, #3b63ed, #2852df) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 10px rgb(49 91 232 / 24%) !important;
+  transform: translateY(-1px) !important;
+}
+.aa-comment-form button:focus:not(:focus-visible) {
+  outline: none !important;
+}
+.aa-comment-form button:focus-visible {
+  outline: 3px solid rgb(96 135 220 / 35%) !important;
+  outline-offset: 2px !important;
 }
 .aa-comment-form button:focus-visible {
   outline: 3px solid rgb(96 135 220 / 35%) !important;
