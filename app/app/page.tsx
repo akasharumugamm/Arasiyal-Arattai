@@ -1,6 +1,7 @@
 "use client";
 
 import PostActionsMenu from "@/components/PostActionsMenu";
+import { getAvatarColors, getAvatarInitials } from "@/lib/avatar";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -1433,7 +1434,7 @@ export default function Home() {
                 <article key={review.id} className="aa-social-post">
                   <div className="aa-social-post-main">
                     <div className="aa-social-post-header">
-                      <div className="aa-social-avatar">{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
+                      <div className="aa-social-avatar" style={{ background: getAvatarColors(review.name).background, color: getAvatarColors(review.name).foreground, borderColor: getAvatarColors(review.name).border }}>{getAvatarInitials(review.name)}</div>
                       <div className="aa-social-author"><strong>{review.name || "Community member"}</strong><span>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
                       <span className="aa-social-flair" style={{ color: categoryStyle.color, background: categoryStyle.background }}>{review.type}</span>
                       <PostActionsMenu postId={review.id} canDelete={!!review.canDelete} onDeleted={(id) => setRecentReviews((current) => current.filter((item) => item.id !== id))} />
