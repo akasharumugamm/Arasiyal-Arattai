@@ -1201,7 +1201,7 @@ export default function Home() {
         </div>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
-        Explore Tamil Nadu’s government, leaders, departments, schemes and public feedback with Arasiyal Arattai.
+        Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes—all in one place, with community perspectives.
       </p>
 
       <div className="mobile-category-select">
@@ -1237,20 +1237,14 @@ export default function Home() {
           </div>
         )}
       </div>
-      <nav className="category-nav" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+      <nav className="category-nav" aria-label="Explore government sections">
         {categories.map((item) => (
           <button
             key={item}
+            type="button"
             onClick={() => changeCategory(item)}
-            style={{
-              padding: "10px 14px",
-              borderRadius: 9,
-              border: category === item ? "1px solid #1d4ed8" : "1px solid #cbd5e1",
-              background: category === item ? "#1d4ed8" : "white",
-              color: category === item ? "white" : "#172554",
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
+            className={category === item ? "category-nav-button is-active" : "category-nav-button"}
+            aria-current={category === item ? "page" : undefined}
           >
             {item}
           </button>
@@ -1298,7 +1292,7 @@ export default function Home() {
       <div className="page-with-profile">
         <div className="page-main-column">
       <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
-        <div className="graph-panel" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
+        <div key={category} className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
           <ReactFlow
             style={{ width: "100%", height: "100%" }}
             key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
