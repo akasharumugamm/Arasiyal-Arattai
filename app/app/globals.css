@@ -3788,3 +3788,132 @@ option {
   .aa-profile-edit-trigger { width: 39px; height: 39px; border-radius: 12px; }
   .aa-profile-detail-row { padding: 11px; }
 }
+
+
+/* Final profile polish: use the app's blue gradient and AA monogram. */
+.aa-profile-summary-card {
+  padding: 24px !important;
+  border-color: #e1e9fb;
+  background: linear-gradient(155deg, #ffffff 0%, #fbfcff 100%);
+  box-shadow: 0 14px 38px rgb(49 91 232 / 7%);
+}
+
+.aa-profile-card-heading {
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.aa-profile-heading-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 14px;
+}
+
+.aa-profile-monogram {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #315be8 0%, #2048d4 100%);
+  box-shadow: 0 8px 18px rgb(49 91 232 / 24%), inset 0 1px 0 rgb(255 255 255 / 25%);
+  color: #fff;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -.7px;
+}
+
+.aa-profile-heading-copy {
+  min-width: 0;
+}
+
+.aa-profile-card-heading .aa-profile-heading-copy .aa-eyebrow {
+  margin-bottom: 5px;
+  color: #4264cb;
+  font-size: 9px;
+  letter-spacing: 1.65px;
+}
+
+.aa-profile-card-heading .aa-profile-heading-copy h1 {
+  color: #182b67;
+  font-size: 26px;
+  font-weight: 760;
+  letter-spacing: -1px;
+}
+
+.aa-profile-heading-copy p {
+  margin: 5px 0 0;
+  color: #7180a2;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.aa-profile-edit-trigger {
+  border-color: #dce5ff;
+  background: linear-gradient(145deg, #f4f7ff, #eaf0ff);
+  color: #2854df;
+}
+
+.aa-profile-edit-trigger:hover {
+  border-color: #b9c9ff;
+  background: linear-gradient(145deg, #eaf0ff, #dfe8ff);
+  color: #1d4ed8;
+}
+
+.aa-profile-detail-row {
+  border-color: #e8edfa;
+  background: linear-gradient(115deg, #fbfcff 0%, #f7f9ff 100%);
+}
+
+.aa-profile-detail-icon {
+  background: linear-gradient(145deg, #e9efff, #dfe8ff);
+  color: #2854df;
+}
+
+.aa-profile-detail-copy small {
+  color: #7180a2;
+}
+
+.aa-profile-detail-copy strong {
+  color: #1d316e;
+}
+
+.aa-profile-edit-form input:focus {
+  border-color: #6685ed;
+  outline: 3px solid rgb(49 91 232 / 11%);
+}
+
+.aa-profile-edit-actions button[type="submit"] {
+  background: linear-gradient(135deg, #315be8 0%, #2048d4 100%);
+  box-shadow: 0 5px 12px rgb(49 91 232 / 18%);
+}
+
+.aa-profile-edit-actions button[type="submit"]:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3b63ed 0%, #2852df 100%);
+}
+
+.aa-profile-edit-actions .aa-profile-cancel-button {
+  border-color: #dce5f5;
+  color: #536487;
+}
+
+.aa-profile-summary-card .aa-profile-notice {
+  border: 1px solid #dce6ff;
+  background: linear-gradient(120deg, #f0f5ff, #eaf0ff);
+  color: #2854df;
+}
+
+@media (max-width: 600px) {
+  .aa-profile-summary-card { padding: 18px !important; }
+  .aa-profile-heading-identity { gap: 11px; }
+  .aa-profile-monogram { width: 50px; height: 50px; border-radius: 16px; font-size: 17px; }
+  .aa-profile-card-heading .aa-profile-heading-copy h1 { font-size: 24px; }
+  .aa-profile-heading-copy p { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aa-profile-edit-trigger { transition: none; }
+}
