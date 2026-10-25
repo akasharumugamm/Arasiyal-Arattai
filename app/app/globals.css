@@ -2815,3 +2815,46 @@ option {
     overflow: visible !important;
   }
 }
+
+
+/* Let the graph and Community Voice fill all remaining horizontal space beside the profile. */
+@media (min-width: 761px) {
+  .page-with-profile {
+    display: grid !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    grid-template-columns: minmax(0, 1fr) 380px !important;
+    column-gap: 28px !important;
+    align-items: start !important;
+  }
+  .page-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+  .page-main-column .explorer-layout {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .page-main-column .explorer-layout > .graph-panel {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    flex: 1 1 0 !important;
+  }
+  .page-main-column > .community-feedback {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .page-with-profile > .profile-column {
+    width: 380px !important;
+    min-width: 380px !important;
+  }
+}
