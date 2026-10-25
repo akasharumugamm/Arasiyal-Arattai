@@ -11,11 +11,11 @@ type PostActionsMenuProps = {
 export default function PostActionsMenu({ postId, canDelete, onDeleted }: PostActionsMenuProps) {
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [error, setError] = useState("");
 
   async function deletePost() {
     if (!canDelete || deleting) return;
-    if (!window.confirm("Delete this post? This will remove it from public discussions.")) return;
 
     setDeleting(true);
     setError("");
@@ -27,6 +27,7 @@ export default function PostActionsMenu({ postId, canDelete, onDeleted }: PostAc
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "Could not delete this post.");
       setOpen(false);
+      setConfirmOpen(false);
       onDeleted(postId);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not delete this post.");
@@ -63,7 +64,7 @@ export default function PostActionsMenu({ postId, canDelete, onDeleted }: PostAc
               <small>Coming soon</small>
             </button>
             {canDelete && (
-              <button type="button" role="menuitem" className="aa-post-menu-item is-danger" onClick={() => void deletePost()} disabled={deleting}>
+              <button type="button" role="menuitem" className="aa-post-menu-item is-danger" onClick={() => { setConfirmOpen(true); setOpen(false); }} disabled={deleting}>
                 <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
                 </svg>
@@ -73,6 +74,32 @@ export default function PostActionsMenu({ postId, canDelete, onDeleted }: PostAc
             {error && <p className="aa-post-menu-error" role="alert">{error}</p>}
           </div>
         </>
+      )}
+      {confirmOpen && (
+        <div className="aa-delete-modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !deleting) setConfirmOpen(false); }}>
+          <section
+            className="aa-delete-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="aa-delete-modal-title"
+            aria-describedby="aa-delete-modal-description"
+          >
+            <div className="aa-delete-modal-icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3.5 6.5h17M9 6.5V4h6v2.5m3.5 0-1 13h-11l-1-13M10 10v6m4-6v6" />
+              </svg>
+            </div>
+            <h2 id="aa-delete-modal-title">Delete this post?</h2>
+            <p id="aa-delete-modal-description">This post will be removed from public discussions. You can’t undo this action.</p>
+            {error && <p className="aa-delete-modal-error" role="alert">{error}</p>}
+            <div className="aa-delete-modal-actions">
+              <button type="button" className="aa-delete-cancel" onClick={() => { setConfirmOpen(false); setError(""); }} disabled={deleting}>Cancel</button>
+              <button type="button" className="aa-delete-confirm" onClick={() => void deletePost()} disabled={deleting}>
+                {deleting ? <><span className="aa-delete-spinner" aria-hidden="true" />Deleting…</> : "Delete post"}
+              </button>
+            </div>
+          </section>
+        </div>
       )}
     </div>
   );
