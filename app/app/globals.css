@@ -2130,3 +2130,40 @@ option {
   .aa-feed .aa-social-post-main,
   .aa-profile-post-list .aa-profile-post { padding: 15px 13px 13px; }
 }
+
+
+/* Consistent, lightweight SVG feed actions across the app. */
+.aa-social-votes {
+  gap: 0;
+  padding: 3px;
+  background: #f3f5f7;
+}
+.aa-social-votes button {
+  min-width: 36px;
+  min-height: 32px;
+  gap: 4px;
+  padding: 5px 8px;
+  color: #657184;
+}
+.aa-social-votes button > svg,
+.aa-social-comment-button > svg {
+  display: block;
+  flex: 0 0 auto;
+}
+.aa-social-vote-count,
+.aa-social-comment-count {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.aa-social-votes button.is-upvoted { background: #e5f0ff; color: #2563eb; }
+.aa-social-votes button.is-downvoted { background: #fff0e8; color: #c2410c; }
+.aa-social-comment-button {
+  min-height: 36px;
+  gap: 7px;
+  padding: 5px 9px;
+  border-radius: 10px;
+  color: #657184;
+}
+.aa-social-comment-button:hover { background: #f1f5f9; color: #243247; }
+.aa-social-comment-count { font-weight: 650; }
