@@ -4167,3 +4167,14 @@ option {
   .home-discussion-sort-option { transition: none; }
   .home-discussion-sort-menu { animation: none; }
 }
+
+
+/* Restore the homepage navbar to full viewport/content width. */
+@media (min-width: 1100px) {
+  .aa-home-header {
+    width: 100%;
+    max-width: none;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
