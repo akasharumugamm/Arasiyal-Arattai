@@ -269,7 +269,7 @@ export default function ReviewsPage() {
         <textarea id="aa-body" className="aa-textarea" placeholder="Add context, facts, links or what action you want to see…" value={body} onChange={(e) => setBody(e.target.value)} maxLength={10000} rows={4} required />
         <div className="aa-composer-controls">
           <div className="aa-control-block"><label className="aa-field-label">Category</label><CustomDropdown value={type} options={TYPE_OPTIONS} onChange={setType} label="Choose discussion category" /></div>
-          <div className="aa-control-block aa-official-block"><label className="aa-field-label">Officials tagged ({selectedOfficials.length})</label>
+          <div className="aa-control-block aa-official-block"><label className="aa-field-label">Officials tagged</label>
             <button type="button" className="aa-dropdown-trigger" onClick={() => setOfficialPickerOpen(!officialPickerOpen)} aria-expanded={officialPickerOpen}><span>{selectedOfficials.length ? `${selectedOfficials.length} official${selectedOfficials.length === 1 ? "" : "s"} selected` : "Choose officials"}</span><span>⌄</span></button>
             {officialPickerOpen && <div className="aa-official-picker"><input value={officialSearch} onChange={(e) => setOfficialSearch(e.target.value)} placeholder="Search by name…" aria-label="Search officials" />
               <div className="aa-official-categories">{["All officials", "Chief Minister", "Governor", "Minister", "MLA"].map((category) => <button key={category} type="button" className={officialCategory === category ? "active" : ""} onClick={() => setOfficialCategory(category)}>{category}</button>)}</div>
