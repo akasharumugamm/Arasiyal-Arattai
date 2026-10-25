@@ -1560,3 +1560,27 @@ option {
 .aa-picker-footer {
   justify-content: flex-end;
 }
+
+
+/* Smart sticky discussions header: hide while scrolling down, reveal while scrolling up. */
+.aa-topbar.aa-directory-header {
+  position: sticky;
+  top: 10px;
+  z-index: 100;
+  transform: translateY(0);
+  transition: transform 220ms cubic-bezier(.2,.75,.25,1), box-shadow 180ms ease;
+  will-change: transform;
+}
+.aa-topbar.aa-directory-header.aa-header-hidden {
+  transform: translateY(calc(-100% - 18px));
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .aa-topbar.aa-directory-header { top: 6px; }
+  .aa-topbar.aa-directory-header.aa-header-hidden {
+    transform: translateY(calc(-100% - 12px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aa-topbar.aa-directory-header { transition: none; }
+}
