@@ -274,7 +274,7 @@ export default function ReviewsPage() {
             {officialPickerOpen && <div className="aa-official-picker"><input value={officialSearch} onChange={(e) => setOfficialSearch(e.target.value)} placeholder="Search by name…" aria-label="Search officials" />
               <div className="aa-official-categories">{["All officials", "Chief Minister", "Governor", "Minister", "MLA"].map((category) => <button key={category} type="button" className={officialCategory === category ? "active" : ""} onClick={() => setOfficialCategory(category)}>{category}</button>)}</div>
               <div className="aa-official-results">{filteredOfficials.map((item) => <label key={item.name}><input type="checkbox" checked={selectedOfficials.some((selected) => selected.name === item.name)} onChange={() => toggleOfficial(item)} /><span><strong>{item.name}</strong><small>{item.category}</small></span></label>)}</div>
-              <div className="aa-picker-footer"><small>Up to 30 officials per post</small><button type="button" onClick={() => setOfficialPickerOpen(false)}>Done</button></div>
+              <div className="aa-picker-footer"><button type="button" onClick={() => setOfficialPickerOpen(false)}>Done</button></div>
             </div>}
           </div>
         </div>
