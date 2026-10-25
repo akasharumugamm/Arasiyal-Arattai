@@ -1584,3 +1584,71 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-topbar.aa-directory-header { transition: none; }
 }
+
+
+/* Modern auto-dismissing toast notification */
+.aa-notice {
+  position: fixed;
+  z-index: 1200;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  max-width: min(420px, calc(100vw - 32px));
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 14px 15px 14px 17px;
+  border: 1px solid #d5e3ff;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 96%);
+  color: #263858;
+  box-shadow: 0 16px 45px rgb(22 39 74 / 16%), 0 3px 10px rgb(22 39 74 / 5%);
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.5;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  animation: aa-toast-in 220ms cubic-bezier(.2,.8,.2,1);
+}
+.aa-notice::before {
+  content: "✓";
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border-radius: 9px;
+  background: #e8f8ef;
+  color: #16834a;
+  font-size: 14px;
+  font-weight: 800;
+}
+.aa-notice button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  margin-left: auto;
+  border: 0;
+  border-radius: 9px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease;
+}
+.aa-notice button:hover { background: #e2e8f0; color: #1e293b; }
+@keyframes aa-toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 600px) {
+  .aa-notice { right: 12px; bottom: 12px; max-width: calc(100vw - 24px); border-radius: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aa-notice { animation: none; }
+  .aa-notice button { transition: none; }
+}
