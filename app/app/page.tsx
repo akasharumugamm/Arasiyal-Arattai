@@ -857,6 +857,7 @@ export default function Home() {
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Concern" | "Allegation" | "Request">("All");
   const [homeReviewName, setHomeReviewName] = useState("");
   const [homeReviewSort, setHomeReviewSort] = useState<"up" | "down" | "recent" | "oldest">("recent");
+  const [homeSortOpen, setHomeSortOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1381,15 +1382,29 @@ export default function Home() {
         </div>
             <div className="home-discussion-controls community-discussion-tools">
               <div className="home-discussion-search"><span aria-hidden="true">⌕</span><input aria-label="Search discussions by official name" value={homeReviewName} onChange={(e) => setHomeReviewName(e.target.value)} placeholder="Search official name…" />{homeReviewName && <button type="button" onClick={() => setHomeReviewName("")} aria-label="Clear search">×</button>}</div>
-              <label className="home-discussion-sort-wrap">
-                <span className="sr-only">Sort discussions</span>
-                <select className="home-discussion-sort" aria-label="Sort discussions" value={homeReviewSort} onChange={(e) => setHomeReviewSort(e.target.value as typeof homeReviewSort)}>
-                  <option value="up">Most upvoted</option>
-                  <option value="down">Most downvoted</option>
-                  <option value="recent">Recent</option>
-                  <option value="oldest">Oldest</option>
-                </select>
-              </label>
+              <div className="home-discussion-sort-wrap">
+                <span className="sr-only" id="home-discussion-sort-label">Sort discussions</span>
+                <button
+                  type="button"
+                  className="home-discussion-sort-trigger"
+                  aria-label="Sort discussions"
+                  aria-haspopup="listbox"
+                  aria-expanded={homeSortOpen}
+                  aria-labelledby="home-discussion-sort-label"
+                  onClick={() => setHomeSortOpen((open) => !open)}
+                >
+                  <span>{({ up: "Most upvoted", down: "Most downvoted", recent: "Recent", oldest: "Oldest" } as const)[homeReviewSort]}</span>
+                  <svg aria-hidden="true" viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m5 7.5 5 5 5-5" /></svg>
+                </button>
+                {homeSortOpen && <div className="home-discussion-sort-menu" role="listbox" aria-label="Sort discussions">
+                  {([{ value: "up", label: "Most upvoted", hint: "Highest community support" }, { value: "down", label: "Most downvoted", hint: "Most downvotes first" }, { value: "recent", label: "Recent", hint: "Newest discussions first" }, { value: "oldest", label: "Oldest", hint: "Earliest discussions first" }] as const).map((option) => (
+                    <button key={option.value} type="button" role="option" aria-selected={homeReviewSort === option.value} className={`home-discussion-sort-option${homeReviewSort === option.value ? " is-selected" : ""}`} onClick={() => { setHomeReviewSort(option.value); setHomeSortOpen(false); }}>
+                      <span className="home-sort-option-copy"><strong>{option.label}</strong><small>{option.hint}</small></span>
+                      {homeReviewSort === option.value && <svg aria-hidden="true" viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m4 10 4 4 8-8" /></svg>}
+                    </button>
+                  ))}
+                </div>}
+              </div>
             </div>
           <section className="feedback-overview-card" aria-label="Feedback overview">
             <h3 className="feedback-overview-title">Feedback Overview</h3>
