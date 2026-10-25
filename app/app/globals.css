@@ -2884,3 +2884,110 @@ option {
     min-width: 380px !important;
   }
 }
+
+
+/* Community Voice redesign: sticky panel, full-height divider, right-side search and sorting. */
+@media (min-width: 761px) {
+  .community-feedback {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    height: calc(100vh - 16px);
+    max-height: calc(100vh - 16px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .community-feedback > .community-feedback-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) minmax(0, 3fr);
+    align-items: stretch;
+    gap: 0;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .community-feedback-overview-column {
+    min-height: 100%;
+    padding: 0 18px 0 0;
+    border-right: 1px solid #d9e2ef;
+    box-sizing: border-box;
+  }
+  .community-discussions-column {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    padding: 0 0 0 18px;
+    box-sizing: border-box;
+  }
+  .community-feedback-overview-column .feedback-overview-card {
+    position: static;
+  }
+  .community-discussion-tools {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding: 0 0 12px;
+    border: 0;
+    border-bottom: 1px solid #e7ebf2;
+    border-radius: 0;
+    background: transparent;
+  }
+  .community-discussion-tools .home-discussion-search {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .home-discussion-sort-wrap {
+    display: block;
+    width: 100%;
+  }
+  .home-discussion-sort {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    background: #fff;
+    color: #334155;
+    font: inherit;
+    font-size: 13px;
+    outline-offset: 2px;
+  }
+  .community-discussions-column .home-discussion-feed {
+    flex: 1 1 auto;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+@media (max-width: 760px) {
+  .community-feedback {
+    position: static;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+  .community-feedback-layout {
+    align-items: stretch;
+  }
+  .community-discussion-tools {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .community-discussion-tools .home-discussion-search,
+  .home-discussion-sort-wrap,
+  .home-discussion-sort {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .community-feedback-overview-column {
+    border-bottom: 1px solid #d9e2ef;
+    border-right: 0;
+  }
+}
