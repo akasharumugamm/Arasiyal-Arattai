@@ -1554,3 +1554,9 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-official-picker > input, .aa-official-categories button, .aa-official-results label, .aa-picker-footer button { transition: none; }
 }
+
+
+/* Align the official-picker Done action to the right edge. */
+.aa-picker-footer {
+  justify-content: flex-end;
+}
