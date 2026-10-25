@@ -2607,7 +2607,7 @@ option {
 }
 
 
-/* Keep the selected profile visible alongside both the graph and Community Voice. */
+/* Keep the selected profile in a reserved right column below the sticky header. */
 @media (min-width: 761px) {
   .explorer-layout {
     padding-right: 336px;
@@ -2615,16 +2615,20 @@ option {
   }
   .explorer-layout > .profile-column {
     position: fixed;
-    top: 16px;
+    top: 112px;
     right: max(16px, calc((100vw - 1400px) / 2));
-    z-index: 20;
+    z-index: 100;
     width: 320px !important;
-    max-height: calc(100vh - 32px);
+    max-height: calc(100vh - 128px);
     overflow-y: auto;
+    overscroll-behavior: contain;
     align-self: flex-start;
   }
 }
 @media (max-width: 760px) {
+  .explorer-layout {
+    padding-right: 0 !important;
+  }
   .explorer-layout > .profile-column {
     position: static;
     width: 100% !important;
