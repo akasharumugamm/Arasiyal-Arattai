@@ -2359,3 +2359,98 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-comment-form input, .aa-comment-form button { transition: none; }
 }
+
+
+/* Final compact polish for the expanded comments panel. */
+.aa-comments {
+  padding: 16px !important;
+  margin-top: 10px !important;
+  border: 1px solid #e8edf4 !important;
+  border-radius: 14px !important;
+  background: #f8fafc !important;
+}
+.aa-comments-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin: 0 0 12px !important;
+  padding: 0 0 11px !important;
+  border-bottom: 1px solid #e8edf4 !important;
+}
+.aa-comments-heading strong {
+  display: block !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  font-weight: 650 !important;
+}
+.aa-comments-heading span {
+  display: inline-flex !important;
+  width: 22px !important;
+  min-width: 22px !important;
+  height: 22px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: #e9eef6 !important;
+  color: #58677d !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+}
+.aa-no-comments {
+  margin: 0 0 12px !important;
+  padding: 12px !important;
+  border: 1px dashed #dce4ef !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  text-align: center !important;
+}
+.aa-comment-form {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #e8edf4 !important;
+}
+.aa-comment-form input {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  flex: 1 1 0 !important;
+  padding: 0 12px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+}
+.aa-comment-form button {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 13px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #243b78 !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 10%) !important;
+}
+.aa-comment-form button svg {
+  width: 14px !important;
+  height: 14px !important;
+  flex: 0 0 14px !important;
+}
+@media (max-width: 520px) {
+  .aa-comments { padding: 12px !important; }
+  .aa-comment-form { gap: 6px !important; }
+  .aa-comment-form input { height: 40px !important; padding: 0 10px !important; }
+  .aa-comment-form button { height: 40px !important; padding: 0 11px !important; }
+}
