@@ -28,8 +28,9 @@ CREATE TABLE IF NOT EXISTS review_posts (
 CREATE TABLE IF NOT EXISTS review_post_officials (
   post_id UUID NOT NULL REFERENCES review_posts(id) ON DELETE CASCADE,
   official_name TEXT NOT NULL CHECK (char_length(official_name) BETWEEN 1 AND 200),
+  official_key TEXT NOT NULL,
   official_category TEXT NOT NULL DEFAULT 'Other',
-  PRIMARY KEY (post_id, official_name)
+  PRIMARY KEY (post_id, official_key)
 );
 
 CREATE TABLE IF NOT EXISTS review_images (
@@ -63,6 +64,7 @@ CREATE TABLE IF NOT EXISTS review_comments (
 
 CREATE INDEX IF NOT EXISTS review_posts_author_created_idx ON review_posts (author_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS review_post_officials_name_idx ON review_post_officials (official_name, post_id);
+CREATE INDEX IF NOT EXISTS review_post_officials_identity_idx ON review_post_officials (official_key, post_id);
 CREATE INDEX IF NOT EXISTS review_images_post_order_idx ON review_images (post_id, sort_order);
 CREATE INDEX IF NOT EXISTS review_votes_post_idx ON review_votes (post_id);
 CREATE INDEX IF NOT EXISTS review_comments_post_created_idx ON review_comments (post_id, created_at ASC) WHERE deleted_at IS NULL;
