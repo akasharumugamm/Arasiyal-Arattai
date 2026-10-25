@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import mlaDirectory from "@/data/tn-mlas.json";
+import { getOfficialIdentityKey } from "@/lib/official-identity";
 import { useEffect, useMemo, useState } from "react";
 
 type ReviewType = "Positive" | "Concern" | "Allegation" | "Request";
-type Official = { name: string; category: string };
+type Official = { name: string; category: string; officialId?: string };
 type Comment = { id: string; parentCommentId?: string | null; body: string; date: string; name: string };
 type Review = {
   id: string; name: string; type: ReviewType; title: string; body: string; date: string;
@@ -43,7 +44,8 @@ const MLA_OFFICIALS: Official[] = (mlaDirectory.members as { name: string; const
   .filter((member) => member.status !== "Vacant")
   .map((member) => ({ name: member.name, category: "MLA" }));
 const OFFICIALS = [...FEATURED, ...MLA_OFFICIALS]
-  .filter((item, index, all) => all.findIndex((other) => other.name.toLowerCase() === item.name.toLowerCase()) === index)
+  .map((item) => ({ ...item, officialId: getOfficialIdentityKey(item.name) }))
+  .filter((item, index, all) => all.findIndex((other) => other.officialId === item.officialId) === index)
   .sort((a, b) => a.category === "Chief Minister" ? -1 : b.category === "Chief Minister" ? 1 : a.name.localeCompare(b.name));
 
 function CustomDropdown<T extends string>({ value, options, onChange, label }: {
