@@ -2713,3 +2713,73 @@ option {
     overflow: visible !important;
   }
 }
+
+
+/* Page-level layout: the profile shares the full scroll area with graph + Community Voice. */
+@media (min-width: 761px) {
+  .page-with-profile {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 320px !important;
+    gap: 28px !important;
+    align-items: start !important;
+    width: 100%;
+    min-width: 0;
+  }
+  .page-main-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .page-main-column .explorer-layout {
+    display: flex !important;
+    width: 100% !important;
+    gap: 0 !important;
+    padding-right: 0 !important;
+    min-width: 0;
+  }
+  .page-main-column .explorer-layout > .graph-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+  .page-main-column .community-feedback {
+    width: 100% !important;
+    margin: 16px 0 0 !important;
+    min-width: 0;
+  }
+  .page-with-profile > .profile-column {
+    position: sticky !important;
+    top: 96px !important;
+    align-self: start !important;
+    width: 320px !important;
+    min-width: 0;
+    max-height: calc(100vh - 112px) !important;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 760px) {
+  .page-with-profile {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100%;
+  }
+  .page-main-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+  }
+  .page-with-profile > .profile-column {
+    position: static !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible;
+  }
+  .page-main-column .community-feedback {
+    width: 100% !important;
+    margin: 16px 0 0 !important;
+  }
+}
