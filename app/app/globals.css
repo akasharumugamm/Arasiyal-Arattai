@@ -1652,3 +1652,176 @@ option {
   .aa-notice { animation: none; }
   .aa-notice button { transition: none; }
 }
+
+
+/* Shared discussion-card language across the homepage and People's Voice. */
+.feedback-card.aa-post {
+  min-width: 0;
+  padding: 17px 16px 13px;
+  border: 1px solid #e5eaf2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 3%);
+  color: #202d43;
+}
+.aa-post-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.aa-post-meta time {
+  color: #94a3b8;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.aa-post-meta .aa-type-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.feedback-card.aa-post > h3 {
+  margin: 12px 0 5px;
+  color: #202d43;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.feedback-card.aa-post .aa-post-body {
+  margin: 0 0 13px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.feedback-card.aa-post .aa-post-gallery,
+.home-review-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.feedback-card.aa-post .aa-post-gallery button {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #f1f5f9;
+  cursor: zoom-in;
+}
+.feedback-card.aa-post .aa-post-gallery img,
+.home-review-images img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.feedback-card.aa-post .aa-post-gallery.count-1,
+.home-review-images:has(img:only-child) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.feedback-card.aa-post .aa-post-gallery.count-1 img,
+.home-review-images img:only-child {
+  max-width: 520px;
+  aspect-ratio: 3 / 2;
+}
+.aa-post-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f3f7;
+}
+.aa-post-identity {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.aa-post-identity .aa-avatar {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5f0e9;
+  color: #326b4e;
+  font-size: 11px;
+  font-weight: 500;
+}
+.aa-post-identity .aa-post-author {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+.aa-post-identity .aa-post-author > strong {
+  color: #292d32;
+  font-size: 12px;
+  font-weight: 500;
+}
+.aa-post-identity .aa-tagged-officials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+}
+.aa-post-identity .aa-tagged-officials a {
+  color: #94a3b8;
+  font-size: 10px;
+  text-decoration: none;
+}
+.aa-post-identity .aa-tagged-officials a:hover { color: #315be8; }
+.feedback-card.aa-post .aa-post-actions {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 0 0 auto;
+  padding: 1px;
+  border: 1px solid #dbe4ef;
+  border-radius: 999px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+.feedback-card.aa-post .aa-post-actions button {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.feedback-card.aa-post .aa-post-actions button.voted {
+  background: #dbeafe;
+  color: #2563eb;
+}
+@media (max-width: 520px) {
+  .feedback-card.aa-post { padding: 14px 12px 11px; border-radius: 14px; }
+  .feedback-card.aa-post .aa-post-gallery.count-1 img,
+  .home-review-images img:only-child { aspect-ratio: 4 / 3; }
+  .aa-post-bottom { align-items: flex-start; flex-direction: column; }
+  .feedback-card.aa-post .aa-post-actions { align-self: flex-start; }
+}
