@@ -49,6 +49,7 @@ type ReviewSummary = {
   officials?: { name: string; category: string }[];
   myVote?: "up" | "down" | null;
   votes?: { up: number; down: number };
+  commentCount?: number;
   date: string;
 };
 
