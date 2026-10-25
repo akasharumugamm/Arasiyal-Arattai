@@ -3212,3 +3212,9 @@ option {
   .aa-social-votes button,
   .aa-social-comment-button { transition: none; }
 }
+
+
+/* Keep Feedback Overview count pills lighter and less visually dominant. */
+.feedback-overview-count {
+  font-weight: 500;
+}
