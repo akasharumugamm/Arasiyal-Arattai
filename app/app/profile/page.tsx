@@ -97,6 +97,10 @@ export default function ProfilePage() {
         <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" />
         <span className="brand-heading">Arasiyal Arattai</span>
       </Link>
+      <Link href="/reviews?action=write" className="app-share-feedback aa-profile-share-feedback">
+        <span className="share-icon" aria-hidden="true">＋</span>
+        <span>Share feedback</span>
+      </Link>
     </header>
     <div className="aa-profile-layout">
       <section className="aa-profile-card aa-profile-summary-card">
