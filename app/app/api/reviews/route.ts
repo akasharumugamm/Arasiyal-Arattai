@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
                 'down', (SELECT COUNT(*)::int FROM review_votes v WHERE v.post_id = p.id AND v.direction = 'down')
               ) AS votes,
               (SELECT direction FROM review_votes myv WHERE myv.post_id = p.id AND myv.voter_id = $1 LIMIT 1) AS "myVote",
+              COALESCE(p.author_id = $1, false) AS "canDelete",
               (SELECT COUNT(*)::int FROM review_comments c WHERE c.post_id = p.id AND c.deleted_at IS NULL) AS "commentCount"
        FROM review_posts p
        JOIN app_users u ON u.id = p.author_id
@@ -127,7 +128,7 @@ export async function POST(request: NextRequest) {
     }
     const review = {
       id: postId, type, title, body: reviewBody, date: created.rows[0].date,
-      name: authorName, officials: cleanOfficials,
+      name: authorName, authorId: userId, canDelete: true, officials: cleanOfficials,
       imageUrls: cleanImages, votes: { up: 0, down: 0 }, myVote: null, commentCount: 0,
     };
     return NextResponse.json({ review }, { status: 201 });
