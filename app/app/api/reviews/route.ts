@@ -32,6 +32,16 @@ async function ensureUser(claims: CognitoClaims): Promise<string> {
 
 const REVIEW_TYPES = ["Positive", "Concern", "Allegation", "Request"] as const;
 
+let officialIdentityColumnPromise: Promise<boolean> | null = null;
+async function supportsOfficialIdentityKey(): Promise<boolean> {
+  if (!officialIdentityColumnPromise) {
+    officialIdentityColumnPromise = query<{ available: boolean }>(
+      "SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'review_post_officials' AND column_name = 'official_key') AS available",
+    ).then((result) => result.rows[0]?.available === true).catch(() => false);
+  }
+  return officialIdentityColumnPromise;
+}
+
 export async function GET(request: NextRequest) {
   try {
     let viewerId: string | null = null;
@@ -41,22 +51,26 @@ export async function GET(request: NextRequest) {
     } catch { /* Public listing remains available if optional authentication fails. */ }
 
     const official = request.nextUrl.searchParams.get("profile")?.trim();
+    const hasOfficialIdentityKey = await supportsOfficialIdentityKey();
     const type = request.nextUrl.searchParams.get("type");
     const values: unknown[] = [viewerId];
     const filters = ["p.deleted_at IS NULL"];
     if (official) {
-      values.push(getOfficialIdentityKey(official));
-      filters.push(`EXISTS (SELECT 1 FROM review_post_officials po WHERE po.post_id = p.id AND po.official_key = ${values.length})`);
+      values.push(hasOfficialIdentityKey ? getOfficialIdentityKey(official) : official);
+      filters.push(hasOfficialIdentityKey
+        ? `EXISTS (SELECT 1 FROM review_post_officials po WHERE po.post_id = p.id AND po.official_key = $${values.length})`
+        : `EXISTS (SELECT 1 FROM review_post_officials po WHERE po.post_id = p.id AND po.official_name = $${values.length})`);
     }
     if (type && REVIEW_TYPES.includes(type as typeof REVIEW_TYPES[number])) {
       values.push(type);
       filters.push(`p.review_type = $${values.length}`);
     }
 
+    const officialIdExpression = hasOfficialIdentityKey ? "po.official_key" : "NULL::text";
     const result = await query(
       `SELECT p.id, p.author_id AS "authorId", p.review_type AS type, p.title, p.body, p.created_at AS date,
               COALESCE(u.display_name, u.username, 'User') AS name,
-              COALESCE((SELECT json_agg(json_build_object('name', po.official_name, 'category', po.official_category, 'officialId', po.official_key) ORDER BY po.official_name)
+              COALESCE((SELECT json_agg(json_build_object('name', po.official_name, 'category', po.official_category, 'officialId', ${officialIdExpression}) ORDER BY po.official_name)
                         FROM review_post_officials po WHERE po.post_id = p.id), '[]'::json) AS officials,
               COALESCE((SELECT json_agg(ri.image_url ORDER BY ri.sort_order)
                         FROM review_images ri WHERE ri.post_id = p.id), '[]'::json) AS "imageUrls",
@@ -125,11 +139,20 @@ export async function POST(request: NextRequest) {
       [userId, type, title, reviewBody],
     );
     const postId = created.rows[0].id;
+    const hasOfficialIdentityKey = await supportsOfficialIdentityKey();
     for (const official of cleanOfficials) {
-      await query(
-        "INSERT INTO review_post_officials (post_id, official_name, official_key, official_category) VALUES ($1, $2, $3, $4)",
-        [postId, official.name, official.officialId, official.category || "Other"],
-      );
+      if (hasOfficialIdentityKey) {
+        await query(
+          "INSERT INTO review_post_officials (post_id, official_name, official_key, official_category) VALUES ($1, $2, $3, $4)",
+          [postId, official.name, official.officialId, official.category || "Other"],
+        );
+      } else {
+        // Backward-compatible until the official-identity migration is applied.
+        await query(
+          "INSERT INTO review_post_officials (post_id, official_name, official_category) VALUES ($1, $2, $3)",
+          [postId, official.name, official.category || "Other"],
+        );
+      }
     }
     for (const [index, imageUrl] of cleanImages.entries()) {
       await query("INSERT INTO review_images (post_id, image_url, sort_order) VALUES ($1, $2, $3)", [postId, imageUrl, index]);
