@@ -3917,3 +3917,39 @@ option {
 @media (prefers-reduced-motion: reduce) {
   .aa-profile-edit-trigger { transition: none; }
 }
+
+
+/* Share feedback CTA in the profile navigation, matching the app's blue gradient. */
+.aa-profile-home-header .aa-profile-share-feedback {
+  padding: 12px 17px;
+  border: 1px solid rgb(255 255 255 / 25%);
+  border-radius: 15px;
+  background: linear-gradient(135deg, #315be8 0%, #2048d4 100%);
+  box-shadow: 0 5px 14px rgb(49 91 232 / 22%);
+  color: #fff;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.aa-profile-home-header .aa-profile-share-feedback:hover {
+  background: linear-gradient(135deg, #3b63ed 0%, #2852df 100%);
+  box-shadow: 0 7px 18px rgb(49 91 232 / 27%);
+  transform: translateY(-1px);
+}
+
+.aa-profile-home-header .aa-profile-share-feedback .share-icon {
+  font-size: 17px;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .aa-profile-home-header .aa-profile-share-feedback {
+    gap: 5px;
+    padding: 10px 11px;
+    border-radius: 12px;
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aa-profile-home-header .aa-profile-share-feedback { transition: none; }
+}
