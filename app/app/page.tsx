@@ -50,7 +50,7 @@ type ReviewSummary = {
   body: string;
   image?: string;
   imageUrls?: string[];
-  officials?: { name: string; category: string }[];
+  officials?: { name: string; category: string; officialId?: string }[];
   myVote?: "up" | "down" | null;
   votes?: { up: number; down: number };
   commentCount?: number;
