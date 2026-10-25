@@ -3218,3 +3218,126 @@ option {
 .feedback-overview-count {
   font-weight: 500;
 }
+
+
+/* Shared three-dot post menu */
+.aa-post-menu {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  margin-left: 2px;
+  color: #64748b;
+}
+
+.aa-post-menu-trigger {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.aa-post-menu-trigger:hover,
+.aa-post-menu-trigger[aria-expanded="true"] {
+  border-color: #e5eaf1;
+  background: #f5f7fb;
+  color: #263449;
+}
+
+.aa-post-menu-dismiss {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.aa-post-menu-popover {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 6px);
+  right: 0;
+  display: grid;
+  min-width: 190px;
+  gap: 3px;
+  padding: 6px;
+  border: 1px solid #e7ebf2;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 12px 34px rgb(15 23 42 / 14%);
+}
+
+.aa-post-menu-item {
+  display: flex;
+  width: 100%;
+  min-height: 39px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #334155;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.aa-post-menu-item > span {
+  flex: 1;
+}
+
+.aa-post-menu-item small {
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.aa-post-menu-item:not(:disabled):hover {
+  background: #f6f8fb;
+}
+
+.aa-post-menu-item.is-unavailable,
+.aa-post-menu-item:disabled {
+  color: #7b8798;
+  cursor: not-allowed;
+  opacity: .82;
+}
+
+.aa-post-menu-item.is-danger {
+  color: #c2413a;
+}
+
+.aa-post-menu-item.is-danger:hover {
+  background: #fff1f0;
+}
+
+.aa-post-menu-item:disabled {
+  opacity: .72;
+}
+
+.aa-post-menu-error {
+  max-width: 220px;
+  margin: 4px 8px 6px;
+  color: #b91c1c;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.aa-social-post:has(.aa-post-menu [aria-expanded="true"]) {
+  position: relative;
+  z-index: 30;
+  overflow: visible;
+}
