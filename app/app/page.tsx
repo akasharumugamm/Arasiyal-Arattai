@@ -1431,28 +1431,28 @@ export default function Home() {
         ) : (
           <div style={{ display: "grid", alignContent: "start", gap: 12, height: 620, overflowY: "auto", paddingRight: 5, overscrollBehavior: "contain", overflowAnchor: "none" }}>
             {filteredHomeReviews.map((review) => {
-              const style = review.type === "Positive"
-                ? { color: "#166534", background: "#dcfce7" }
+              const categoryStyle = review.type === "Positive"
+                ? { color: "#15803d", background: "#dcfce7" }
                 : review.type === "Concern" || review.type === "Allegation"
-                  ? { color: "#991b1b", background: "#fee2e2" }
+                  ? { color: "#b91c1c", background: "#fee2e2" }
                   : { color: "#1d4ed8", background: "#dbeafe" };
               return (
-                <article key={review.id} className="feedback-card" style={{ border: "1px solid #e5e7eb", borderRadius: 15, padding: "17px 16px 13px", minWidth: 0, background: "white", boxShadow: "0 2px 8px #0f172a05" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 10, fontWeight: 400, letterSpacing: .2, color: style.color, background: style.background, borderRadius: 7, padding: "5px 8px" }}>{review.type}</span>
-                    <span style={{ color: "#9ca3af", fontSize: 11, fontWeight: 400, whiteSpace: "nowrap" }}>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
-                  </div>
-                  <h3 style={{ margin: "12px 0 5px", fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "#202124" }}>{review.title}</h3>
-                  <p style={{ margin: "0 0 13px", color: "#6b7280", fontSize: 13, fontWeight: 400, lineHeight: 1.65, overflowWrap: "anywhere" }}>{review.body}</p>
-                  {review.imageUrls && review.imageUrls.length > 0 && <div className="home-review-images">{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div>}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: 10, paddingTop: 12, borderTop: "1px solid #f0f1f3" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-                      <div aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: "#e5f0e9", color: "#326b4e", fontSize: 11, fontWeight: 400 }}>{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
-                      <div style={{ minWidth: 0 }}><p style={{ margin: 0, color: "#292d32", fontSize: 12, fontWeight: 400 }}>{review.name}</p><p style={{ margin: "3px 0 0", color: "#9ca3af", fontSize: 10, fontWeight: 400, overflowWrap: "anywhere" }}>{review.profile}</p></div>
+                <article key={review.id} className="aa-social-post">
+                  <div className="aa-social-post-main">
+                    <div className="aa-social-post-header">
+                      <div className="aa-social-avatar">{review.name.trim().split(/\\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
+                      <div className="aa-social-author"><strong>{review.name || "Community member"}</strong><span>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
+                      <span className="aa-social-flair" style={{ color: categoryStyle.color, background: categoryStyle.background }}>{review.type}</span>
                     </div>
-                    <div style={{ display: "inline-flex", alignItems: "stretch", gap: 0, padding: 1, border: "1px solid #dbe4ef", borderRadius: 999, background: "#f8fafc", overflow: "hidden" }}>
-                      <button type="button" aria-label="Upvote review" title="Upvote" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "up" ? "#dbeafe" : "transparent", color: homeVotes[review.id] === "up" ? "#2563eb" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↑</span><span>{review.votes?.up ?? 0}</span></button>
-                      <button type="button" aria-label="Downvote review" title="Downvote" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minWidth: 48, border: 0, borderRadius: 999, background: homeVotes[review.id] === "down" ? "#ffedd5" : "transparent", color: homeVotes[review.id] === "down" ? "#c2410c" : "#475569", padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}><span style={{ fontSize: 14, lineHeight: 1 }}>↓</span><span>{review.votes?.down ?? 0}</span></button>
+                    {review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</a>)}</div> : null}
+                    <h3 className="aa-social-title">{review.title}</h3>
+                    <p className="aa-social-body">{review.body}</p>
+                    {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div> : null}
+                    <div className="aa-social-actions">
+                      <div className="aa-social-votes">
+                        <button type="button" className={homeVotes[review.id] === "up" ? "is-upvoted" : ""} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><span aria-hidden="true">▲</span>{review.votes?.up ?? 0}</button>
+                        <button type="button" className={homeVotes[review.id] === "down" ? "is-downvoted" : ""} aria-label="Downvote post" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")}><span aria-hidden="true">▼</span>{review.votes?.down ?? 0}</button>
+                      </div>
                     </div>
                   </div>
                 </article>
