@@ -325,10 +325,11 @@ export default function ReviewsPage() {
               <div className="aa-social-author"><strong>{review.name || "Community member"}</strong><span>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
               <span className="aa-social-flair" style={{ color: category.color, background: category.tint }}>{category.label}</span>
             </div>
-            <div className="aa-social-officials">{review.officials.map((official) => <Link key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</Link>)}</div>
+            {review.imageUrls?.length > 0 ? null : <div className="aa-social-officials">{review.officials.map((official) => <Link key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</Link>)}</div>}
             <h3 className="aa-social-title">{review.title}</h3>
             <p className="aa-social-body">{review.body}</p>
             {review.imageUrls?.length > 0 && <div className={`aa-social-media media-${Math.min(review.imageUrls.length,4)}`}>{review.imageUrls.map((url,index) => <button key={url} type="button" onClick={() => setLightbox({urls:review.imageUrls,index})} aria-label={`View photo ${index+1}`}><img src={url} alt={`Discussion attachment ${index+1}`} loading="lazy" /></button>)}</div>}
+            {review.imageUrls?.length > 0 && review.officials.length > 0 ? <div className="aa-social-officials">{review.officials.map((official) => <Link key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</Link>)}</div> : null}
             <div className="aa-social-actions">
               <div className="aa-social-votes">
                 <button type="button" className={review.myVote === "up" ? "is-upvoted" : ""} aria-label="Upvote post" aria-pressed={review.myVote === "up"} onClick={() => vote(review,"up")}><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 14 6-6 6 6" /></svg><span className="aa-social-vote-count">{review.votes?.up ?? 0}</span></button>
