@@ -4286,3 +4286,19 @@ option {
     width: 100% !important;
   }
 }
+
+
+/* Match the section switcher width to the graph column and selected-profile gap. */
+@media (min-width: 1100px) {
+  .category-nav {
+    width: calc(100% - 397px);
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 1099px) {
+  .category-nav {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
