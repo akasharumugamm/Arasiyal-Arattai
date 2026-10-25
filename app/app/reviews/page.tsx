@@ -321,7 +321,7 @@ export default function ReviewsPage() {
         return <article key={review.id} className="aa-social-post">
           <div className="aa-social-post-main">
             <div className="aa-social-post-header">
-              <div className="aa-social-avatar">{(review.name || "U").trim().split(/\\s+/).slice(0,2).map((part) => part[0]).join("").toUpperCase()}</div>
+              <div className="aa-social-avatar">{(review.name || "U").trim().split(/\s+/).slice(0,2).map((part) => part[0]).join("").toUpperCase()}</div>
               <div className="aa-social-author"><strong>{review.name || "Community member"}</strong><span>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
               <span className="aa-social-flair" style={{ color: category.color, background: category.tint }}>{category.label}</span>
             </div>
