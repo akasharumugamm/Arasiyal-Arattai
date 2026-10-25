@@ -2636,3 +2636,21 @@ option {
     overflow: visible;
   }
 }
+
+
+/* Add clear separation between the graph canvas and the selected profile panel. */
+@media (min-width: 761px) {
+  .explorer-layout {
+    column-gap: 24px !important;
+  }
+  .explorer-layout > .graph-panel {
+    margin-right: 0 !important;
+    min-width: 0;
+  }
+  .explorer-layout > .profile-column {
+    right: max(16px, calc((100vw - 1400px) / 2));
+    width: 320px !important;
+    box-sizing: border-box;
+    padding-left: 4px;
+  }
+}
