@@ -4629,3 +4629,19 @@ option {
   .aa-social-votes button,
   .aa-social-comment-button { transition: none; }
 }
+
+
+/* Keep supplied vote icons neutral; filled silhouette indicates selection without color coding. */
+.aa-social-votes button,
+.aa-social-votes button.is-upvoted,
+.aa-social-votes button.is-downvoted {
+  color: #59677e !important;
+}
+.aa-social-votes button:hover {
+  color: #263957 !important;
+}
+.aa-social-votes .vote-icon {
+  display: block;
+  flex: 0 0 auto;
+  color: inherit;
+}
