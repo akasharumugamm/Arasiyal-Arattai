@@ -1201,7 +1201,7 @@ export default function Home() {
         </div>
       </div>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
-        Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes—all in one place, with community perspectives.
+        Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes, and discover the decisions and public feedback shaping the state.
       </p>
 
       <div className="mobile-category-select">
@@ -1256,7 +1256,7 @@ export default function Home() {
       </p>
 
       {category === "MLAs" && (
-        <section className="mla-controls" aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 336px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
+        <section className="mla-controls" aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 397px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
           <input
             aria-label="Search MLA name or constituency"
             value={mlaSearch}
