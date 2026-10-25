@@ -4272,3 +4272,17 @@ option {
     transition: none !important;
   }
 }
+
+
+/* Keep the MLA tools aligned with the graph column and make Reset less prominent. */
+.mla-controls .reset-graph-button {
+  font-size: 12px;
+  font-weight: 600 !important;
+  padding: 9px 11px !important;
+}
+
+@media (max-width: 760px) {
+  .mla-controls {
+    width: 100% !important;
+  }
+}
