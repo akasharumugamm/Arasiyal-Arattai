@@ -3979,3 +3979,17 @@ option {
     margin: 12px auto 18px;
   }
 }
+
+
+/* Identity-derived avatar colors are supplied by the shared avatar utility. */
+.aa-profile-monogram {
+  box-shadow: 0 4px 12px rgb(15 23 42 / 9%), inset 0 1px 0 rgb(255 255 255 / 38%);
+}
+
+.aa-profile-edit-trigger {
+  color: #315be8;
+}
+
+.aa-profile-edit-trigger svg {
+  display: block;
+}
