@@ -3106,25 +3106,3 @@ option {
     overflow: visible !important;
   }
 }
-
-
-/* Sticky fix: Community Voice is the final child of .page-main-column.
-   Extend that containing block so the card can remain pinned after it reaches the viewport top. */
-@media (min-width: 761px) {
-  .page-main-column {
-    padding-bottom: calc(100vh - 32px) !important;
-    padding-bottom: calc(100dvh - 32px) !important;
-  }
-
-  #community-feedback.community-feedback {
-    position: sticky !important;
-    top: 16px !important;
-    align-self: flex-start !important;
-  }
-}
-
-@media (max-width: 760px) {
-  .page-main-column {
-    padding-bottom: 0 !important;
-  }
-}
