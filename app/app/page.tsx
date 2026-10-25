@@ -850,6 +850,7 @@ export default function Home() {
   const [expandedMlaParty, setExpandedMlaParty] = useState<string | null>(null);
   const [mlaSearch, setMlaSearch] = useState("");
   const [mlaPartyFilter, setMlaPartyFilter] = useState("All parties");
+  const [mlaPartyOpen, setMlaPartyOpen] = useState(false);
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
@@ -1264,15 +1265,37 @@ export default function Home() {
             placeholder="Search MLA or constituency…"
             style={{ flex: "1 1 240px", minWidth: 180, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 9, background: "white", color: "#172554", font: "inherit", fontSize: 13 }}
           />
-          <select
-            aria-label="Filter MLAs by party"
-            value={mlaPartyFilter}
-            onChange={(event) => { setMlaPartyFilter(event.target.value); setExpandedMlaParty(null); }}
-            style={{ flex: "0 1 200px", minWidth: 160, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 9, background: "white", color: "#172554", fontSize: 13 }}
-          >
-            <option>All parties</option>
-            {mlaParties.map((party) => <option key={party} value={party}>{party}</option>)}
-          </select>
+          <div className="mla-party-filter">
+            <button
+              type="button"
+              className="mla-party-trigger"
+              aria-label="Filter MLAs by party"
+              aria-haspopup="listbox"
+              aria-expanded={mlaPartyOpen}
+              onClick={() => setMlaPartyOpen((open) => !open)}
+            >
+              <span className="mla-party-trigger-copy">
+                <span className="mla-party-trigger-label">PARTY / STATUS</span>
+                <strong>{mlaPartyFilter}</strong>
+              </span>
+              <svg aria-hidden="true" viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m5 7.5 5 5 5-5" /></svg>
+            </button>
+            {mlaPartyOpen && <div className="mla-party-menu" role="listbox" aria-label="Choose party">
+              {["All parties", ...mlaParties].map((party) => (
+                <button
+                  key={party}
+                  type="button"
+                  role="option"
+                  aria-selected={mlaPartyFilter === party}
+                  className={mlaPartyFilter === party ? "mla-party-option is-selected" : "mla-party-option"}
+                  onClick={() => { setMlaPartyFilter(party); setExpandedMlaParty(null); setMlaPartyOpen(false); }}
+                >
+                  <span>{party}</span>
+                  {mlaPartyFilter === party && <svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m4 10 4 4 8-8" /></svg>}
+                </button>
+              ))}
+            </div>}
+          </div>
           <button
             className="reset-graph-button"
             type="button"
