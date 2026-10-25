@@ -1,3 +1,4 @@
+
 name: Deploy to EC2
 
 on:
@@ -49,6 +50,7 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: production
+
     steps:
       - name: Install SSH key
         env:
@@ -62,6 +64,8 @@ jobs:
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
+          set -eu
+          test -n "$EC2_HOST"
           ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
 
       - name: Deploy and restart PM2
@@ -70,20 +74,45 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_APP_DIR: ${{ vars.EC2_APP_DIR }}
           PM2_APP_NAME: ${{ vars.PM2_APP_NAME }}
+          DEPLOY_SHA: ${{ github.sha }}
         run: |
+          set -eu
           test -n "$EC2_HOST"
           test -n "$EC2_USER"
           test -n "$EC2_APP_DIR"
           test -n "$PM2_APP_NAME"
-          ssh -i ~/.ssh/ec2_deploy_key "$EC2_USER@$EC2_HOST" \
-            "EC2_APP_DIR='$EC2_APP_DIR' PM2_APP_NAME='$PM2_APP_NAME' bash -s" <<'REMOTE_SCRIPT'
+          test -n "$DEPLOY_SHA"
+
+          ssh -i ~/.ssh/ec2_deploy_key \
+            "$EC2_USER@$EC2_HOST" \
+            "EC2_APP_DIR='$EC2_APP_DIR' PM2_APP_NAME='$PM2_APP_NAME' DEPLOY_SHA='$DEPLOY_SHA' bash -s" <<'REMOTE_SCRIPT'
           set -Eeuo pipefail
 
           cd "$EC2_APP_DIR"
-          git pull --ff-only origin main
+
+          # Fetch the latest repository references.
+          git fetch origin main
+
+          # Refuse to overwrite local changes or an existing divergent checkout.
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            echo "ERROR: Working tree has changes. Aborting deployment."
+            exit 1
+          fi
+
+          # Switch to main, then check out the exact commit that triggered this run.
+          git switch main
+          git checkout --detach "$DEPLOY_SHA"
+
+          echo "Deploying commit:"
+          git log -1 --oneline
+
           cd app
+
           npm ci
           npm run build
+
           pm2 restart "$PM2_APP_NAME" --update-env
           pm2 save
+
+          echo "Deployment completed successfully."
           REMOTE_SCRIPT
