@@ -3106,3 +3106,109 @@ option {
     overflow: visible !important;
   }
 }
+
+
+/* Modern discussion actions: crisp outlined vote controls and a matching comment button. */
+.aa-social-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #edf0f5;
+}
+
+.aa-social-votes {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.aa-social-votes button,
+.aa-social-comment-button {
+  display: inline-flex;
+  min-width: 58px;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 1px solid #e3e8f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.aa-social-votes button > svg,
+.aa-social-comment-button > svg {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.aa-social-votes button > span,
+.aa-social-comment-button span {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.aa-social-votes button:hover,
+.aa-social-comment-button:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #263449;
+}
+
+.aa-social-votes button.is-upvoted {
+  border-color: #ffd4c2;
+  background: #fff2ec;
+  color: #e64b0b;
+}
+
+.aa-social-votes button.is-downvoted {
+  border-color: #cdd9ff;
+  background: #eef2ff;
+  color: #4c63c9;
+}
+
+.aa-social-votes button:active,
+.aa-social-comment-button:active {
+  transform: scale(.97);
+}
+
+.aa-social-comment-button {
+  min-width: 0;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.aa-social-comment-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 520px) {
+  .aa-social-actions { gap: 7px; }
+  .aa-social-votes { gap: 5px; }
+  .aa-social-votes button,
+  .aa-social-comment-button {
+    min-height: 35px;
+    padding: 0 10px;
+    border-radius: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aa-social-votes button,
+  .aa-social-comment-button { transition: none; }
+}
