@@ -2664,9 +2664,52 @@ option {
 }
 
 
-/* Reserve real space for the fixed profile so the graph cannot touch it. */
+/* Keep the graph and profile in balanced columns; stick the profile only when it reaches the header. */
 @media (min-width: 761px) {
   .explorer-layout {
-    padding-right: 368px !important;
+    display: flex !important;
+    gap: 28px !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+    align-items: flex-start !important;
+  }
+  .explorer-layout > .graph-panel {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  .explorer-layout > .profile-column {
+    position: sticky !important;
+    top: 96px !important;
+    right: auto !important;
+    flex: 0 0 320px !important;
+    width: 320px !important;
+    min-width: 0 !important;
+    max-height: calc(100vh - 112px) !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-sizing: border-box;
+    z-index: 10;
+  }
+}
+@media (max-width: 760px) {
+  .explorer-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding-right: 0 !important;
+  }
+  .explorer-layout > .graph-panel,
+  .explorer-layout > .profile-column {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    overflow: visible !important;
   }
 }
