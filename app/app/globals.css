@@ -1420,3 +1420,137 @@ option {
   .aa-dropdown-menu { animation: none; }
   .aa-dropdown-option { transition: none; }
 }
+
+
+/* Modern official selection panel */
+.aa-official-picker {
+  min-width: 300px;
+  padding: 12px;
+  border: 1px solid #e5eaf2;
+  border-radius: 20px;
+  background: rgb(255 255 255 / 98%);
+  box-shadow: 0 24px 60px rgb(19 35 68 / 16%), 0 4px 12px rgb(19 35 68 / 5%);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+.aa-official-picker > input {
+  min-height: 43px;
+  padding: 0 13px;
+  border: 1px solid #e0e7f1;
+  border-radius: 13px;
+  background: #f9fbfe;
+  color: #233554;
+  font-size: 13px;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+.aa-official-picker > input:focus {
+  border-color: #91aaf8;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(49 91 232 / 10%);
+}
+.aa-official-categories {
+  gap: 6px;
+  margin: 11px 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #edf1f7;
+}
+.aa-official-categories button {
+  min-height: 29px;
+  padding: 0 10px;
+  border: 1px solid #e5eaf2;
+  border-radius: 999px;
+  background: #fff;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+.aa-official-categories button:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+}
+.aa-official-categories button.active {
+  border-color: #cbd8ff;
+  background: #eef3ff;
+  color: #315be8;
+}
+.aa-official-results {
+  max-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.aa-official-results label {
+  display: flex;
+  min-height: 53px;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 130ms ease, border-color 130ms ease;
+}
+.aa-official-results label + label { margin-top: 3px; }
+.aa-official-results label:hover {
+  border-color: #edf1f7;
+  background: #f8faff;
+}
+.aa-official-results input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  accent-color: #315be8;
+  cursor: pointer;
+}
+.aa-official-results strong {
+  color: #263650;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.aa-official-results small {
+  margin-top: 4px;
+  color: #8190a7;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.aa-picker-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 10px;
+  padding: 12px 2px 0;
+  border-top: 1px solid #edf1f7;
+  background: #fff;
+  color: #7a879b;
+  font-size: 10px;
+}
+.aa-picker-footer button {
+  min-height: 35px;
+  padding: 0 15px;
+  border: 1px solid #2448d0;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #315be8, #2048d4);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgb(37 84 223 / 16%);
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.aa-picker-footer button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 15px rgb(37 84 223 / 20%);
+}
+@media (max-width: 480px) {
+  .aa-official-picker { min-width: 0; padding: 10px; border-radius: 16px; }
+  .aa-official-categories { gap: 5px; }
+  .aa-official-categories button { padding: 0 8px; }
+  .aa-official-results label { min-height: 49px; padding: 7px 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aa-official-picker > input, .aa-official-categories button, .aa-official-results label, .aa-picker-footer button { transition: none; }
+}
