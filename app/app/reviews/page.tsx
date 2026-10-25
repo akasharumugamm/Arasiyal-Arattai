@@ -73,6 +73,7 @@ export default function ReviewsPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [headerHidden, setHeaderHidden] = useState(false);
   const [notice, setNotice] = useState("");
   const [filter, setFilter] = useState<"All" | ReviewType>("All");
   const [search, setSearch] = useState("");
@@ -101,6 +102,23 @@ export default function ReviewsPage() {
       setReviews(Array.isArray(data.reviews) ? data.reviews : []);
     } catch (error) { setNotice(error instanceof Error ? error.message : "Could not load discussions"); }
   }
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY < 12) {
+        setHeaderHidden(false);
+      } else if (currentScrollY > lastScrollY + 4) {
+        setHeaderHidden(true);
+      } else if (currentScrollY < lastScrollY - 4) {
+        setHeaderHidden(false);
+      }
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   useEffect(() => {
     queueMicrotask(() => { void loadReviews(); });
     fetch("/api/auth/me", { cache: "no-store" }).then((response) => setIsAuthenticated(response.ok)).catch(() => setIsAuthenticated(false));
@@ -215,7 +233,7 @@ export default function ReviewsPage() {
 
 
   return <main className="aa-page">
-    <header className="aa-topbar app-header aa-directory-header">
+    <header className={`aa-topbar app-header aa-directory-header${headerHidden ? " aa-header-hidden" : ""}`}>
       <Link href="/" className="aa-brand aa-home-brand">
         <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" />
         <h1 className="brand-heading app-title">Arasiyal Arattai</h1>
