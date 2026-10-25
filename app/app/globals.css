@@ -2871,3 +2871,16 @@ option {
     min-width: 420px !important;
   }
 }
+
+
+/* Restore Selected Profile to 380px and slightly reduce the gap beside it. */
+@media (min-width: 761px) {
+  .page-with-profile {
+    grid-template-columns: minmax(0, 1fr) 380px !important;
+    column-gap: 20px !important;
+  }
+  .page-with-profile > .profile-column {
+    width: 380px !important;
+    min-width: 380px !important;
+  }
+}
