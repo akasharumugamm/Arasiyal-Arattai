@@ -1,5 +1,7 @@
 "use client";
 
+import PostActionsMenu from "@/components/PostActionsMenu";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ReactFlow,
@@ -50,6 +52,7 @@ type ReviewSummary = {
   myVote?: "up" | "down" | null;
   votes?: { up: number; down: number };
   commentCount?: number;
+  canDelete?: boolean;
   date: string;
 };
 
@@ -1433,6 +1436,7 @@ export default function Home() {
                       <div className="aa-social-avatar">{review.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</div>
                       <div className="aa-social-author"><strong>{review.name || "Community member"}</strong><span>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
                       <span className="aa-social-flair" style={{ color: categoryStyle.color, background: categoryStyle.background }}>{review.type}</span>
+                      <PostActionsMenu postId={review.id} canDelete={!!review.canDelete} onDeleted={(id) => setRecentReviews((current) => current.filter((item) => item.id !== id))} />
                     </div>
                     {review.imageUrls?.length ? null : (review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</a>)}</div> : null)}
                     <h3 className="aa-social-title">{review.title}</h3>
