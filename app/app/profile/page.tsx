@@ -90,7 +90,13 @@ export default function ProfilePage() {
   if (signedOut || !profile) return <main className="aa-page"><section className="aa-auth-modal"><h1>Sign in required</h1><p>Sign in to manage your public display name and discussions.</p><Link href="/auth/login">Continue to sign in ↗</Link><Link href="/" className="aa-back-link">Back to Explorer</Link></section></main>;
 
   return <main className="aa-page">
-    <header className="aa-topbar"><Link href="/" className="aa-brand"><span className="aa-brand-mark">அ</span><span><strong>அரசியல் அரட்டை</strong><small>ARASIYAL ARATTAI</small></span></Link><Link href="/reviews" className="aa-back-link">Public discussions</Link></header>
+    <header className="app-header app-header-visible aa-profile-home-header">
+      <Link href="/" className="aa-profile-home-brand">
+        <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" />
+        <span className="brand-heading">Arasiyal Arattai</span>
+      </Link>
+      <Link href="/reviews" className="aa-profile-discussions-link">Public discussions</Link>
+    </header>
     <div className="aa-profile-layout">
       <section className="aa-profile-card"><span className="aa-eyebrow">YOUR ACCOUNT</span><h1>Your profile</h1><p className="aa-profile-email">{profile.email || "Signed in with Cognito"}</p>
         <form onSubmit={saveName} className="aa-profile-form"><label htmlFor="aa-profile-name">Public display name</label><p>This name appears next to your public discussions and comments.</p><input id="aa-profile-name" value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={60} required /><button type="submit" disabled={saving}>{saving ? "Saving…" : "Save display name"}</button></form>
