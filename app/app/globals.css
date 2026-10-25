@@ -1305,3 +1305,53 @@ option {
 .aa-official-picker > .aa-dropdown-trigger {
   min-height: 49px;
 }
+
+
+/* Modern selected-official chips */
+.aa-selected-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.aa-selected-chips > button {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 34px;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 8px 5px 12px;
+  border: 1px solid #dce5ff;
+  border-radius: 999px;
+  background: #f3f6ff;
+  color: #29458e;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 3%);
+  transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+.aa-selected-chips > button:hover {
+  border-color: #b9c9fb;
+  background: #eaf0ff;
+  box-shadow: 0 3px 9px rgb(49 91 232 / 8%);
+}
+.aa-selected-chips > button > span {
+  display: inline-grid;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e1e9ff;
+  color: #4260aa;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  transition: background 150ms ease, color 150ms ease;
+}
+.aa-selected-chips > button:hover > span {
+  background: #d3defe;
+  color: #1d3c90;
+}
