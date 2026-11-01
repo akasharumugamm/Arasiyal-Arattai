@@ -5022,3 +5022,108 @@ option {
   padding: 0 12px;
   white-space: normal;
 }
+
+
+/* Main application sections: Home, Office Bearers, Civil Services, Result and Constituency. */
+.app-section-nav {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 7px;
+  margin: 18px 0 14px;
+  padding: 6px;
+  overflow-x: auto;
+  border: 1px solid #e3eaf5;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 5px 18px rgb(24 48 100 / 5%);
+  scrollbar-width: thin;
+}
+.app-section-nav-button {
+  display: inline-flex;
+  min-height: 40px;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #53627e;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.app-section-nav-button:hover:not(.is-active) {
+  background: #f2f5ff;
+  color: #244bd2;
+}
+.app-section-nav-button.is-active {
+  border-color: rgb(255 255 255 / 25%);
+  background: linear-gradient(130deg, #3865f2, #2448d6);
+  color: #fff;
+  box-shadow: 0 5px 13px rgb(49 91 232 / 20%), inset 0 1px 0 rgb(255 255 255 / 20%);
+}
+.app-section-feedback {
+  color: #315be8;
+  background: #eef3ff;
+}
+.app-section-feedback:hover {
+  background: #e2eaff;
+}
+.app-section-nav-button:focus-visible {
+  outline: 3px solid rgb(49 91 232 / 25%);
+  outline-offset: 2px;
+}
+.mla-directory-card {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e4eaf3;
+  border-radius: 15px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.mla-directory-card:hover {
+  border-color: #cbd8fa;
+  background: #fbfcff;
+  box-shadow: 0 5px 16px rgb(34 63 130 / 7%);
+  transform: translateY(-1px);
+}
+.mla-directory-card.is-selected {
+  border-color: #9db5ff;
+  background: #f5f7ff;
+  box-shadow: 0 0 0 2px rgb(49 91 232 / 8%);
+}
+@media (max-width: 760px) {
+  .app-section-nav {
+    gap: 5px;
+    margin-top: 12px;
+    border-radius: 13px;
+  }
+  .app-section-nav-button {
+    min-height: 38px;
+    padding: 0 12px;
+    font-size: 11px;
+  }
+  .page-with-profile > .profile-column {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-section-nav-button,
+  .mla-directory-card {
+    transition: none;
+  }
+  .mla-directory-card:hover {
+    transform: none;
+  }
+}
