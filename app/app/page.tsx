@@ -17,7 +17,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import mlaDirectory from "@/data/tn-mlas.json";
-import { ElectionResultsDashboard, PoliticianProfileCard, IPSOfficerProfileCard, DirectoryPanel } from "@/components/SectionProfileCards";
+import { ElectionResultsDashboard } from "@/components/ElectionResultsDashboard";
 
 type Category =
   | "Government"
@@ -839,8 +839,8 @@ function HomeCategoryMenu({ value, onChange }: {
 }
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState<"Home" | "Office Bearers" | "Civil Services" | "Result" | "Constituency">("Home");
   const [category, setCategory] = useState<Category>("Government");
+  const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -1149,7 +1149,6 @@ export default function Home() {
     const node = allNodes.find((item) => getOfficialIdentityKey(item.data.label) === identity);
     if (node) {
       const nodeCategory = (Object.entries(categoryNodes) as [Category, string[]][]).find(([, ids]) => ids.includes(node.id))?.[0] ?? "Government";
-      setActiveSection(nodeCategory === "MLAs" ? "Office Bearers" : "Home");
       setCategory(nodeCategory);
       if (nodeCategory !== "MLAs") {
         setExpandedMlaParty(null);
@@ -1164,7 +1163,6 @@ export default function Home() {
 
     const member = mlaRecords.find((item) => getOfficialIdentityKey(item.name) === identity);
     if (member) {
-      setActiveSection("Office Bearers");
       setCategory("MLAs");
       setExpandedMlaParty(null);
       setMlaPartyFilter("All parties");
@@ -1228,6 +1226,7 @@ export default function Home() {
           <h1 className="brand-heading app-title" style={{ fontSize: 27, fontWeight: 650, margin: 0 }}>Arasiyal Arattai</h1>
         </div>
         <div className="app-header-actions">
+          <a className="app-share-feedback" href="/reviews?action=write"><span className="share-icon" aria-hidden="true">＋</span><span>Share feedback</span></a>
         <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
             type="button"
@@ -1261,95 +1260,171 @@ export default function Home() {
         </div>
         </div>
       </div>
+      <nav className="aa-primary-nav" aria-label="Main navigation">
+        {["Home", "Office Bearers", "Civil Services", "Result", "Constituency"].map((item) => (
+          <button key={item} type="button" className={item === "Home" ? "aa-primary-nav-link is-active" : "aa-primary-nav-link"} aria-current={item === "Home" ? "page" : undefined} onClick={() => { if (item !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item })); }}>{item}</button>
+        ))}
+        <a className="aa-primary-nav-link aa-primary-nav-feedback" href="/reviews?action=write">Share Feedback</a>
+      </nav>
       <p style={{ color: "#64748b", marginBottom: 16 }}>
         Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes, and discover the decisions and public feedback shaping the state.
       </p>
 
-      <nav className="app-section-nav" aria-label="Main sections">
-        {(["Home", "Office Bearers", "Civil Services", "Result", "Constituency"] as const).map((item) => (
-          <button key={item} type="button" onClick={() => {
-            setActiveSection(item);
-            if (item === "Home") { setCategory("Government"); setSelected(allNodes[0].data); }
-            if (item === "Office Bearers") {
-              setCategory("MLAs"); setMlaSearch(""); setMlaPartyFilter("All parties"); setExpandedMlaParty(null);
-              const first = mlaRecords.find((member) => member.status !== "Vacant");
-              if (first) setSelected({ label: first.name, role: first.constituency + " · " + first.party, description: "Assembly directory entry. Constituency: " + first.constituency + ". Party: " + first.party + ".", isPerson: true, mlaNumber: first.number, mlaParty: first.party, mlaEmail: first.email, photoUrl: first.photoUrl });
-            }
-            if (item === "Civil Services") {
-              setCategory("Government");
-              setSelected({ label: "A Amalraj", role: "Addl. DGP · CP, Tambaram", description: "Sample IPS officer profile. Posting and service details must be verified against the current official civil list.", isPerson: true, photoUrl: "https://static.toiimg.com/thumb/resizemode-72,width-1280,height-720,msid-131246759/131246759.jpg" });
-            }
-            if (item === "Result" || item === "Constituency") setCategory("Government");
-          }} className={activeSection === item ? "app-section-nav-button is-active" : "app-section-nav-button"} aria-current={activeSection === item ? "page" : undefined}>{item}</button>
+      <div className="mobile-category-select">
+        <button
+          type="button"
+          className="mobile-category-trigger"
+          aria-label="Choose a section"
+          aria-haspopup="listbox"
+          aria-expanded={isCategoryPickerOpen}
+          onClick={() => setIsCategoryPickerOpen((open) => !open)}
+        >
+          <span className="mobile-category-current">
+            <span className="mobile-category-eyebrow">EXPLORE SECTION</span>
+            <span className="mobile-category-value">{category}</span>
+          </span>
+          <svg className={isCategoryPickerOpen ? "mobile-category-chevron is-open" : "mobile-category-chevron"} width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        {isCategoryPickerOpen && (
+          <div className="mobile-category-options" role="listbox" aria-label="Explore sections">
+            {categories.map((item) => (
+              <button
+                key={item}
+                type="button"
+                role="option"
+                aria-selected={category === item}
+                className={category === item ? "mobile-category-option is-selected" : "mobile-category-option"}
+                onClick={() => { changeCategory(item); setIsCategoryPickerOpen(false); }}
+              >
+                <span>{item}</span>
+                {category === item && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      <nav className="category-nav" aria-label="Explore government sections">
+        {categories.map((item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => changeCategory(item)}
+            className={category === item ? "category-nav-button is-active" : "category-nav-button"}
+            aria-current={category === item ? "page" : undefined}
+          >
+            {item}
+          </button>
         ))}
-        <a className="app-section-nav-button app-section-feedback" href="/reviews?action=write">Share Feedback</a>
       </nav>
-      {activeSection === "Home" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Explore the administrative hierarchy of the Government of Tamil Nadu and join the public conversation.</p>}
-      {activeSection === "Office Bearers" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Browse elected Members of the Tamil Nadu Legislative Assembly and select a member to view their profile.</p>}
-      {activeSection === "Civil Services" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Explore IAS and IPS officers, their service records and postings. Current details will be connected to the officer database.</p>}
-      {activeSection === "Result" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Election results, Assembly composition and turnout statistics.</p>}
-      {activeSection === "Constituency" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Browse Tamil Nadu Assembly constituencies and the elected representative listed for each seat.</p>}
+
+      <p style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>
+        {categoryDescriptions[category]}
+      </p>
+
+      {category === "MLAs" && (
+        <section className="mla-controls" aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 397px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
+          <input
+            aria-label="Search MLA name or constituency"
+            value={mlaSearch}
+            onChange={(event) => { setMlaSearch(event.target.value); setExpandedMlaParty(null); }}
+            placeholder="Search MLA or constituency…"
+            style={{ flex: "1 1 240px", minWidth: 180, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 9, background: "white", color: "#172554", font: "inherit", fontSize: 13 }}
+          />
+          <div className="mla-party-filter">
+            <button
+              type="button"
+              className="mla-party-trigger"
+              aria-label="Filter MLAs by party"
+              aria-haspopup="listbox"
+              aria-expanded={mlaPartyOpen}
+              onClick={() => setMlaPartyOpen((open) => !open)}
+            >
+              <span className="mla-party-trigger-copy">
+                <span className="mla-party-trigger-label">PARTY / STATUS</span>
+                <strong>{mlaPartyFilter}</strong>
+              </span>
+              <svg aria-hidden="true" viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m5 7.5 5 5 5-5" /></svg>
+            </button>
+            {mlaPartyOpen && <div className="mla-party-menu" role="listbox" aria-label="Choose party">
+              {["All parties", ...mlaParties].map((party) => (
+                <button
+                  key={party}
+                  type="button"
+                  role="option"
+                  aria-selected={mlaPartyFilter === party}
+                  className={mlaPartyFilter === party ? "mla-party-option is-selected" : "mla-party-option"}
+                  onClick={() => { setMlaPartyFilter(party); setExpandedMlaParty(null); setMlaPartyOpen(false); }}
+                >
+                  <span>{party}</span>
+                  {mlaPartyFilter === party && <svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m4 10 4 4 8-8" /></svg>}
+                </button>
+              ))}
+            </div>}
+          </div>
+          <button
+            className="reset-graph-button"
+            type="button"
+            onClick={() => { setMlaSearch(""); setMlaPartyFilter("All parties"); setExpandedMlaParty(null); }}
+            style={{ padding: "10px 13px", border: "1px solid #cbd5e1", borderRadius: 9, background: "#f8fafc", color: "#172554", fontWeight: 700, cursor: "pointer" }}
+          >Reset graph</button>
+          <span style={{ color: "#64748b", fontSize: 12, flexBasis: "100%" }}>
+            {mlaSearch.trim() || mlaPartyFilter !== "All parties"
+              ? `${filteredMlaRecords.length} matching constituency entries`
+              : expandedMlaParty
+                ? `Showing ${expandedMlaParty} entries. Click the group heading to collapse it.`
+                : `234 constituency entries · ${mlaParties.length} party/status groups · select a group to expand`}
+          </span>
+        </section>
+      )}
 
       <div className="page-with-profile">
         <div className="page-main-column">
-      {activeSection === "Home" && (
-        <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
-          <div className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
-            <ReactFlow style={{ width: "100%", height: "100%" }} key="government-hierarchy" nodes={allNodes.filter((node) => categoryNodes.Government.includes(node.id)).map((node) => ({ ...node, position: layoutPositions.Government[node.id] ?? node.position }))} edges={allEdges.filter((edge) => categoryNodes.Government.includes(edge.source) && categoryNodes.Government.includes(edge.target))} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.12, minZoom: 0.28, maxZoom: 0.9 }} minZoom={0.15} maxZoom={1.5} onNodeClick={(_, node) => selectProfile(node.data as Profile)}>
-              <Background /><Controls />
-            </ReactFlow>
-          </div>
+      <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
+        <div key={category} className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
+          <ReactFlow
+            style={{ width: "100%", height: "100%" }}
+            key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
+            nodes={visibleNodes}
+            edges={visibleEdges}
+            nodeTypes={nodeTypes}
+            fitView
+            fitViewOptions={{ padding: 0.12, minZoom: 0.28, maxZoom: 0.9 }}
+            minZoom={0.15}
+            maxZoom={1.5}
+            onNodeClick={(_, node) => {
+              if (node.id === "council-summary") { changeCategory("Ministers"); return; }
+              if (node.id === "mla-summary") {
+                changeCategory("MLAs");
+                setExpandedMlaParty(null);
+                setMlaSearch("");
+                setMlaPartyFilter("All parties");
+                setSelected(node.data as Profile);
+                return;
+              }
+              if (node.id === "tvk") {
+                setCategory("MLAs");
+                setExpandedMlaParty(null);
+                setMlaSearch("");
+                setMlaPartyFilter("TVK");
+                setSelected(node.data as Profile);
+                return;
+              }
+              if (category === "MLAs" && node.id.startsWith("mla-party-")) {
+                const party = (node.data as Profile).mlaParty ?? null;
+                setExpandedMlaParty((current) => current === party ? null : party);
+                setSelected(node.data as Profile);
+                return;
+              }
+              selectProfile(node.data as Profile);
+            }}
+          >
+            <Background />
+            <Controls />
+          </ReactFlow>
         </div>
-      )}
 
-      {activeSection === "Office Bearers" && (
-        <DirectoryPanel title="Members of the Legislative Assembly" description={`${filteredMlaRecords.length} directory entries · Select a member to update the profile panel.`}>
-          <div className="mb-4 flex flex-wrap gap-2">
-            <input aria-label="Search MLA name or constituency" value={mlaSearch} onChange={(event) => setMlaSearch(event.target.value)} placeholder="Search MLA or constituency…" className="min-w-[220px] flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400" />
-            <select aria-label="Filter by party" value={mlaPartyFilter} onChange={(event) => setMlaPartyFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
-              <option>All parties</option>{mlaParties.map((party) => <option key={party}>{party}</option>)}
-            </select>
-            <button type="button" onClick={() => { setMlaSearch(""); setMlaPartyFilter("All parties"); }} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600">Reset</button>
-          </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredMlaRecords.map((member) => {
-              const profile: Profile = { label: member.name, role: member.constituency + " · " + (member.party || "Party not listed"), description: "Assembly directory entry. Constituency: " + member.constituency + ". Party: " + (member.party || "Not listed") + ". Official Assembly email: " + (member.email || "Not listed") + ".", isPerson: member.status !== "Vacant", mlaNumber: member.number, mlaParty: member.party, mlaEmail: member.email, mlaStatus: member.status, photoUrl: member.photoUrl, partyLogoUrl: getPartyLogoPath(member.party) };
-              return <button key={member.number} type="button" onClick={() => setSelected(profile)} className={selected.mlaNumber === member.number ? "mla-directory-card is-selected" : "mla-directory-card"}>
-                {member.photoUrl ? <img src={member.photoUrl} alt="" className="h-12 w-12 rounded-xl object-cover" /> : <span className="grid h-12 w-12 place-items-center rounded-xl bg-slate-100 text-sm font-bold text-slate-500">{member.name.slice(0,1)}</span>}
-                <span className="min-w-0 flex-1 text-left"><strong className="block truncate text-sm text-slate-900">{member.name}</strong><span className="mt-1 block truncate text-[11px] text-slate-500">{member.constituency}</span><span className="mt-1 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">{member.party || "Vacant"}</span></span>
-              </button>;
-            })}
-          </div>
-        </DirectoryPanel>
-      )}
 
-      {activeSection === "Civil Services" && (
-        <DirectoryPanel title="Civil Services Directory" description="Sample officer entry for layout development. The imported officer dataset will be connected after the database directory API is ready.">
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-            <button type="button" onClick={() => setSelected({ label: "A Amalraj", role: "Addl. DGP · CP, Tambaram", description: "Sample IPS officer profile. Verify current posting and service details against the MHA IPS Civil List.", isPerson: true, photoUrl: "https://static.toiimg.com/thumb/resizemode-72,width-1280,height-720,msid-131246759/131246759.jpg" })} className="mla-directory-card">
-              <img src="https://static.toiimg.com/thumb/resizemode-72,width-1280,height-720,msid-131246759/131246759.jpg" alt="" className="h-14 w-14 rounded-xl object-cover"/>
-              <span className="min-w-0 flex-1 text-left"><strong className="block text-sm text-slate-900">A Amalraj</strong><span className="mt-1 block text-[11px] text-slate-500">IPS · Tamil Nadu cadre · 1996 batch</span><span className="mt-1 block text-[10px] text-blue-700">Sample IPS profile · Select to view</span></span>
-            </button>
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-blue-700">IAS Officers</p>
-              <h3 className="mt-2 text-sm font-bold text-slate-800">IAS directory placeholder</h3>
-              <p className="mt-1 text-[11px] leading-relaxed text-slate-500">IAS records will be added to this directory when the officer data endpoint is connected. No officer identity is fabricated here.</p>
-            </div>
-          </div>
-        </DirectoryPanel>
-      )}
-
-      {activeSection === "Result" && (
-        <div className="mx-auto w-full max-w-3xl"><ElectionResultsDashboard /></div>
-      )}
-
-      {activeSection === "Constituency" && (
-        <DirectoryPanel title="Tamil Nadu Constituencies" description="Browse constituency entries from the current Assembly directory dataset. Select an entry to view its representative in the profile panel.">
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
-            {mlaRecords.map((member) => <button key={member.number} type="button" onClick={() => setSelected({ label: member.name, role: member.constituency + " · " + (member.party || "Party not listed"), description: "Constituency " + member.constituency + " is listed in the Tamil Nadu Assembly directory. Member: " + member.name + ".", isPerson: member.status !== "Vacant", mlaNumber: member.number, mlaParty: member.party, mlaEmail: member.email, photoUrl: member.photoUrl })} className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-left transition hover:border-blue-200 hover:bg-blue-50/40"><span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">AC {member.number}</span><strong className="mt-1 block text-sm text-slate-900">{member.constituency}</strong><span className="mt-1 block text-[11px] text-slate-500">{member.name} · {member.party || "Party not listed"}</span></button>)}
-          </div>
-        </DirectoryPanel>
-      )}
+      </div>
 
       {authModalOpen && (
         <div className="auth-backdrop" role="presentation" onClick={() => setAuthModalOpen(false)}>
@@ -1393,7 +1468,6 @@ export default function Home() {
         </div>
       )}
 
-      {activeSection === "Home" && (
       <section className="community-feedback" id="community-feedback" style={{ width: "100%", boxSizing: "border-box", margin: "16px 0 0", padding: 22, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a08" }}>
         <div className="community-feedback-layout">
           <div className="community-feedback-overview-column">
@@ -1504,14 +1578,9 @@ export default function Home() {
           </div>
         </div>
       </section>
-      )}
-
         </div>
         <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
-        {activeSection === "Home" && <ElectionResultsDashboard />}
-        {activeSection === "Office Bearers" && <PoliticianProfileCard profile={selected} />}
-        {activeSection === "Civil Services" && <IPSOfficerProfileCard profile={selected} />}
-        {(activeSection === "Constituency" || activeSection === "Result") && <PoliticianProfileCard profile={selected} />}
+        <ElectionResultsDashboard />
 
 
         </div>
