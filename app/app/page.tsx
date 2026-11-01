@@ -1149,6 +1149,7 @@ export default function Home() {
     const node = allNodes.find((item) => getOfficialIdentityKey(item.data.label) === identity);
     if (node) {
       const nodeCategory = (Object.entries(categoryNodes) as [Category, string[]][]).find(([, ids]) => ids.includes(node.id))?.[0] ?? "Government";
+      setActiveSection(nodeCategory === "MLAs" ? "Office Bearers" : "Home");
       setCategory(nodeCategory);
       if (nodeCategory !== "MLAs") {
         setExpandedMlaParty(null);
@@ -1163,6 +1164,7 @@ export default function Home() {
 
     const member = mlaRecords.find((item) => getOfficialIdentityKey(item.name) === identity);
     if (member) {
+      setActiveSection("Office Bearers");
       setCategory("MLAs");
       setExpandedMlaParty(null);
       setMlaPartyFilter("All parties");
@@ -1323,10 +1325,17 @@ export default function Home() {
 
       {activeSection === "Civil Services" && (
         <DirectoryPanel title="Civil Services Directory" description="Sample officer entry for layout development. The imported officer dataset will be connected after the database directory API is ready.">
-          <button type="button" onClick={() => setSelected({ label: "A Amalraj", role: "Addl. DGP · CP, Tambaram", description: "Sample IPS officer profile. Verify current posting and service details against the MHA IPS Civil List.", isPerson: true, photoUrl: "https://static.toiimg.com/thumb/resizemode-72,width-1280,height-720,msid-131246759/131246759.jpg" })} className="mla-directory-card w-full sm:max-w-md">
-            <img src="https://static.toiimg.com/thumb/resizemode-72,width-1280,height-720,msid-131246759/131246759.jpg" alt="" className="h-14 w-14 rounded-xl object-cover"/>
-            <span className="min-w-0 flex-1 text-left"><strong className="block text-sm text-slate-900">A Amalraj</strong><span className="mt-1 block text-[11px] text-slate-500">IPS · Tamil Nadu cadre · 1996 batch</span><span className="mt-1 block text-[10px] text-blue-700">Sample directory profile · Select to view</span></span>
-          </button>
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            <button type="button" onClick={() => setSelected({ label: "A Amalraj", role: "Addl. DGP · CP, Tambaram", description: "Sample IPS officer profile. Verify current posting and service details against the MHA IPS Civil List.", isPerson: true, photoUrl: "https://static.toiimg.com/thumb/resizemode-72,width-1280,height-720,msid-131246759/131246759.jpg" })} className="mla-directory-card">
+              <img src="https://static.toiimg.com/thumb/resizemode-72,width-1280,height-720,msid-131246759/131246759.jpg" alt="" className="h-14 w-14 rounded-xl object-cover"/>
+              <span className="min-w-0 flex-1 text-left"><strong className="block text-sm text-slate-900">A Amalraj</strong><span className="mt-1 block text-[11px] text-slate-500">IPS · Tamil Nadu cadre · 1996 batch</span><span className="mt-1 block text-[10px] text-blue-700">Sample IPS profile · Select to view</span></span>
+            </button>
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-blue-700">IAS Officers</p>
+              <h3 className="mt-2 text-sm font-bold text-slate-800">IAS directory placeholder</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-slate-500">IAS records will be added to this directory when the officer data endpoint is connected. No officer identity is fabricated here.</p>
+            </div>
+          </div>
         </DirectoryPanel>
       )}
 
