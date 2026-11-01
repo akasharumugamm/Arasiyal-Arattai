@@ -841,7 +841,6 @@ function HomeCategoryMenu({ value, onChange }: {
 export default function Home() {
   const [activeSection, setActiveSection] = useState<"Home" | "Office Bearers" | "Civil Services" | "Result" | "Constituency">("Home");
   const [category, setCategory] = useState<Category>("Government");
-  const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -1227,7 +1226,6 @@ export default function Home() {
           <h1 className="brand-heading app-title" style={{ fontSize: 27, fontWeight: 650, margin: 0 }}>Arasiyal Arattai</h1>
         </div>
         <div className="app-header-actions">
-          <a className="app-share-feedback" href="/reviews?action=write"><span className="share-icon" aria-hidden="true">＋</span><span>Share feedback</span></a>
         <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
             type="button"
@@ -1269,7 +1267,6 @@ export default function Home() {
         {(["Home", "Office Bearers", "Civil Services", "Result", "Constituency"] as const).map((item) => (
           <button key={item} type="button" onClick={() => {
             setActiveSection(item);
-            setIsCategoryPickerOpen(false);
             if (item === "Home") { setCategory("Government"); setSelected(allNodes[0].data); }
             if (item === "Office Bearers") {
               setCategory("MLAs"); setMlaSearch(""); setMlaPartyFilter("All parties"); setExpandedMlaParty(null);
@@ -1290,62 +1287,6 @@ export default function Home() {
       {activeSection === "Civil Services" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Explore IAS and IPS officers, their service records and postings. Current details will be connected to the officer database.</p>}
       {activeSection === "Result" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Election results, Assembly composition and turnout statistics.</p>}
       {activeSection === "Constituency" && <p className="section-intro" style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>Browse Tamil Nadu Assembly constituencies and the elected representative listed for each seat.</p>}
-
-      {category === "MLAs" && (
-        <section className="mla-controls" aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 397px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
-          <input
-            aria-label="Search MLA name or constituency"
-            value={mlaSearch}
-            onChange={(event) => { setMlaSearch(event.target.value); setExpandedMlaParty(null); }}
-            placeholder="Search MLA or constituency…"
-            style={{ flex: "1 1 240px", minWidth: 180, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 9, background: "white", color: "#172554", font: "inherit", fontSize: 13 }}
-          />
-          <div className="mla-party-filter">
-            <button
-              type="button"
-              className="mla-party-trigger"
-              aria-label="Filter MLAs by party"
-              aria-haspopup="listbox"
-              aria-expanded={mlaPartyOpen}
-              onClick={() => setMlaPartyOpen((open) => !open)}
-            >
-              <span className="mla-party-trigger-copy">
-                <span className="mla-party-trigger-label">PARTY / STATUS</span>
-                <strong>{mlaPartyFilter}</strong>
-              </span>
-              <svg aria-hidden="true" viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m5 7.5 5 5 5-5" /></svg>
-            </button>
-            {mlaPartyOpen && <div className="mla-party-menu" role="listbox" aria-label="Choose party">
-              {["All parties", ...mlaParties].map((party) => (
-                <button
-                  key={party}
-                  type="button"
-                  role="option"
-                  aria-selected={mlaPartyFilter === party}
-                  className={mlaPartyFilter === party ? "mla-party-option is-selected" : "mla-party-option"}
-                  onClick={() => { setMlaPartyFilter(party); setExpandedMlaParty(null); setMlaPartyOpen(false); }}
-                >
-                  <span>{party}</span>
-                  {mlaPartyFilter === party && <svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m4 10 4 4 8-8" /></svg>}
-                </button>
-              ))}
-            </div>}
-          </div>
-          <button
-            className="reset-graph-button"
-            type="button"
-            onClick={() => { setMlaSearch(""); setMlaPartyFilter("All parties"); setExpandedMlaParty(null); }}
-            style={{ padding: "10px 13px", border: "1px solid #cbd5e1", borderRadius: 9, background: "#f8fafc", color: "#172554", fontWeight: 700, cursor: "pointer" }}
-          >Reset graph</button>
-          <span style={{ color: "#64748b", fontSize: 12, flexBasis: "100%" }}>
-            {mlaSearch.trim() || mlaPartyFilter !== "All parties"
-              ? `${filteredMlaRecords.length} matching constituency entries`
-              : expandedMlaParty
-                ? `Showing ${expandedMlaParty} entries. Click the group heading to collapse it.`
-                : `234 constituency entries · ${mlaParties.length} party/status groups · select a group to expand`}
-          </span>
-        </section>
-      )}
 
       <div className="page-with-profile">
         <div className="page-main-column">
