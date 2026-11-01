@@ -1225,8 +1225,13 @@ export default function Home() {
           <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
           <h1 className="brand-heading app-title" style={{ fontSize: 27, fontWeight: 650, margin: 0 }}>Arasiyal Arattai</h1>
         </div>
+      <nav className="aa-primary-nav" aria-label="Main navigation">
+        {["Home", "Office Bearers", "Civil Services", "Result", "Constituency"].map((item) => (
+          <button key={item} type="button" className={item === "Home" ? "aa-primary-nav-link is-active" : "aa-primary-nav-link"} aria-current={item === "Home" ? "page" : undefined} onClick={() => { if (item !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item })); }}>{item}</button>
+        ))}
+        <a className="aa-primary-nav-link aa-primary-nav-feedback" href="/reviews?action=write">Share Feedback</a>
+      </nav>
         <div className="app-header-actions">
-          <a className="app-share-feedback" href="/reviews?action=write"><span className="share-icon" aria-hidden="true">＋</span><span>Share feedback</span></a>
         <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
           <button
             type="button"
@@ -1260,12 +1265,7 @@ export default function Home() {
         </div>
         </div>
       </div>
-      <nav className="aa-primary-nav" aria-label="Main navigation">
-        {["Home", "Office Bearers", "Civil Services", "Result", "Constituency"].map((item) => (
-          <button key={item} type="button" className={item === "Home" ? "aa-primary-nav-link is-active" : "aa-primary-nav-link"} aria-current={item === "Home" ? "page" : undefined} onClick={() => { if (item !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item })); }}>{item}</button>
-        ))}
-        <a className="aa-primary-nav-link aa-primary-nav-feedback" href="/reviews?action=write">Share Feedback</a>
-      </nav>
+
       <p style={{ color: "#64748b", marginBottom: 16 }}>
         Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes, and discover the decisions and public feedback shaping the state.
       </p>
