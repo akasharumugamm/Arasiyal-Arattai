@@ -1270,57 +1270,6 @@ export default function Home() {
         Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes, and discover the decisions and public feedback shaping the state.
       </p>
 
-      <div className="mobile-category-select">
-        <button
-          type="button"
-          className="mobile-category-trigger"
-          aria-label="Choose a section"
-          aria-haspopup="listbox"
-          aria-expanded={isCategoryPickerOpen}
-          onClick={() => setIsCategoryPickerOpen((open) => !open)}
-        >
-          <span className="mobile-category-current">
-            <span className="mobile-category-eyebrow">EXPLORE SECTION</span>
-            <span className="mobile-category-value">{category}</span>
-          </span>
-          <svg className={isCategoryPickerOpen ? "mobile-category-chevron is-open" : "mobile-category-chevron"} width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
-        {isCategoryPickerOpen && (
-          <div className="mobile-category-options" role="listbox" aria-label="Explore sections">
-            {categories.map((item) => (
-              <button
-                key={item}
-                type="button"
-                role="option"
-                aria-selected={category === item}
-                className={category === item ? "mobile-category-option is-selected" : "mobile-category-option"}
-                onClick={() => { changeCategory(item); setIsCategoryPickerOpen(false); }}
-              >
-                <span>{item}</span>
-                {category === item && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      <nav className="category-nav" aria-label="Explore government sections">
-        {categories.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => changeCategory(item)}
-            className={category === item ? "category-nav-button is-active" : "category-nav-button"}
-            aria-current={category === item ? "page" : undefined}
-          >
-            {item}
-          </button>
-        ))}
-      </nav>
-
-      <p style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>
-        {categoryDescriptions[category]}
-      </p>
-
       {category === "MLAs" && (
         <section className="mla-controls" aria-label="MLA graph controls" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 14, padding: 12, width: "calc(100% - 397px)", boxSizing: "border-box", border: "1px solid #dbe3ef", borderRadius: 12, background: "white" }}>
           <input
