@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Award, BadgeCheck, BarChart3, BriefcaseBusiness, CalendarDays, GraduationCap,
-  Landmark, MapPin, ShieldCheck, TrendingDown, TrendingUp, Users, Vote,
-} from "lucide-react";
+import type { ReactNode } from "react";
 
 type SelectedProfile = {
   label: string;
@@ -40,8 +37,8 @@ export function ElectionResultsDashboard() {
       </div>
     </div>
     <div className="space-y-5 p-4">
-      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.16em] text-zinc-500"><Landmark size={14}/> Assembly snapshot</h3><div className="grid grid-cols-2 gap-2"><Tile label="Sitting MLAs" value="229 / 234"/><Tile label="Vacant seats" value="5"/><Tile label="Majority mark" value="118"/><Tile label="House status" value="Hung"/></div></div>
-      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.16em] text-zinc-500"><BarChart3 size={14}/> Voter statistics</h3><div className="grid grid-cols-2 gap-2"><Tile label="Turnout" value="85.1%" note="Sample figure"/><Tile label="Electors" value="5.73 Cr"/><Tile label="Votes polled" value="4.88 Cr"/><Tile label="Candidates" value="4,023"/></div></div>
+      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.16em] text-zinc-500"><span aria-hidden="true">▦</span> Assembly snapshot</h3><div className="grid grid-cols-2 gap-2"><Tile label="Sitting MLAs" value="229 / 234"/><Tile label="Vacant seats" value="5"/><Tile label="Majority mark" value="118"/><Tile label="House status" value="Hung"/></div></div>
+      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.16em] text-zinc-500"><span aria-hidden="true">▥</span> Voter statistics</h3><div className="grid grid-cols-2 gap-2"><Tile label="Turnout" value="85.1%" note="Sample figure"/><Tile label="Electors" value="5.73 Cr"/><Tile label="Votes polled" value="4.88 Cr"/><Tile label="Candidates" value="4,023"/></div></div>
     </div>
     <p className="border-t border-zinc-100 bg-zinc-50 px-4 py-3 text-center text-[9px] leading-relaxed text-zinc-500">Reference design supplied for Arasiyal Arattai. Confirm every result with the Election Commission before publication.</p>
   </section>;
@@ -61,8 +58,8 @@ export function PoliticianProfileCard({ profile }: { profile: SelectedProfile })
       <div className="mt-5 rounded-2xl bg-white/[.06] p-3 ring-1 ring-inset ring-white/10"><div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider text-zinc-400"><span>Public sentiment</span><span className="text-amber-300">Sample score</span></div><div className="mt-2 flex items-baseline gap-1"><strong className="text-4xl">67</strong><span className="text-xs text-zinc-500">/ 100</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full w-[67%] rounded-full bg-gradient-to-r from-amber-400 to-orange-500"/></div></div>
     </div>
     <div className="space-y-4 p-4">
-      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><Award size={14}/> Election profile</h3><div className="grid grid-cols-2 gap-2"><Tile label="Votes won" value={isVijay ? "1,20,365" : "—"}/><Tile label="Vote share" value={isVijay ? "58.9%" : "—"}/><Tile label="Margin" value={isVijay ? "53,715" : "—"}/><Tile label="Constituency" value={isVijay ? "Perambur" : "See directory"}/></div></div>
-      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><BriefcaseBusiness size={14}/> Public declarations</h3><div className="grid grid-cols-2 gap-2"><Tile label="Assets" value={isVijay ? "₹648.86 cr" : "—"}/><Tile label="Liabilities" value={isVijay ? "₹7.64 cr" : "—"}/><Tile label="Pending cases" value={isVijay ? "2" : "—"}/><Tile label="Education" value={isVijay ? "12th Pass" : "—"}/></div></div>
+      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><span aria-hidden="true">✦</span> Election profile</h3><div className="grid grid-cols-2 gap-2"><Tile label="Votes won" value={isVijay ? "1,20,365" : "—"}/><Tile label="Vote share" value={isVijay ? "58.9%" : "—"}/><Tile label="Margin" value={isVijay ? "53,715" : "—"}/><Tile label="Constituency" value={isVijay ? "Perambur" : "See directory"}/></div></div>
+      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><span aria-hidden="true">▣</span> Public declarations</h3><div className="grid grid-cols-2 gap-2"><Tile label="Assets" value={isVijay ? "₹648.86 cr" : "—"}/><Tile label="Liabilities" value={isVijay ? "₹7.64 cr" : "—"}/><Tile label="Pending cases" value={isVijay ? "2" : "—"}/><Tile label="Education" value={isVijay ? "12th Pass" : "—"}/></div></div>
       <p className="text-[9px] leading-relaxed text-zinc-500">Profile identity follows the selected directory entry. Detailed election and affidavit figures are prototype content and must be verified before publication.</p>
     </div>
   </section>;
@@ -77,19 +74,19 @@ export function IPSOfficerProfileCard({ profile }: { profile: SelectedProfile })
       <p className="text-[9px] font-bold uppercase tracking-[.2em] text-zinc-500">Civil services profile</p>
       <div className="mt-4 flex items-center gap-3">
         {profile.photoUrl ? <img src={profile.photoUrl} alt={profile.label} className="h-[68px] w-[68px] rounded-[19px] object-cover ring-2 ring-white/15"/> : <div className="grid h-[68px] w-[68px] place-items-center rounded-[19px] bg-blue-500/20 text-xl font-bold">{profile.label.slice(0,1)}</div>}
-        <div className="min-w-0"><h2 className="text-base font-bold">{profile.label}</h2><p className="mt-1 text-[11px] text-zinc-400">{profile.role}</p><span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-2 py-1 text-[9px] text-emerald-300"><ShieldCheck size={11}/> Officer record</span></div>
+        <div className="min-w-0"><h2 className="text-base font-bold">{profile.label}</h2><p className="mt-1 text-[11px] text-zinc-400">{profile.role}</p><span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-2 py-1 text-[9px] text-emerald-300"><span aria-hidden="true">✓</span> Officer record</span></div>
       </div>
       <div className="mt-5 rounded-2xl bg-white/[.06] p-3 ring-1 ring-inset ring-white/10"><div className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Public sentiment · sample</div><div className="mt-2 flex items-baseline gap-1"><strong className="text-4xl">67</strong><span className="text-xs text-zinc-500">/ 100</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full w-[67%] rounded-full bg-gradient-to-r from-amber-400 to-orange-500"/></div></div>
     </div>
     <div className="space-y-4 p-4">
-      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><CalendarDays size={14}/> Service record</h3><div className="grid grid-cols-2 gap-2"><Tile label="Batch" value={isAmalraj ? "1996" : "—"}/><Tile label="Service" value={isAmalraj ? "30 yrs" : "—"}/><Tile label="Cadre" value="Tamil Nadu"/><Tile label="Entry" value="UPSC · RR"/></div></div>
-      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><ShieldCheck size={14}/> Posting</h3><Tile label="Current designation" value={profile.role || "Not available"}/></div>
-      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><GraduationCap size={14}/> Recognition</h3><Tile label="Honours" value={isAmalraj ? "2 medals" : "Not supplied"} note="Sample data; verify against official records."/></div>
+      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><span aria-hidden="true">◷</span> Service record</h3><div className="grid grid-cols-2 gap-2"><Tile label="Batch" value={isAmalraj ? "1996" : "—"}/><Tile label="Service" value={isAmalraj ? "30 yrs" : "—"}/><Tile label="Cadre" value="Tamil Nadu"/><Tile label="Entry" value="UPSC · RR"/></div></div>
+      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><span aria-hidden="true">◈</span> Posting</h3><Tile label="Current designation" value={profile.role || "Not available"}/></div>
+      <div><h3 className="mb-3 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.15em] text-zinc-500"><span aria-hidden="true">▱</span> Recognition</h3><Tile label="Honours" value={isAmalraj ? "2 medals" : "Not supplied"} note="Sample data; verify against official records."/></div>
       <p className="text-[9px] leading-relaxed text-zinc-500">Officer identity is selected from the directory. Posting, service and honours data are placeholders until connected to the civil-list database.</p>
     </div>
   </section>;
 }
 
-export function DirectoryPanel({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
+export function DirectoryPanel({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="mb-4"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-blue-600">Arasiyal Arattai directory</p><h2 className="mt-1 text-xl font-bold text-slate-900">{title}</h2><p className="mt-1 text-sm text-slate-500">{description}</p></div>{children}</section>;
 }
