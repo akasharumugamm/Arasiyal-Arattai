@@ -6239,3 +6239,71 @@ option {
   font-size: 13px;
   line-height: 1.65;
 }
+
+/* Civil Services directory */
+.cs-directory{max-width:1600px;margin:0 auto;padding:30px 28px 56px;color:#17233f}
+.cs-intro{padding:28px 10px 22px}
+.cs-eyebrow{display:flex;align-items:center;gap:9px;color:#64748b;font-size:10px;font-weight:750;letter-spacing:.16em}
+.cs-eyebrow-dot,.cs-live-dot{width:7px;height:7px;border-radius:50%;background:#2563eb;box-shadow:0 0 0 4px #dbeafe}
+.cs-intro h1{margin:12px 0 8px;font-family:Georgia,serif;font-size:clamp(38px,5vw,58px);font-weight:600;letter-spacing:-.045em;color:#172554}
+.cs-intro p{max-width:760px;margin:0;color:#64748b;font-size:15px;line-height:1.7}
+.cs-service-tabs{display:flex;gap:8px;margin-top:24px;padding:6px;width:max-content;max-width:100%;border:1px solid #e4eaf2;border-radius:15px;background:#f1f5f9}
+.cs-service-tabs button{display:flex;flex-direction:column;gap:3px;min-width:130px;padding:11px 17px;border:1px solid transparent;border-radius:10px;background:transparent;color:#64748b;text-align:left;cursor:pointer}
+.cs-service-tabs button span{font-size:12px;font-weight:800;letter-spacing:.08em}
+.cs-service-tabs button small{font-size:10px;color:inherit}
+.cs-service-tabs button.active{border-color:#dbeafe;background:#fff;color:#1d4ed8;box-shadow:0 3px 10px #1e3a8a12}
+.cs-workspace{overflow:hidden;border:1px solid #e5eaf1;border-radius:19px;background:#fff;box-shadow:0 12px 36px #0f172a08}
+.cs-toolbar{padding:18px 20px 15px;border-bottom:1px solid #edf1f6}
+.cs-search{display:flex;align-items:center;gap:11px;height:44px;padding:0 14px;border:1px solid #e1e7ef;border-radius:11px;background:#f8fafc;color:#94a3b8}
+.cs-search:focus-within{border-color:#93b4f7;box-shadow:0 0 0 3px #dbeafe88}
+.cs-search input{width:100%;border:0;outline:0;background:transparent;color:#172554;font:inherit;font-size:13px}
+.cs-search button{border:0;background:none;color:#64748b;font-size:22px;cursor:pointer}
+.cs-filter-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cs-filter{display:flex;align-items:center;gap:7px;min-height:34px;padding:0 10px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#64748b}
+.cs-filter select,.cs-filter input{max-width:150px;border:0;outline:0;background:transparent;color:#334155;font-size:11px}
+.cs-cadre{background:#eff6ff;border-color:#bfdbfe;color:#2563eb}
+.cs-cadre select{font-weight:700;color:#1d4ed8}
+.cs-year span{font-size:10px;white-space:nowrap}
+.cs-year input{width:52px}
+.cs-toggle,.cs-reset{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 11px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#64748b;font-size:11px;font-weight:650;cursor:pointer}
+.cs-toggle.selected{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}
+.cs-reset{background:#f8fafc}
+.cs-table-head{display:flex;justify-content:space-between;align-items:center;padding:16px 21px;color:#64748b;font-size:10px;font-weight:800;letter-spacing:.12em}
+.cs-table-head>div,.cs-table-head>span{display:flex;align-items:center;gap:9px}
+.cs-live-dot{width:6px;height:6px;background:#10b981;box-shadow:0 0 0 4px #d1fae5}
+.cs-count{margin-left:4px;padding:4px 8px;border-radius:20px;background:#f1f5f9;color:#64748b;font-size:10px;letter-spacing:0}
+.cs-table-wrap{overflow-x:auto;padding:0 20px}
+.cs-table{width:100%;min-width:880px;border-collapse:collapse;text-align:left}
+.cs-table thead th{height:39px;border-bottom:1px solid #dfe6ef;color:#94a3b8;font-size:10px;font-weight:750;letter-spacing:.1em;white-space:nowrap}
+.cs-table th button{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer}
+.cs-table tbody tr{height:66px;border-bottom:1px solid #f0f3f7;cursor:pointer;transition:background .15s}
+.cs-table tbody tr:hover,.cs-table tbody tr.is-selected{background:#f7faff}
+.cs-table td{padding:9px 10px;color:#334155;font-size:12px;vertical-align:middle}
+.cs-index{width:38px;color:#94a3b8!important;font-size:11px!important}
+.cs-officer{display:flex;align-items:center;gap:11px;min-width:220px}
+.cs-avatar,.cs-card-avatar{display:grid;place-items:center;flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:#e5efff;color:#2457a6;font-size:11px;font-weight:800}
+.cs-officer-text{display:flex;flex-direction:column;gap:3px}
+.cs-officer-text strong{color:#172554;font-size:12px;font-weight:750}
+.cs-officer-text small,.cs-subline{color:#94a3b8;font-size:10px}
+.cs-role{max-width:390px;color:#1e293b;font-weight:600;line-height:1.4}
+.cs-subline{display:block;margin-top:2px}
+.cs-cadre-name{color:#334155;font-size:11px;font-weight:650}
+.cs-number{font-variant-numeric:tabular-nums;font-weight:650}
+.cs-source{display:inline-block;padding:4px 7px;border-radius:5px;background:#eff6ff;color:#315da8;font-size:9px;font-weight:800}
+.cs-years{color:#64748b!important;font-variant-numeric:tabular-nums}
+.cs-state{height:120px;text-align:center!important;color:#64748b!important}
+.cs-error{color:#b91c1c!important}
+.cs-table-footer{display:flex;justify-content:space-between;gap:12px;padding:13px 21px;border-top:1px solid #edf1f6;color:#94a3b8;font-size:10px}
+.cs-selected-card{position:fixed;z-index:80;top:100px;right:28px;width:min(360px,calc(100vw - 32px));padding:24px;border:1px solid #dce6f4;border-radius:20px;background:#fff;box-shadow:0 22px 70px #0f172a26;color:#172554}
+.cs-close{position:absolute;top:12px;right:14px;border:0;background:none;color:#64748b;font-size:24px;cursor:pointer}
+.cs-card-kicker{color:#4775c5;font-size:9px;font-weight:800;letter-spacing:.15em}
+.cs-card-avatar{width:64px;height:64px;margin:20px auto 12px;font-size:18px}
+.cs-selected-card h2{margin:0;text-align:center;font-size:20px;font-weight:750}
+.cs-selected-card>p{margin:5px 0 20px;text-align:center;color:#64748b;font-size:12px}
+.cs-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cs-card-grid>div{display:flex;flex-direction:column;gap:5px;padding:12px;border-radius:11px;background:#f8fafc}
+.cs-card-grid small{color:#94a3b8;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+.cs-card-grid strong{font-size:12px}
+.cs-card-detail{display:flex;align-items:flex-start;gap:9px;margin-top:14px;color:#64748b;font-size:11px;line-height:1.5}
+.cs-card-detail svg{flex:0 0 auto;color:#4775c5}
+@media(max-width:700px){.cs-directory{padding:18px 12px 40px}.cs-intro{padding:18px 4px}.cs-intro p{font-size:13px}.cs-service-tabs{width:100%}.cs-service-tabs button{min-width:0;flex:1;padding:10px}.cs-toolbar{padding:13px}.cs-filter-row{gap:6px}.cs-filter{flex:1 1 auto}.cs-table-head{padding:13px}.cs-table-wrap{padding:0 10px}.cs-table-footer{flex-direction:column}.cs-selected-card{top:auto;right:12px;bottom:12px}}
