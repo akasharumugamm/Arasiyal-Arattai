@@ -5795,3 +5795,76 @@ option {
     animation-duration: .01ms !important;
   }
 }
+
+
+/* Hard layout safeguards: prevent legacy header/image rules from expanding the logo. */
+.aa-home-header {
+  height: 62px !important;
+  min-height: 62px !important;
+  max-height: 62px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+.aa-home-header > .aa-brand {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  width: auto !important;
+  height: 38px !important;
+  min-width: max-content !important;
+}
+.aa-home-header > .aa-brand img {
+  display: block !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  max-width: 34px !important;
+  max-height: 34px !important;
+  flex: 0 0 34px !important;
+  object-fit: contain !important;
+}
+.aa-home-header > .aa-brand span {
+  display: inline-block !important;
+  width: auto !important;
+  white-space: nowrap !important;
+}
+.aa-home-header > .aa-primary-nav {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+.aa-home-header .aa-header-actions {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  margin: 0 !important;
+}
+.aa-home-header .aa-mobile-menu-toggle,
+.aa-home-header .aa-mobile-nav {
+  display: none !important;
+}
+@media (max-width: 1050px) {
+  .aa-home-header {
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: none !important;
+  }
+  .aa-home-header > .aa-primary-nav {
+    display: none !important;
+  }
+  .aa-home-header .aa-mobile-menu-toggle {
+    display: grid !important;
+  }
+}
+@media (max-width: 560px) {
+  .aa-home-header {
+    height: 52px !important;
+    min-height: 52px !important;
+  }
+}
