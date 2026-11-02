@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, MessageSquareHeart, Menu, X, Sparkles, Landmark, Crown, Users, BriefcaseBusiness, Building2, Network, Shield, MapPinned, Map, GitBranch, MapPin, Building, Trees, ShieldCheck, Siren } from "lucide-react";
+import { ChevronDown, MessageSquareHeart, Menu, X, Sparkles, Landmark, Crown, Users, BriefcaseBusiness, Building2, Network, Shield, MapPinned, Map, GitBranch, MapPin, Building, Trees, ShieldCheck, Siren, Map as MapIcon } from "lucide-react";
 import PostActionsMenu from "@/components/PostActionsMenu";
 import { getAvatarColors, getAvatarInitials } from "@/lib/avatar";
 import { getOfficialIdentityKey } from "@/lib/official-identity";
@@ -192,7 +192,7 @@ const hierarchyIconById = {
   "hier-home": Shield,
   "hier-regional": MapPinned,
   "hier-dgp": Siren,
-  "hier-district": Map,
+  "hier-district": MapIcon,
   "hier-revenue": GitBranch,
   "hier-local": Building2,
   "hier-ranges": Network,
