@@ -19,6 +19,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import mlaDirectory from "@/data/tn-mlas.json";
 import { ElectionResultsDashboard } from "@/components/ElectionResultsDashboard";
+import { PoliticianDashboard } from "@/components/PoliticianDashboard";
 
 type Category =
   | "Government"
@@ -1733,16 +1734,7 @@ export default function Home() {
         </div>
         <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
           {selected.label === "Chief Minister" ? (
-            <section className="hierarchy-profile-card" aria-label="Chief Minister profile">
-              {selected.photoUrl ? (
-                <img className="hierarchy-profile-photo" src={selected.photoUrl} alt={selected.label} />
-              ) : null}
-              <div className="hierarchy-profile-kicker">EXECUTIVE PROFILE</div>
-              <h2>{selected.label}</h2>
-              <p className="hierarchy-profile-role">{selected.role}</p>
-              <div className="hierarchy-profile-divider" />
-              <p className="hierarchy-profile-description">{selected.description}</p>
-            </section>
+            <PoliticianDashboard />
           ) : (
             <ElectionResultsDashboard />
           )}
