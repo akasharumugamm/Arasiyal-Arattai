@@ -191,6 +191,9 @@ function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
   return (
     <div className={`hierarchy-node hierarchy-node-${data.hierarchyTone}`}>
       <Handle type="target" position={Position.Top} />
+      {data.photoUrl && (
+        <img className="hierarchy-node-photo" src={data.photoUrl} alt="" />
+      )}
       <span className="hierarchy-node-kicker">{toneLabels[data.hierarchyTone]}</span>
       <strong>{data.label}</strong>
       <Handle type="source" position={Position.Bottom} />
@@ -206,36 +209,37 @@ function makeHierarchyNode(
   hierarchyTone: HierarchyTone,
   x: number,
   y: number,
+  photoUrl?: string,
 ): Node<HierarchyProfile> {
   return {
     id,
     type: "hierarchy",
     position: { x, y },
-    data: { label, role, description, hierarchyTone },
+    data: { label, role, description, hierarchyTone, photoUrl },
   };
 }
 
 const governmentHierarchyNodes: Node<HierarchyProfile>[] = [
-  makeHierarchyNode("hier-governor", "Governor of Tamil Nadu", "Constitutional head", "The Governor of Tamil Nadu, shown at the top of the supplied administrative hierarchy.", "political", 510, 0),
-  makeHierarchyNode("hier-cm", "Chief Minister", "Head of the elected state government", "The Chief Minister heads the Council of Ministers and leads the state executive.", "political", 510, 112),
-  makeHierarchyNode("council-summary", "Council of Ministers", "Cabinet and ministers", "The Council of Ministers is headed by the Chief Minister. Select this node to explore individual minister profiles.", "political", 175, 238),
-  makeHierarchyNode("hier-chief-secretary", "Chief Secretary", "Senior-most state civil servant", "The Chief Secretary leads the State Secretariat and coordinates the administrative machinery.", "administrative", 845, 238),
-  makeHierarchyNode("hier-secretariat", "State Secretariat", "Government administration", "The State Secretariat supports the work of government departments and policy administration.", "administrative", 845, 350),
-  makeHierarchyNode("hier-departments", "Government Departments", "Departmental administration", "Government departments organise policy, administration and delivery across the state.", "administrative", 845, 462),
-  makeHierarchyNode("hier-hods", "Heads of Departments", "Department leadership", "Heads of Departments lead their respective departments and supervise the relevant field administration.", "administrative", 285, 590),
-  makeHierarchyNode("hier-home", "Home Department", "Home and internal administration", "The Home Department branch shown in the supplied hierarchy oversees the police administration branch.", "police", 1125, 590),
-  makeHierarchyNode("hier-regional", "Regional / Zonal Offices", "Regional administration", "Regional and zonal offices connect departmental leadership with district administration.", "administrative", 285, 702),
-  makeHierarchyNode("hier-dgp", "Director General of Police", "State police leadership", "The Director General of Police heads the state police organisation in the supplied hierarchy.", "police", 1125, 702),
-  makeHierarchyNode("hier-district", "District Administration", "District-level administration", "District Administration coordinates district-level public administration and local governance interfaces.", "administrative", 285, 814),
-  makeHierarchyNode("hier-ranges", "Police Ranges / Zones", "Police regional administration", "Police ranges and zones coordinate policing across their respective regions.", "police", 1125, 814),
-  makeHierarchyNode("hier-revenue", "Revenue Divisions / Sub-Divisions", "Revenue administration", "Revenue divisions and sub-divisions form the next tier below district administration.", "administrative", 0, 940),
-  makeHierarchyNode("hier-local", "Local Government", "Urban and rural local bodies", "Local Government branches into urban local bodies and rural panchayat institutions.", "local", 565, 940),
-  makeHierarchyNode("hier-sp", "District SP / Police Commissionerates", "District and city policing", "District Superintendents of Police and Police Commissionerates lead district and city-level policing.", "police", 1125, 940),
-  makeHierarchyNode("hier-taluks", "Taluks / Tahsildars", "Taluk administration", "Taluks and Tahsildars form the next tier of revenue administration.", "administrative", 0, 1060),
-  makeHierarchyNode("hier-urban", "Corporations / Municipalities", "Urban local bodies", "Corporations and Municipalities form the urban local-government branch.", "local", 335, 1060),
-  makeHierarchyNode("hier-rural", "District / Block / Village Panchayats", "Rural local bodies", "District, Block and Village Panchayats form the rural local-government branch.", "local", 690, 1060),
-  makeHierarchyNode("hier-police-stations", "Police Stations", "Local policing", "Police Stations are the local operational tier in the police branch.", "police", 1125, 1060),
-  makeHierarchyNode("hier-village", "Fir ka / Village Administration", "Village-level administration", "Village administration is shown beneath Taluks / Tahsildars, preserving the wording in the supplied diagram.", "administrative", 0, 1180),
+  makeHierarchyNode("hier-governor", "Governor of Tamil Nadu", "Constitutional head", "The Governor of Tamil Nadu, shown at the top of the supplied administrative hierarchy.", "political", 510, 0, "https://cdnbbsr.s3waas.gov.in/s30d73a25092e5c1c9769a9f3255caa65a/uploads/2026/03/202603241234777909.jpg"),
+  makeHierarchyNode("hier-cm", "Chief Minister", "Head of the elected state government", "The Chief Minister heads the Council of Ministers and leads the state executive.", "political", 510, 125, "https://i.ibb.co/0Rv80BLn/HR-9-Y6yb0-AAzx-FY.jpg"),
+  makeHierarchyNode("council-summary", "Council of Ministers", "Cabinet and ministers", "The Council of Ministers is headed by the Chief Minister. Select this node to explore individual minister profiles.", "political", 175, 265),
+  makeHierarchyNode("hier-chief-secretary", "Chief Secretary", "Senior-most state civil servant", "The Chief Secretary leads the State Secretariat and coordinates the administrative machinery.", "administrative", 845, 265),
+  makeHierarchyNode("hier-secretariat", "State Secretariat", "Government administration", "The State Secretariat supports the work of government departments and policy administration.", "administrative", 845, 390),
+  makeHierarchyNode("hier-departments", "Government Departments", "Departmental administration", "Government departments organise policy, administration and delivery across the state.", "administrative", 845, 515),
+  makeHierarchyNode("hier-hods", "Heads of Departments", "Department leadership", "Heads of Departments lead their respective departments and supervise the relevant field administration.", "administrative", 285, 650),
+  makeHierarchyNode("hier-home", "Home Department", "Home and internal administration", "The Home Department branch shown in the supplied hierarchy oversees the police administration branch.", "police", 1125, 650),
+  makeHierarchyNode("hier-regional", "Regional / Zonal Offices", "Regional administration", "Regional and zonal offices connect departmental leadership with district administration.", "administrative", 285, 775),
+  makeHierarchyNode("hier-dgp", "Director General of Police", "State police leadership", "The Director General of Police heads the state police organisation in the supplied hierarchy.", "police", 1125, 775),
+  makeHierarchyNode("hier-district", "District Administration", "District-level administration", "District Administration coordinates district-level public administration and local governance interfaces.", "administrative", 285, 900),
+  makeHierarchyNode("hier-ranges", "Police Ranges / Zones", "Police regional administration", "Police ranges and zones coordinate policing across their respective regions.", "police", 1125, 900),
+  makeHierarchyNode("hier-revenue", "Revenue Divisions / Sub-Divisions", "Revenue administration", "Revenue divisions and sub-divisions form the next tier below district administration.", "administrative", 0, 1040),
+  makeHierarchyNode("hier-local", "Local Government", "Urban and rural local bodies", "Local Government branches into urban local bodies and rural panchayat institutions.", "local", 565, 1040),
+  makeHierarchyNode("hier-sp", "District SP / Police Commissionerates", "District and city policing", "District Superintendents of Police and Police Commissionerates lead district and city-level policing.", "police", 1125, 1040),
+  makeHierarchyNode("hier-taluks", "Taluks / Tahsildars", "Taluk administration", "Taluks and Tahsildars form the next tier of revenue administration.", "administrative", 0, 1175),
+  makeHierarchyNode("hier-urban", "Corporations / Municipalities", "Urban local bodies", "Corporations and Municipalities form the urban local-government branch.", "local", 335, 1175),
+  makeHierarchyNode("hier-rural", "District / Block / Village Panchayats", "Rural local bodies", "District, Block and Village Panchayats form the rural local-government branch.", "local", 690, 1175),
+  makeHierarchyNode("hier-police-stations", "Police Stations", "Local policing", "Police Stations are the local operational tier in the police branch.", "police", 1125, 1175),
+  makeHierarchyNode("hier-village", "Fir ka / Village Administration", "Village-level administration", "Village administration is shown beneath Taluks / Tahsildars, preserving the wording in the supplied diagram.", "administrative", 0, 1310),
 ];
 
 const governmentHierarchyEdges: Edge[] = [
