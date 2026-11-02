@@ -220,7 +220,7 @@ function makeHierarchyNode(
 }
 
 const governmentHierarchyNodes: Node<HierarchyProfile>[] = [
-  makeHierarchyNode("hier-governor", "Governor of Tamil Nadu", "Constitutional head", "The Governor of Tamil Nadu, shown at the top of the supplied administrative hierarchy.", "political", 510, 0, "https://cdnbbsr.s3waas.gov.in/s30d73a25092e5c1c9769a9f3255caa65a/uploads/2026/03/202603241234777909.jpg"),
+  makeHierarchyNode("hier-governor", "Governor of Tamil Nadu", "Constitutional head", "The Governor of Tamil Nadu, shown at the top of the supplied administrative hierarchy.", "political", 510, 0, "https://upload.wikimedia.org/wikipedia/commons/1/16/Rajendra_Arlekar%2C_Governor_of_Kerala.jpg"),
   makeHierarchyNode("hier-cm", "Chief Minister", "Head of the elected state government", "The Chief Minister heads the Council of Ministers and leads the state executive.", "political", 510, 300, "https://i.ibb.co/0Rv80BLn/HR-9-Y6yb0-AAzx-FY.jpg"),
   makeHierarchyNode("council-summary", "Council of Ministers", "Cabinet and ministers", "The Council of Ministers is headed by the Chief Minister. Select this node to explore individual minister profiles.", "political", 175, 600),
   makeHierarchyNode("hier-chief-secretary", "Chief Secretary", "Senior-most state civil servant", "The Chief Secretary leads the State Secretariat and coordinates the administrative machinery.", "administrative", 845, 600),
