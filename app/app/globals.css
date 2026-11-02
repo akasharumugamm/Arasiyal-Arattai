@@ -6003,3 +6003,64 @@ option {
     transition: none;
   }
 }
+
+
+/* Larger, readable hierarchy cards and official portraits */
+.hierarchy-node {
+  width: 250px;
+  min-height: 96px;
+  gap: 7px;
+  padding: 13px 18px;
+  border-radius: 17px;
+}
+
+.hierarchy-node strong {
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -.25px;
+}
+
+.hierarchy-node-kicker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hierarchy-node-photo {
+  display: block;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  margin: 0 auto 1px;
+  border: 2px solid rgba(255,255,255,.95);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 22%;
+  box-shadow: 0 2px 8px rgba(15,23,42,.16);
+}
+
+.hierarchy-node:has(.hierarchy-node-photo) {
+  min-height: 124px;
+  padding-top: 10px;
+  padding-bottom: 11px;
+}
+
+@media (max-width: 700px) {
+  .hierarchy-node {
+    width: 220px;
+    min-height: 88px;
+    padding: 11px 14px;
+  }
+
+  .hierarchy-node strong {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .hierarchy-node-photo {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+}
