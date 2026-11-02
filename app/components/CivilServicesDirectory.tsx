@@ -3,110 +3,167 @@
 import "./CivilServicesDirectory.css";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, ArrowUpDown, RotateCcw, ShieldCheck, BriefcaseBusiness, MapPin, GraduationCap, ChevronRight, BadgeCheck, SearchX } from "lucide-react";
+import { Search, Shield, Landmark, ArrowUpDown, SearchX, BadgeCheck, X, ChevronRight, BriefcaseBusiness, ShieldCheck } from "lucide-react";
 
 type Officer = {
-  id: number; full_name: string; service_type: "IAS" | "IPS"; batch_year: number | null;
-  cadre: string | null; employee_id: string; current_designation: string | null;
-  current_department: string | null; posting_location: string | null; recruitment_type: string | null;
-  education: string | null; pay_level: string | null; source_name: string | null;
-  source_snapshot_date: string | null; verification_status: string | null;
+  id: number;
+  full_name: string;
+  service_type: "IAS" | "IPS";
+  batch_year: number | null;
+  cadre: string | null;
+  employee_id: string;
+  current_designation: string | null;
+  current_department: string | null;
+  posting_location: string | null;
+  recruitment_type: string | null;
+  education: string | null;
+  pay_level: string | null;
+  source_name: string | null;
+  source_snapshot_date: string | null;
+  verification_status: string | null;
 };
 
+const initials = (name: string) => name.split(/\\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
+
 export default function CivilServicesDirectory() {
-  const [service,setService]=useState<"IAS"|"IPS">("IPS");
-  const [query,setQuery]=useState("");
-  const [cadre,setCadre]=useState("Tamil Nadu");
-  const [pay,setPay]=useState("All Pay Levels");
-  const [source,setSource]=useState("All Sources");
-  const [batchFrom,setBatchFrom]=useState("");
-  const [batchTo,setBatchTo]=useState("");
-  const [senior,setSenior]=useState(false);
-  const [officers,setOfficers]=useState<Officer[]>([]);
-  const [loading,setLoading]=useState(true);
-  const [error,setError]=useState("");
-  const [sort,setSort]=useState<{key:"full_name"|"batch_year"|"pay_level";dir:"asc"|"desc"}>({key:"batch_year",dir:"asc"});
-  const [selected,setSelected]=useState<Officer|null>(null);
+  const [service, setService] = useState<"IPS" | "IAS">("IPS");
+  const [query, setQuery] = useState("");
+  const [seniorFirst, setSeniorFirst] = useState(true);
+  const [officers, setOfficers] = useState<Officer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selected, setSelected] = useState<Officer | null>(null);
 
-  useEffect(()=>{
-    const controller=new AbortController();
-    const timer=window.setTimeout(async()=>{
-      setLoading(true); setError("");
-      const params=new URLSearchParams({service,q:query,cadre:cadre==="All Cadres"?"All Cadres":cadre,pay:pay==="All Pay Levels"?"":pay,source:source==="All Sources"?"":source,batchFrom,batchTo,senior:String(senior)});
+  useEffect(() => {
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setLoading(true);
+      setError("");
+      const params = new URLSearchParams({ service, q: query, cadre: "Tamil Nadu" });
       try {
-        const response=await fetch("/api/civil-services?"+params.toString(),{cache:"no-store",signal:controller.signal});
-        const data=await response.json();
-        if(!response.ok) throw new Error(data.error||"Could not load officers");
-        setOfficers(Array.isArray(data.officers)?data.officers:[]);
-      } catch(e) { if(!controller.signal.aborted) setError(e instanceof Error?e.message:"Unable to load officers"); }
-      finally { if(!controller.signal.aborted) setLoading(false); }
-    },220);
-    return ()=>{controller.abort();window.clearTimeout(timer);};
-  },[service,query,cadre,pay,source,batchFrom,batchTo,senior]);
+        const response = await fetch("/api/civil-services?" + params.toString(), { cache: "no-store", signal: controller.signal });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not load officers");
+        setOfficers(Array.isArray(data.officers) ? data.officers : []);
+      } catch (err) {
+        if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "Unable to load officers");
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }, 180);
+    return () => { controller.abort(); window.clearTimeout(timer); };
+  }, [service, query]);
 
-  const sorted=useMemo(()=>[...officers].sort((a,b)=>{
-    const av=a[sort.key]??"", bv=b[sort.key]??"";
-    const cmp=String(av).localeCompare(String(bv),undefined,{numeric:true,sensitivity:"base"});
-    return sort.dir==="asc"?cmp:-cmp;
-  }),[officers,sort]);
-  const sources=useMemo(()=>["All Sources",...Array.from(new Set(officers.map(o=>o.source_name).filter(Boolean) as string[])).sort()], [officers]);
-  const pays=useMemo(()=>["All Pay Levels",...Array.from(new Set(officers.map(o=>o.pay_level).filter(Boolean) as string[])).sort()], [officers]);
-  const reset=()=>{setQuery("");setCadre("Tamil Nadu");setPay("All Pay Levels");setSource("All Sources");setBatchFrom("");setBatchTo("");setSenior(false);};
-  const changeSort=(key:"full_name"|"batch_year"|"pay_level")=>setSort(s=>({key,dir:s.key===key&&s.dir==="asc"?"desc":"asc"}));
-  const initials=(name:string)=>name.split(/\s+/).slice(0,2).map(p=>p[0]).join("").toUpperCase();
+  const filtered = useMemo(() => [...officers].sort((a, b) => {
+    const left = a.batch_year ?? (seniorFirst ? 9999 : 0);
+    const right = b.batch_year ?? (seniorFirst ? 9999 : 0);
+    return seniorFirst ? left - right : right - left;
+  }), [officers, seniorFirst]);
 
-  return <div className={`cs-directory cs-theme-${service.toLowerCase()}`}>
-    <section className="cs-workspace">
-      <div className="cs-toolbar">
-        <label className="cs-search"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={service==="IPS"?"Search officer name, IPS ID, designation or posting…":"Search officer name, IAS ID, designation or posting…"}/>{query&&<button onClick={()=>setQuery("")} aria-label="Clear search">×</button>}</label>
-        <div className="cs-filter-row">
-          <div className="cs-service-tabs cs-service-tabs-inline" role="tablist" aria-label="Civil service">
-            {(["IAS","IPS"] as const).map(s=><button key={s} role="tab" aria-selected={service===s} className={service===s?"active":""} onClick={()=>{setService(s);setSelected(null);}}><span>{s}</span><small>{s==="IAS"?"Administrative Service":"Police Service"}</small></button>)}
+  const sourceLabel = useMemo(() => {
+    const labels = Array.from(new Set(officers.map(officer => officer.source_name).filter(Boolean)));
+    return labels.length === 1 ? labels[0] : "Tamil Nadu Cadre · Officer Records";
+  }, [officers]);
+
+  return (
+    <div className={`cs-directory cs-theme-${service.toLowerCase()}`}>
+      <section className="cs-workspace">
+        <header className="cs-reference-header">
+          <div className="cs-reference-brand">
+            <span className="cs-reference-logo">
+              {service === "IPS" ? <Shield size={19} strokeWidth={2.2} /> : <Landmark size={19} strokeWidth={2.2} />}
+            </span>
+            <div className="cs-reference-heading">
+              <h1>Civil Services Directory</h1>
+              <p>{sourceLabel}</p>
+            </div>
+            <span className="cs-reference-status"><span />{officers.some(o => o.source_snapshot_date) ? "Updated" : "Directory"}</span>
           </div>
-          <label className="cs-filter cs-cadre"><MapPin size={14}/><select value={cadre} onChange={e=>setCadre(e.target.value)}><option>Tamil Nadu</option><option>All Cadres</option></select></label>
-          <label className="cs-filter"><select value={source} onChange={e=>setSource(e.target.value)}>{sources.map(s=><option key={s}>{s}</option>)}</select></label>
-          <label className="cs-filter"><select value={pay} onChange={e=>setPay(e.target.value)}>{pays.map(p=><option key={p}>{p}</option>)}</select></label>
-          <label className="cs-filter cs-year"><span>Batch from</span><input type="number" min="1950" max="2100" placeholder="Year" value={batchFrom} onChange={e=>setBatchFrom(e.target.value)}/></label>
-          <label className="cs-filter cs-year"><span>Batch to</span><input type="number" min="1950" max="2100" placeholder="Year" value={batchTo} onChange={e=>setBatchTo(e.target.value)}/></label>
-          <button className={senior?"cs-toggle selected":"cs-toggle"} onClick={()=>setSenior(v=>!v)}><GraduationCap size={14}/> Senior (25+ yrs)</button>
-          <button className="cs-reset" onClick={reset}><RotateCcw size={14}/> Clear filters</button>
+
+          <div className="cs-reference-controls">
+            <div className="cs-reference-tabs" role="tablist" aria-label="Civil service">
+              {(["IAS", "IPS"] as const).map(s => (
+                <button key={s} type="button" role="tab" aria-selected={service === s} onClick={() => { setService(s); setSelected(null); }} className={service === s ? "active" : ""}>
+                  <span className={service === s ? (s === "IPS" ? "ips-icon" : "ias-icon") : ""}>{s === "IPS" ? <Shield size={15} /> : <Landmark size={15} />}</span>
+                  {s}
+                  <small>{officers.length && service === s ? filtered.length : " "}</small>
+                </button>
+              ))}
+            </div>
+            <label className="cs-reference-search">
+              <Search size={16} />
+              <input value={query} onChange={event => setQuery(event.target.value)} placeholder={`Search ${service} by name, role, state, batch…`} />
+              {query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={13} /></button>}
+            </label>
+          </div>
+        </header>
+
+        <div className="cs-reference-columns">
+          <button type="button" onClick={() => setSeniorFirst(value => !value)} title="Sort by seniority"># <ArrowUpDown size={11} /></button>
+          <span className="cs-reference-officer-col">OFFICER</span>
+          <span className="cs-reference-role-col">CURRENT ROLE</span>
+          <span className="cs-reference-cadre-col">CADRE</span>
+          <span className="cs-reference-chevron-col" />
         </div>
-      </div>
-      <div className="cs-list-heading">
-        <div className="cs-list-heading-title"><span className="cs-live-dot"/><span>OFFICER DIRECTORY</span><span className="cs-count">{officers.length.toLocaleString("en-IN")} records</span></div>
-        <span className="cs-source-note"><ShieldCheck size={14}/> Source-backed records</span>
-      </div>
-      <div className="cs-list-columns">
-        <button className="cs-sort-rank" onClick={()=>changeSort("batch_year")} title="Sort by seniority"># <ArrowUpDown size={12}/></button>
-        <span className="cs-col-officer">OFFICER</span>
-        <span className="cs-col-role">CURRENT ROLE</span>
-        <span className="cs-col-cadre">CADRE</span>
-        <span className="cs-col-chevron"/>
-      </div>
-      <div className="cs-officer-list">
-        {loading&&<div className="cs-list-state">Loading officer records…</div>}
-        {!loading&&error&&<div className="cs-list-state cs-error">{error}</div>}
-        {!loading&&!error&&sorted.length===0&&<div className="cs-empty-state"><span className="cs-empty-icon"><SearchX size={21}/></span><strong>No {service} officers found</strong><span>Try a different name or adjust your filters.</span><button onClick={reset}>Clear filters</button></div>}
-        {!loading&&!error&&sorted.map((o,i)=>{
-          const years=o.batch_year?Math.max(0,new Date().getFullYear()-o.batch_year):null;
-          return <button type="button" key={o.id} className={`cs-officer-row${selected?.id===o.id?" is-selected":""}`} onClick={()=>setSelected(o)}>
-            <span className={`cs-rank${i<3?" top-rank":""}`}>{String(i+1).padStart(2,"0")}</span>
-            <span className="cs-officer-cell"><span className="cs-avatar">{initials(o.full_name)}</span><span className="cs-officer-text"><strong>{o.full_name}{i===0&&<BadgeCheck className="cs-verified-icon" size={14}/>}</strong><small>{o.employee_id} · {o.batch_year||"Batch not listed"}</small><small className="cs-mobile-role">{o.current_designation||"Posting not listed"}</small></span></span>
-            <span className="cs-role-cell"><strong>{o.current_designation||"Posting not listed"}</strong><small>{[o.current_department,o.posting_location].filter(Boolean).join(" · ")}</small></span>
-            <span className="cs-cadre-cell"><strong>{o.cadre||"—"}</strong><small>{o.recruitment_type||o.source_name||"Source not listed"}</small></span>
-            <span className="cs-row-chevron"><ChevronRight size={17}/></span>
-          </button>;
-        })}
-      </div>
-      <footer className="cs-table-footer"><span>Showing <strong>{sorted.length.toLocaleString("en-IN")}</strong> of available {service} records</span><span>{sort.key==="batch_year"?(sort.dir==="asc"?"Sorted by seniority":"Sorted by juniority"):"Sorted by "+sort.key.replace("_"," ")}</span></footer>
-    </section>
-    {selected&&<aside className="cs-selected-card">
-      <button className="cs-close" onClick={()=>setSelected(null)} aria-label="Close officer details">×</button>
-      <div className="cs-card-kicker">{selected.service_type} · OFFICER PROFILE</div><div className="cs-card-avatar">{initials(selected.full_name)}</div>
-      <h2>{selected.full_name}</h2><p>{selected.current_designation||"Designation not listed"}</p>
-      <div className="cs-card-grid"><div><small>Cadre</small><strong>{selected.cadre||"—"}</strong></div><div><small>Batch</small><strong>{selected.batch_year||"—"}</strong></div><div><small>Employee ID</small><strong>{selected.employee_id}</strong></div><div><small>Pay level</small><strong>{selected.pay_level||"—"}</strong></div></div>
-      <div className="cs-card-detail"><BriefcaseBusiness size={15}/><span>{selected.current_department||selected.posting_location||"Posting details unavailable"}</span></div>
-      <div className="cs-card-detail"><ShieldCheck size={15}/><span>{selected.source_name||"Source not listed"}{selected.source_snapshot_date?" · "+new Date(selected.source_snapshot_date).toLocaleDateString("en-IN"):""}</span></div>
-    </aside>}
-  </div>;
+
+        <div className="cs-reference-list">
+          {loading && <div className="cs-reference-state">Loading officer records…</div>}
+          {!loading && error && <div className="cs-reference-state cs-error">{error}</div>}
+          {!loading && !error && filtered.length === 0 && (
+            <div className="cs-reference-empty">
+              <span><SearchX size={20} /></span>
+              <strong>No {service} officers found</strong>
+              <small>Try a different name, role or batch year.</small>
+              {query && <button type="button" onClick={() => setQuery("")}>Clear search</button>}
+            </div>
+          )}
+          {!loading && !error && filtered.map((officer, index) => (
+            <button type="button" key={officer.id} className={`cs-reference-row${selected?.id === officer.id ? " selected" : ""}`} onClick={() => setSelected(officer)}>
+              <span className={`cs-reference-rank${index < 3 ? " top" : ""}`}>{String(index + 1).padStart(2, "0")}</span>
+              <span className="cs-reference-officer">
+                <span className="cs-reference-avatar">{initials(officer.full_name)}</span>
+                <span className="cs-reference-officer-copy">
+                  <strong>{officer.full_name}{index === 0 && <BadgeCheck size={13} />}</strong>
+                  <small>{officer.employee_id} · {officer.batch_year ?? "Batch not listed"} Batch</small>
+                  <small className="cs-reference-mobile-role">{officer.current_designation || "Role not listed"}</small>
+                </span>
+              </span>
+              <span className="cs-reference-role">
+                <strong>{officer.current_designation || "Role not listed"}</strong>
+                <small>{[officer.current_department, officer.posting_location].filter(Boolean).join(" · ")}</small>
+              </span>
+              <span className="cs-reference-cadre">
+                <strong>{officer.cadre || "—"}</strong>
+                <small>{officer.recruitment_type || officer.source_name || "—"}</small>
+              </span>
+              <ChevronRight className="cs-reference-chevron" size={16} />
+            </button>
+          ))}
+        </div>
+
+        <footer className="cs-reference-footer">
+          <p>Showing <strong>{filtered.length}</strong> of <strong>{officers.length}</strong> {service} officers</p>
+          <p>Sorted by {seniorFirst ? "seniority" : "juniority"}</p>
+        </footer>
+      </section>
+
+      {selected && (
+        <aside className="cs-selected-card">
+          <button className="cs-close" onClick={() => setSelected(null)} aria-label="Close officer details">×</button>
+          <div className="cs-card-kicker">{selected.service_type} · OFFICER PROFILE</div>
+          <div className="cs-card-avatar">{initials(selected.full_name)}</div>
+          <h2>{selected.full_name}</h2>
+          <p>{selected.current_designation || "Designation not listed"}</p>
+          <div className="cs-card-grid">
+            <div><small>Cadre</small><strong>{selected.cadre || "—"}</strong></div>
+            <div><small>Batch</small><strong>{selected.batch_year || "—"}</strong></div>
+            <div><small>Employee ID</small><strong>{selected.employee_id}</strong></div>
+            <div><small>Pay level</small><strong>{selected.pay_level || "—"}</strong></div>
+          </div>
+          <div className="cs-card-detail"><BriefcaseBusiness size={15} /><span>{selected.current_department || selected.posting_location || "Posting details unavailable"}</span></div>
+          <div className="cs-card-detail"><ShieldCheck size={15} /><span>{selected.source_name || "Source not listed"}{selected.source_snapshot_date ? " · " + new Date(selected.source_snapshot_date).toLocaleDateString("en-IN") : ""}</span></div>
+        </aside>
+      )}
+    </div>
+  );
 }
