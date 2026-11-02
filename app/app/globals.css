@@ -6101,3 +6101,39 @@ option {
   line-height: 1.25 !important;
   font-weight: 700 !important;
 }
+
+
+/* Final portrait treatment: square crop with softly rounded corners. */
+.graph-panel .react-flow__node-hierarchy .hierarchy-node-photo,
+.graph-panel .hierarchy-node > .hierarchy-node-photo {
+  width: 112px !important;
+  height: 112px !important;
+  min-width: 112px !important;
+  min-height: 112px !important;
+  max-width: 112px !important;
+  max-height: 112px !important;
+  flex: 0 0 112px !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center 18% !important;
+  border: 6px solid #e5e7eb !important;
+  border-radius: 20px !important;
+  box-sizing: border-box !important;
+}
+.graph-panel .react-flow__node-hierarchy .hierarchy-node:has(> .hierarchy-node-photo),
+.graph-panel .hierarchy-node:has(> .hierarchy-node-photo) {
+  width: 250px !important;
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
+  padding: 12px 18px !important;
+  gap: 8px !important;
+}
+
+/* Keep connector paths continuous and avoid unnecessary loops at branch points. */
+.graph-panel .react-flow__edge-path {
+  stroke: #94a3b8 !important;
+  stroke-width: 1.8px !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
