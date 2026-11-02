@@ -181,30 +181,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
 type HierarchyTone = "political" | "administrative" | "local" | "police";
 type HierarchyProfile = Profile & { hierarchyTone: HierarchyTone };
 
-const hierarchyIconById = {
-  "hier-governor": Landmark,
-  "hier-cm": Crown,
-  "council-summary": Users,
-  "hier-chief-secretary": BriefcaseBusiness,
-  "hier-secretariat": Building2,
-  "hier-departments": Building,
-  "hier-hods": Network,
-  "hier-home": Shield,
-  "hier-regional": MapPinned,
-  "hier-dgp": Siren,
-  "hier-district": MapIcon,
-  "hier-revenue": GitBranch,
-  "hier-local": Building2,
-  "hier-ranges": Network,
-  "hier-taluks": MapPin,
-  "hier-village": Trees,
-  "hier-urban": Building,
-  "hier-rural": Trees,
-  "hier-sp": Shield,
-  "hier-police-stations": ShieldCheck,
-} as const;
-
-function HierarchyNode({ id, data }: NodeProps<Node<HierarchyProfile>>) {
+function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
   const toneLabels: Record<HierarchyTone, string> = {
     political: "EXECUTIVE",
     administrative: "ADMINISTRATION",
@@ -214,16 +191,9 @@ function HierarchyNode({ id, data }: NodeProps<Node<HierarchyProfile>>) {
   return (
     <div className={`hierarchy-node hierarchy-node-${data.hierarchyTone}`}>
       <Handle type="target" position={Position.Top} />
-      {data.photoUrl ? (
+      {data.photoUrl && (
         <img className="hierarchy-node-photo" src={data.photoUrl} alt="" />
-      ) : (() => {
-        const NodeIcon = hierarchyIconById[id as keyof typeof hierarchyIconById];
-        return NodeIcon ? (
-          <span className="hierarchy-node-icon" aria-hidden="true">
-            <NodeIcon size={29} strokeWidth={2} />
-          </span>
-        ) : null;
-      })()}
+      )}
       <span className="hierarchy-node-kicker">{toneLabels[data.hierarchyTone]}</span>
       <strong>{data.label}</strong>
       <Handle type="source" position={Position.Bottom} />
