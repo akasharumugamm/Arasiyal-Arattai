@@ -191,12 +191,12 @@ function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
     judicial: "JUDICIARY",
   };
   const toneColors: Record<HierarchyTone, { border: string; kicker: string }> = {
-    political: { border: "#1675ff", kicker: "#60a5fa" },
-    administrative: { border: "#1675ff", kicker: "#60a5fa" },
-    local: { border: "#16a34a", kicker: "#4ade80" },
-    police: { border: "#0d9488", kicker: "#5eead4" },
-    legislative: { border: "#16a34a", kicker: "#4ade80" },
-    judicial: { border: "#a855f7", kicker: "#c084fc" },
+    political: { border: "#4775c5", kicker: "#4775c5" },
+    administrative: { border: "#398b83", kicker: "#398b83" },
+    local: { border: "#c18a3b", kicker: "#a87527" },
+    police: { border: "#7867a8", kicker: "#7867a8" },
+    legislative: { border: "#47866a", kicker: "#47866a" },
+    judicial: { border: "#65758b", kicker: "#65758b" },
   };
   return (
     <div
