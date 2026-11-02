@@ -220,7 +220,7 @@ function HierarchyNode({ id, data }: NodeProps<Node<HierarchyProfile>>) {
         const NodeIcon = hierarchyIconById[id as keyof typeof hierarchyIconById];
         return NodeIcon ? (
           <span className="hierarchy-node-icon" aria-hidden="true">
-            <NodeIcon size={21} strokeWidth={1.9} />
+            <NodeIcon size={29} strokeWidth={2} />
           </span>
         ) : null;
       })()}
