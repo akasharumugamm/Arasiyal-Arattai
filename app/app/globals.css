@@ -5868,3 +5868,138 @@ option {
     min-height: 52px !important;
   }
 }
+
+
+/* Government hierarchy graph — refined, color-coded administrative map */
+.graph-panel:has(.hierarchy-node) {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(219, 234, 254, .62), transparent 54%),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  border: 1px solid #dbe4f0 !important;
+  border-radius: 18px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 8px 26px rgba(15,23,42,.055);
+}
+
+.graph-panel:has(.hierarchy-node) .react-flow__background pattern circle {
+  fill: #cbd5e1;
+  opacity: .55;
+}
+
+.hierarchy-node {
+  position: relative;
+  display: flex;
+  width: 208px;
+  min-height: 76px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 15px;
+  border: 1px solid;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.78);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  cursor: pointer;
+}
+
+.hierarchy-node:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.hierarchy-node strong {
+  display: block;
+  max-width: 100%;
+  color: #172033;
+  font-size: 13px;
+  line-height: 1.28;
+  font-weight: 750;
+  letter-spacing: -.2px;
+  overflow-wrap: anywhere;
+}
+
+.hierarchy-node-kicker {
+  color: #64748b;
+  font-size: 8px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 1.15px;
+}
+
+.hierarchy-node-political {
+  border-color: #4775f5;
+  background: linear-gradient(145deg, #eff4ff 0%, #dce8ff 100%);
+}
+
+.hierarchy-node-administrative {
+  border-color: #26a269;
+  background: linear-gradient(145deg, #f0fdf6 0%, #dcfce9 100%);
+}
+
+.hierarchy-node-local {
+  border-color: #d99019;
+  background: linear-gradient(145deg, #fff9e9 0%, #ffedc2 100%);
+}
+
+.hierarchy-node-police {
+  border-color: #9b59db;
+  background: linear-gradient(145deg, #faf5ff 0%, #eee2ff 100%);
+}
+
+.hierarchy-node .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+  background: #64748b;
+  opacity: 0;
+}
+
+.graph-panel:has(.hierarchy-node) .react-flow__edge-path {
+  stroke: #94a3b8;
+  stroke-width: 2px;
+}
+
+.graph-panel:has(.hierarchy-node) .react-flow__controls {
+  overflow: hidden;
+  border: 1px solid #dbe4f0;
+  border-radius: 12px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 4px 14px rgba(15,23,42,.08);
+}
+
+.graph-panel:has(.hierarchy-node) .react-flow__controls-button {
+  width: 30px;
+  height: 30px;
+  border-bottom: 1px solid #edf1f6;
+  background: transparent;
+  fill: #475569;
+}
+
+.graph-panel:has(.hierarchy-node) .react-flow__controls-button:hover {
+  background: #eff6ff;
+}
+
+.graph-panel:has(.hierarchy-node) .react-flow__attribution {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .hierarchy-node {
+    width: 184px;
+    min-height: 70px;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .hierarchy-node strong {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hierarchy-node {
+    transition: none;
+  }
+}
