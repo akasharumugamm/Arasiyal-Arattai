@@ -5945,11 +5945,11 @@ option {
 }
 
 .hierarchy-node-legislative {
-  background: linear-gradient(145deg, #f3f9f5 0%, #e7f1ea 100%);
+  background: linear-gradient(145deg, #e4f5eb 0%, #d4ecdf 100%);
 }
 
 .hierarchy-node-judicial {
-  background: linear-gradient(145deg, #f5f7fa 0%, #e9edf2 100%);
+  background: linear-gradient(145deg, #e7eef8 0%, #d9e4f1 100%);
 }
 
 .hierarchy-node .react-flow__handle {
