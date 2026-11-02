@@ -6137,3 +6137,30 @@ option {
   stroke-linecap: round !important;
   stroke-linejoin: round !important;
 }
+
+
+/* Clean hierarchy card borders and stable geometry (no hover-induced edge drift). */
+.graph-panel .hierarchy-node {
+  border-width: 1.5px !important;
+  border-style: solid !important;
+  outline: none !important;
+  transform: none !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,.065), inset 0 1px 0 rgba(255,255,255,.88) !important;
+}
+.graph-panel .hierarchy-node:hover {
+  transform: none !important;
+  box-shadow: 0 6px 16px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+.graph-panel .react-flow__node-hierarchy {
+  overflow: visible !important;
+}
+.graph-panel .hierarchy-node:has(> .hierarchy-node-photo) {
+  border-radius: 20px !important;
+  border-width: 1.5px !important;
+  box-shadow: 0 5px 16px rgba(37,99,235,.09), inset 0 1px 0 rgba(255,255,255,.92) !important;
+}
+.graph-panel .hierarchy-node-photo {
+  border: 6px solid #e8edf5 !important;
+  border-radius: 22px !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,.12) !important;
+}
