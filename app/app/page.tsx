@@ -177,6 +177,89 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
 }
 
 
+
+type HierarchyTone = "political" | "administrative" | "local" | "police";
+type HierarchyProfile = Profile & { hierarchyTone: HierarchyTone };
+
+function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
+  const toneLabels: Record<HierarchyTone, string> = {
+    political: "EXECUTIVE",
+    administrative: "ADMINISTRATION",
+    local: "LOCAL GOVERNMENT",
+    police: "POLICE",
+  };
+  return (
+    <div className={`hierarchy-node hierarchy-node-${data.hierarchyTone}`}>
+      <Handle type="target" position={Position.Top} />
+      <span className="hierarchy-node-kicker">{toneLabels[data.hierarchyTone]}</span>
+      <strong>{data.label}</strong>
+      <Handle type="source" position={Position.Bottom} />
+    </div>
+  );
+}
+
+function makeHierarchyNode(
+  id: string,
+  label: string,
+  role: string,
+  description: string,
+  hierarchyTone: HierarchyTone,
+  x: number,
+  y: number,
+): Node<HierarchyProfile> {
+  return {
+    id,
+    type: "hierarchy",
+    position: { x, y },
+    data: { label, role, description, hierarchyTone },
+  };
+}
+
+const governmentHierarchyNodes: Node<HierarchyProfile>[] = [
+  makeHierarchyNode("hier-governor", "Governor of Tamil Nadu", "Constitutional head", "The Governor of Tamil Nadu, shown at the top of the supplied administrative hierarchy.", "political", 510, 0),
+  makeHierarchyNode("hier-cm", "Chief Minister", "Head of the elected state government", "The Chief Minister heads the Council of Ministers and leads the state executive.", "political", 510, 112),
+  makeHierarchyNode("council-summary", "Council of Ministers", "Cabinet and ministers", "The Council of Ministers is headed by the Chief Minister. Select this node to explore individual minister profiles.", "political", 175, 238),
+  makeHierarchyNode("hier-chief-secretary", "Chief Secretary", "Senior-most state civil servant", "The Chief Secretary leads the State Secretariat and coordinates the administrative machinery.", "administrative", 845, 238),
+  makeHierarchyNode("hier-secretariat", "State Secretariat", "Government administration", "The State Secretariat supports the work of government departments and policy administration.", "administrative", 845, 350),
+  makeHierarchyNode("hier-departments", "Government Departments", "Departmental administration", "Government departments organise policy, administration and delivery across the state.", "administrative", 845, 462),
+  makeHierarchyNode("hier-hods", "Heads of Departments", "Department leadership", "Heads of Departments lead their respective departments and supervise the relevant field administration.", "administrative", 285, 590),
+  makeHierarchyNode("hier-home", "Home Department", "Home and internal administration", "The Home Department branch shown in the supplied hierarchy oversees the police administration branch.", "police", 1125, 590),
+  makeHierarchyNode("hier-regional", "Regional / Zonal Offices", "Regional administration", "Regional and zonal offices connect departmental leadership with district administration.", "administrative", 285, 702),
+  makeHierarchyNode("hier-dgp", "Director General of Police", "State police leadership", "The Director General of Police heads the state police organisation in the supplied hierarchy.", "police", 1125, 702),
+  makeHierarchyNode("hier-district", "District Administration", "District-level administration", "District Administration coordinates district-level public administration and local governance interfaces.", "administrative", 285, 814),
+  makeHierarchyNode("hier-ranges", "Police Ranges / Zones", "Police regional administration", "Police ranges and zones coordinate policing across their respective regions.", "police", 1125, 814),
+  makeHierarchyNode("hier-revenue", "Revenue Divisions / Sub-Divisions", "Revenue administration", "Revenue divisions and sub-divisions form the next tier below district administration.", "administrative", 0, 940),
+  makeHierarchyNode("hier-local", "Local Government", "Urban and rural local bodies", "Local Government branches into urban local bodies and rural panchayat institutions.", "local", 565, 940),
+  makeHierarchyNode("hier-sp", "District SP / Police Commissionerates", "District and city policing", "District Superintendents of Police and Police Commissionerates lead district and city-level policing.", "police", 1125, 940),
+  makeHierarchyNode("hier-taluks", "Taluks / Tahsildars", "Taluk administration", "Taluks and Tahsildars form the next tier of revenue administration.", "administrative", 0, 1060),
+  makeHierarchyNode("hier-urban", "Corporations / Municipalities", "Urban local bodies", "Corporations and Municipalities form the urban local-government branch.", "local", 335, 1060),
+  makeHierarchyNode("hier-rural", "District / Block / Village Panchayats", "Rural local bodies", "District, Block and Village Panchayats form the rural local-government branch.", "local", 690, 1060),
+  makeHierarchyNode("hier-police-stations", "Police Stations", "Local policing", "Police Stations are the local operational tier in the police branch.", "police", 1125, 1060),
+  makeHierarchyNode("hier-village", "Fir ka / Village Administration", "Village-level administration", "Village administration is shown beneath Taluks / Tahsildars, preserving the wording in the supplied diagram.", "administrative", 0, 1180),
+];
+
+const governmentHierarchyEdges: Edge[] = [
+  { id: "hier-e1", source: "hier-governor", target: "hier-cm", type: "smoothstep" },
+  { id: "hier-e2", source: "hier-cm", target: "council-summary", type: "smoothstep" },
+  { id: "hier-e3", source: "hier-cm", target: "hier-chief-secretary", type: "smoothstep" },
+  { id: "hier-e4", source: "hier-chief-secretary", target: "hier-secretariat", type: "smoothstep" },
+  { id: "hier-e5", source: "hier-secretariat", target: "hier-departments", type: "smoothstep" },
+  { id: "hier-e6", source: "hier-departments", target: "hier-hods", type: "smoothstep" },
+  { id: "hier-e7", source: "hier-departments", target: "hier-home", type: "smoothstep" },
+  { id: "hier-e8", source: "hier-hods", target: "hier-regional", type: "smoothstep" },
+  { id: "hier-e9", source: "hier-home", target: "hier-dgp", type: "smoothstep" },
+  { id: "hier-e10", source: "hier-regional", target: "hier-district", type: "smoothstep" },
+  { id: "hier-e11", source: "hier-dgp", target: "hier-ranges", type: "smoothstep" },
+  { id: "hier-e12", source: "hier-district", target: "hier-revenue", type: "smoothstep" },
+  { id: "hier-e13", source: "hier-district", target: "hier-local", type: "smoothstep" },
+  { id: "hier-e14", source: "hier-ranges", target: "hier-sp", type: "smoothstep" },
+  { id: "hier-e15", source: "hier-revenue", target: "hier-taluks", type: "smoothstep" },
+  { id: "hier-e16", source: "hier-taluks", target: "hier-village", type: "smoothstep" },
+  { id: "hier-e17", source: "hier-local", target: "hier-urban", type: "smoothstep" },
+  { id: "hier-e18", source: "hier-local", target: "hier-rural", type: "smoothstep" },
+  { id: "hier-e19", source: "hier-sp", target: "hier-police-stations", type: "smoothstep" },
+];
+
 function RatingGauge({ value }: { value: number | null }) {
   const score = value === null ? null : Math.max(0, Math.min(100, Math.round(value)));
   const sentiment = score === null ? "Awaiting feedback" : score >= 70 ? "Mostly positive" : score >= 45 ? "Mixed feedback" : "Needs improvement";
@@ -202,7 +285,7 @@ function RatingGauge({ value }: { value: number | null }) {
   );
 }
 
-const nodeTypes = { info: InfoNode };
+const nodeTypes = { info: InfoNode, hierarchy: HierarchyNode };
 
 const allNodes: Node<Profile>[] = [
   {
@@ -1113,14 +1196,16 @@ export default function Home() {
   }, [mlaRecords, mlaParties, expandedMlaParty, mlaSearch, mlaPartyFilter, filteredMlaRecords]);
 
   const visibleNodes = useMemo(
-    () => category === "MLAs"
-      ? mlaGraphNodes
-      : allNodes
-          .filter((node) => categoryNodes[category].includes(node.id))
-          .map((node) => ({
-            ...node,
-            position: layoutPositions[category][node.id] ?? node.position,
-          })),
+    () => category === "Government"
+      ? governmentHierarchyNodes
+      : category === "MLAs"
+        ? mlaGraphNodes
+        : allNodes
+            .filter((node) => categoryNodes[category].includes(node.id))
+            .map((node) => ({
+              ...node,
+              position: layoutPositions[category][node.id] ?? node.position,
+            })),
     [category, mlaGraphNodes]
   );
   const visibleIds = useMemo(
@@ -1128,6 +1213,7 @@ export default function Home() {
     [visibleNodes]
   );
   const visibleEdges = useMemo(() => {
+    if (category === "Government") return governmentHierarchyEdges;
     if (category === "MLAs") {
       // Keep MLA cards independent; do not draw connecting edges in this view.
       return [];
@@ -1404,9 +1490,10 @@ export default function Home() {
             edges={visibleEdges}
             nodeTypes={nodeTypes}
             fitView
-            fitViewOptions={{ padding: 0.12, minZoom: 0.28, maxZoom: 0.9 }}
+            fitViewOptions={{ padding: category === "Government" ? 0.08 : 0.12, minZoom: category === "Government" ? 0.34 : 0.28, maxZoom: category === "Government" ? 0.85 : 0.9 }}
             minZoom={0.15}
             maxZoom={1.5}
+            defaultEdgeOptions={category === "Government" ? { type: "smoothstep", style: { stroke: "#94a3b8", strokeWidth: 2 }, interactionWidth: 18 } : undefined}
             onNodeClick={(_, node) => {
               if (node.id === "council-summary") { changeCategory("Ministers"); return; }
               if (node.id === "mla-summary") {
