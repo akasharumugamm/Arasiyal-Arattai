@@ -56,18 +56,13 @@ export default function CivilServicesDirectory() {
   const initials=(name:string)=>name.split(/\s+/).slice(0,2).map(p=>p[0]).join("").toUpperCase();
 
   return <div className="cs-directory">
-    <header className="cs-intro">
-      <div className="cs-eyebrow"><span className="cs-eyebrow-dot"/> TAMIL NADU · PUBLIC SERVICE DIRECTORY</div>
-      <h1>Civil Services</h1>
-      <p>Explore IAS and IPS officers serving Tamil Nadu, their current postings, cadre details and service records.</p>
-      <div className="cs-service-tabs" role="tablist" aria-label="Civil service">
-        {(["IAS","IPS"] as const).map(s=><button key={s} role="tab" aria-selected={service===s} className={service===s?"active":""} onClick={()=>{setService(s);setSelected(null);}}><span>{s}</span><small>{s==="IAS"?"Administrative Service":"Police Service"}</small></button>)}
-      </div>
-    </header>
     <section className="cs-workspace">
       <div className="cs-toolbar">
         <label className="cs-search"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={service==="IPS"?"Search officer name, IPS ID, designation or posting…":"Search officer name, IAS ID, designation or posting…"}/>{query&&<button onClick={()=>setQuery("")} aria-label="Clear search">×</button>}</label>
         <div className="cs-filter-row">
+          <div className="cs-service-tabs cs-service-tabs-inline" role="tablist" aria-label="Civil service">
+            {(["IAS","IPS"] as const).map(s=><button key={s} role="tab" aria-selected={service===s} className={service===s?"active":""} onClick={()=>{setService(s);setSelected(null);}}><span>{s}</span><small>{s==="IAS"?"Administrative Service":"Police Service"}</small></button>)}
+          </div>
           <label className="cs-filter cs-cadre"><MapPin size={14}/><select value={cadre} onChange={e=>setCadre(e.target.value)}><option>Tamil Nadu</option><option>All Cadres</option></select></label>
           <label className="cs-filter"><select value={source} onChange={e=>setSource(e.target.value)}>{sources.map(s=><option key={s}>{s}</option>)}</select></label>
           <label className="cs-filter"><select value={pay} onChange={e=>setPay(e.target.value)}>{pays.map(p=><option key={p}>{p}</option>)}</select></label>
