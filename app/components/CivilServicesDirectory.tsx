@@ -1,5 +1,7 @@
 "use client";
 
+import "./CivilServicesDirectory.css";
+
 import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal, ArrowUpDown, ArrowUp, ArrowDown, RotateCcw, ShieldCheck, BriefcaseBusiness, MapPin, ExternalLink, Users, GraduationCap } from "lucide-react";
 
