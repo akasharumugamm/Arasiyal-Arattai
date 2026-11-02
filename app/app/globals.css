@@ -6069,29 +6069,32 @@ option {
 /* Portrait-card geometry: explicitly prevent the two leadership cards touching. */
 .graph-panel .hierarchy-node:has(> .hierarchy-node-photo) {
   width: 250px !important;
-  height: 190px !important;
-  min-height: 190px !important;
-  max-height: 190px !important;
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
   box-sizing: border-box !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
   gap: 9px !important;
-  padding: 14px 18px !important;
+  padding: 13px 18px !important;
   overflow: hidden !important;
 }
 .graph-panel .hierarchy-node-photo {
   display: block !important;
-  width: 64px !important;
-  height: 64px !important;
-  min-width: 64px !important;
-  min-height: 64px !important;
-  max-width: 64px !important;
-  max-height: 64px !important;
-  flex: 0 0 64px !important;
+  width: 104px !important;
+  height: 104px !important;
+  min-width: 104px !important;
+  min-height: 104px !important;
+  max-width: 104px !important;
+  max-height: 104px !important;
+  flex: 0 0 104px !important;
   object-fit: cover !important;
-  border-radius: 50% !important;
+  object-position: center 20% !important;
+  border: 7px solid #e5e7eb !important;
+  border-radius: 25px !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,.10) !important;
 }
 .graph-panel .hierarchy-node:has(> .hierarchy-node-photo) strong {
   font-size: 15px !important;
