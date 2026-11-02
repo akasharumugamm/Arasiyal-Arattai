@@ -20,6 +20,7 @@ import "@xyflow/react/dist/style.css";
 import mlaDirectory from "@/data/tn-mlas.json";
 import { ElectionResultsDashboard } from "@/components/ElectionResultsDashboard";
 import { PoliticianDashboard } from "@/components/PoliticianDashboard";
+import CivilServicesDirectory from "@/components/CivilServicesDirectory";
 
 type Category =
   | "Government"
@@ -974,6 +975,7 @@ function HomeCategoryMenu({ value, onChange }: {
 
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
+  const [activeMainSection, setActiveMainSection] = useState<"Home" | "Civil Services">("Home");
   const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -1375,12 +1377,13 @@ export default function Home() {
             <button
               key={item.label}
               type="button"
-              className={item.label === "Home" ? "aa-primary-nav-link is-active" : "aa-primary-nav-link"}
-              aria-current={item.label === "Home" ? "page" : undefined}
+              className={(item.label === activeMainSection ? "aa-primary-nav-link is-active" : "aa-primary-nav-link")}
+              aria-current={item.label === activeMainSection ? "page" : undefined}
               onClick={() => {
-                if (item.label === "Civil Services") {
-                  window.location.href = "/civil-services";
-                } else if (item.label !== "Home") {
+                if (item.label === "Home" || item.label === "Civil Services") {
+                  setActiveMainSection(item.label);
+                  setSelected(allNodes[0].data);
+                } else {
                   window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
                 }
                 setMobileNavOpen(false);
@@ -1535,53 +1538,55 @@ export default function Home() {
 
       <div className="page-with-profile">
         <div className="page-main-column">
-      <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
-        <div key={category} className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
-          <ReactFlow
-            style={{ width: "100%", height: "100%" }}
-            key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
-            nodes={visibleNodes}
-            edges={visibleEdges}
-            nodeTypes={nodeTypes}
-            fitView
-            fitViewOptions={{ padding: category === "Government" ? 0.08 : 0.12, minZoom: category === "Government" ? 0.34 : 0.28, maxZoom: category === "Government" ? 0.85 : 0.9 }}
-            minZoom={0.15}
-            maxZoom={1.5}
-            defaultEdgeOptions={category === "Government" ? { type: "smoothstep", style: { stroke: "#94a3b8", strokeWidth: 2 }, interactionWidth: 18 } : undefined}
-            onNodeClick={(_, node) => {
-              if (node.id === "council-summary") { changeCategory("Ministers"); return; }
-              if (node.id === "mla-summary") {
-                changeCategory("MLAs");
-                setExpandedMlaParty(null);
-                setMlaSearch("");
-                setMlaPartyFilter("All parties");
-                setSelected(node.data as Profile);
-                return;
-              }
-              if (node.id === "tvk") {
-                setCategory("MLAs");
-                setExpandedMlaParty(null);
-                setMlaSearch("");
-                setMlaPartyFilter("TVK");
-                setSelected(node.data as Profile);
-                return;
-              }
-              if (category === "MLAs" && node.id.startsWith("mla-party-")) {
-                const party = (node.data as Profile).mlaParty ?? null;
-                setExpandedMlaParty((current) => current === party ? null : party);
-                setSelected(node.data as Profile);
-                return;
-              }
-              selectProfile(node.data as Profile);
-            }}
-          >
-            <Background />
-            <Controls />
-          </ReactFlow>
+      {activeMainSection === "Civil Services" ? (
+        <CivilServicesDirectory />
+      ) : (
+        <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
+          <div key={category} className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
+            <ReactFlow
+              style={{ width: "100%", height: "100%" }}
+              key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
+              nodes={visibleNodes}
+              edges={visibleEdges}
+              nodeTypes={nodeTypes}
+              fitView
+              fitViewOptions={{ padding: category === "Government" ? 0.08 : 0.12, minZoom: category === "Government" ? 0.34 : 0.28, maxZoom: category === "Government" ? 0.85 : 0.9 }}
+              minZoom={0.15}
+              maxZoom={1.5}
+              defaultEdgeOptions={category === "Government" ? { type: "smoothstep", style: { stroke: "#94a3b8", strokeWidth: 2 }, interactionWidth: 18 } : undefined}
+              onNodeClick={(_, node) => {
+                if (node.id === "council-summary") { changeCategory("Ministers"); return; }
+                if (node.id === "mla-summary") {
+                  changeCategory("MLAs");
+                  setExpandedMlaParty(null);
+                  setMlaSearch("");
+                  setMlaPartyFilter("All parties");
+                  setSelected(node.data as Profile);
+                  return;
+                }
+                if (node.id === "tvk") {
+                  setCategory("MLAs");
+                  setExpandedMlaParty(null);
+                  setMlaSearch("");
+                  setMlaPartyFilter("TVK");
+                  setSelected(node.data as Profile);
+                  return;
+                }
+                if (category === "MLAs" && node.id.startsWith("mla-party-")) {
+                  const party = (node.data as Profile).mlaParty ?? null;
+                  setExpandedMlaParty((current) => current === party ? null : party);
+                  setSelected(node.data as Profile);
+                  return;
+                }
+                selectProfile(node.data as Profile);
+              }}
+            >
+              <Background />
+              <Controls />
+            </ReactFlow>
+          </div>
         </div>
-
-
-      </div>
+      )}
 
       {authModalOpen && (
         <div className="auth-backdrop" role="presentation" onClick={() => setAuthModalOpen(false)}>
