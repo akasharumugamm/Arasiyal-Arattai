@@ -6168,3 +6168,14 @@ option {
   border-radius: 22px !important;
   box-shadow: 0 2px 8px rgba(15,23,42,.12) !important;
 }
+
+
+/* Clearly visible fills for legislative and judicial hierarchy cards. */
+.graph-panel .hierarchy-node-legislative {
+  background: #d9f0e2 !important;
+  background-image: none !important;
+}
+.graph-panel .hierarchy-node-judicial {
+  background: #dce8f7 !important;
+  background-image: none !important;
+}
