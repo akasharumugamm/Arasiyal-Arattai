@@ -1378,7 +1378,11 @@ export default function Home() {
               className={item.label === "Home" ? "aa-primary-nav-link is-active" : "aa-primary-nav-link"}
               aria-current={item.label === "Home" ? "page" : undefined}
               onClick={() => {
-                if (item.label !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
+                if (item.label === "Civil Services") {
+                  window.location.href = "/civil-services";
+                } else if (item.label !== "Home") {
+                  window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
+                }
                 setMobileNavOpen(false);
               }}
             >
