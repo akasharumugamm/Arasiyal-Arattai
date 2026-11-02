@@ -178,7 +178,7 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
 
 
 
-type HierarchyTone = "political" | "administrative" | "local" | "police";
+type HierarchyTone = "political" | "administrative" | "local" | "police" | "legislative" | "judicial";
 type HierarchyProfile = Profile & { hierarchyTone: HierarchyTone };
 
 function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
@@ -187,14 +187,27 @@ function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
     administrative: "ADMINISTRATION",
     local: "LOCAL GOVERNMENT",
     police: "POLICE",
+    legislative: "LEGISLATURE",
+    judicial: "JUDICIARY",
+  };
+  const toneColors: Record<HierarchyTone, { border: string; kicker: string }> = {
+    political: { border: "#1675ff", kicker: "#60a5fa" },
+    administrative: { border: "#1675ff", kicker: "#60a5fa" },
+    local: { border: "#16a34a", kicker: "#4ade80" },
+    police: { border: "#0d9488", kicker: "#5eead4" },
+    legislative: { border: "#16a34a", kicker: "#4ade80" },
+    judicial: { border: "#a855f7", kicker: "#c084fc" },
   };
   return (
-    <div className={`hierarchy-node hierarchy-node-${data.hierarchyTone}`}>
+    <div
+      className={`hierarchy-node hierarchy-node-${data.hierarchyTone}`}
+      style={{ borderColor: toneColors[data.hierarchyTone].border }}
+    >
       <Handle type="target" position={Position.Top} />
       {data.photoUrl && (
         <img className="hierarchy-node-photo" src={data.photoUrl} alt="" />
       )}
-      <span className="hierarchy-node-kicker">{toneLabels[data.hierarchyTone]}</span>
+      <span className="hierarchy-node-kicker" style={{ color: toneColors[data.hierarchyTone].kicker }}>{toneLabels[data.hierarchyTone]}</span>
       <strong>{data.label}</strong>
       <Handle type="source" position={Position.Bottom} />
     </div>
@@ -220,6 +233,22 @@ function makeHierarchyNode(
 }
 
 const governmentHierarchyNodes: Node<HierarchyProfile>[] = [
+  // Shared constitutional root and three independent branches.
+  makeHierarchyNode("hier-state", "STATE OF TAMIL NADU", "State government", "The constitutional and administrative framework of the State of Tamil Nadu.", "political", 510, -320),
+  makeHierarchyNode("hier-executive", "EXECUTIVE", "State executive", "The executive branch administers the state and implements laws and public policy.", "political", 510, -140),
+  makeHierarchyNode("hier-legislature", "LEGISLATURE", "Law-making institution", "The Legislature is institutionally separate from the Executive and consists of the Governor and the Tamil Nadu Legislative Assembly.", "legislative", -900, -140),
+  makeHierarchyNode("hier-assembly", "Tamil Nadu Legislative Assembly", "234 seats", "The elected House of the Tamil Nadu Legislature. It debates and passes state laws, approves the budget and holds the government accountable.", "legislative", -900, 0),
+  makeHierarchyNode("hier-speaker", "Speaker", "Presiding officer of the Assembly", "The Speaker presides over the proceedings of the Tamil Nadu Legislative Assembly.", "legislative", -1320, 300),
+  makeHierarchyNode("hier-mlas", "MLAs", "234 constituencies", "Members of the Legislative Assembly represent constituencies across Tamil Nadu. The Assembly has 234 seats.", "legislative", -900, 300),
+  makeHierarchyNode("hier-committees", "Legislative Committees", "Assembly oversight and scrutiny", "Legislative committees examine bills, public expenditure and matters referred to them by the Assembly.", "legislative", -480, 300),
+  makeHierarchyNode("hier-judiciary", "JUDICIARY", "Independent judicial branch", "The Judiciary is independent of the Executive and Legislature and interprets and applies the law.", "judicial", 1900, -140),
+  makeHierarchyNode("hier-high-court", "Madras High Court", "High Court of Tamil Nadu", "The Madras High Court is the state's constitutional court, with its principal seat at Chennai and a bench at Madurai.", "judicial", 1900, 0),
+  makeHierarchyNode("hier-chief-justice", "Chief Justice", "Head of the Madras High Court", "The Chief Justice leads the Madras High Court and its judicial administration.", "judicial", 1480, 300),
+  makeHierarchyNode("hier-high-court-judges", "High Court Judges", "Judges of the Madras High Court", "High Court judges hear and decide cases within the jurisdiction of the Madras High Court.", "judicial", 1780, 300),
+  makeHierarchyNode("hier-madurai-bench", "Madurai Bench", "Bench of the Madras High Court", "The Madurai Bench of the Madras High Court exercises jurisdiction over specified districts in southern Tamil Nadu.", "judicial", 2080, 300),
+  makeHierarchyNode("hier-subordinate-judiciary", "Subordinate Judiciary", "District and subordinate courts", "The subordinate judiciary includes district courts and other civil and criminal courts across Tamil Nadu.", "judicial", 2380, 300),
+  makeHierarchyNode("hier-district-courts", "District Courts", "District-level judiciary", "District courts administer civil and criminal justice at the district level.", "judicial", 2380, 600),
+  makeHierarchyNode("hier-civil-criminal-courts", "Civil & Criminal Courts", "Courts below district level", "Civil and criminal courts hear matters according to their subject-matter and territorial jurisdiction.", "judicial", 2380, 900),
   makeHierarchyNode("hier-governor", "Governor of Tamil Nadu", "Constitutional head", "The Governor of Tamil Nadu, shown at the top of the supplied administrative hierarchy.", "political", 510, 0, "https://upload.wikimedia.org/wikipedia/commons/1/16/Rajendra_Arlekar%2C_Governor_of_Kerala.jpg"),
   makeHierarchyNode("hier-cm", "Chief Minister", "Head of the elected state government", "The Chief Minister heads the Council of Ministers and leads the state executive.", "political", 510, 300, "https://i.ibb.co/0Rv80BLn/HR-9-Y6yb0-AAzx-FY.jpg"),
   makeHierarchyNode("council-summary", "Council of Ministers", "Cabinet and ministers", "The Council of Ministers is headed by the Chief Minister. Select this node to explore individual minister profiles.", "political", 175, 600),
@@ -243,6 +272,22 @@ const governmentHierarchyNodes: Node<HierarchyProfile>[] = [
 ];
 
 const governmentHierarchyEdges: Edge[] = [
+  // Three separate branches under the State of Tamil Nadu.
+  { id: "hier-root-executive", source: "hier-state", target: "hier-executive", type: "smoothstep" },
+  { id: "hier-root-legislature", source: "hier-state", target: "hier-legislature", type: "smoothstep" },
+  { id: "hier-root-judiciary", source: "hier-state", target: "hier-judiciary", type: "smoothstep" },
+  { id: "hier-executive-governor", source: "hier-executive", target: "hier-governor", type: "smoothstep" },
+  { id: "hier-legislature-assembly", source: "hier-legislature", target: "hier-assembly", type: "smoothstep" },
+  { id: "hier-assembly-speaker", source: "hier-assembly", target: "hier-speaker", type: "smoothstep" },
+  { id: "hier-assembly-mlas", source: "hier-assembly", target: "hier-mlas", type: "smoothstep" },
+  { id: "hier-assembly-committees", source: "hier-assembly", target: "hier-committees", type: "smoothstep" },
+  { id: "hier-judiciary-high-court", source: "hier-judiciary", target: "hier-high-court", type: "smoothstep" },
+  { id: "hier-high-court-chief-justice", source: "hier-high-court", target: "hier-chief-justice", type: "smoothstep" },
+  { id: "hier-high-court-judges-edge", source: "hier-high-court", target: "hier-high-court-judges", type: "smoothstep" },
+  { id: "hier-high-court-madurai", source: "hier-high-court", target: "hier-madurai-bench", type: "smoothstep" },
+  { id: "hier-high-court-subordinate", source: "hier-high-court", target: "hier-subordinate-judiciary", type: "smoothstep" },
+  { id: "hier-subordinate-district", source: "hier-subordinate-judiciary", target: "hier-district-courts", type: "smoothstep" },
+  { id: "hier-district-civil-criminal", source: "hier-district-courts", target: "hier-civil-criminal-courts", type: "smoothstep" },
   { id: "hier-e1", source: "hier-governor", target: "hier-cm", type: "smoothstep" },
   { id: "hier-e2", source: "hier-cm", target: "council-summary", type: "smoothstep" },
   { id: "hier-e3", source: "hier-cm", target: "hier-chief-secretary", type: "smoothstep" },
