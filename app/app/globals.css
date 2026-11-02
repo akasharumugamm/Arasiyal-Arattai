@@ -6164,39 +6164,3 @@ option {
   border-radius: 22px !important;
   box-shadow: 0 2px 8px rgba(15,23,42,.12) !important;
 }
-
-
-/* Lucide icon badge for non-person hierarchy nodes */
-.graph-panel .hierarchy-node-icon {
-  width: 48px;
-  height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 48px;
-  margin: 0 auto 3px;
-  border-radius: 13px;
-  color: var(--hierarchy-icon-color, #3159c9);
-  background: var(--hierarchy-icon-bg, rgba(255,255,255,.78));
-  border: 1px solid var(--hierarchy-icon-border, rgba(49,89,201,.14));
-}
-.graph-panel .hierarchy-node-political .hierarchy-node-icon {
-  --hierarchy-icon-color: #3159c9;
-  --hierarchy-icon-bg: #e8efff;
-  --hierarchy-icon-border: #c9d8ff;
-}
-.graph-panel .hierarchy-node-administrative .hierarchy-node-icon {
-  --hierarchy-icon-color: #13865a;
-  --hierarchy-icon-bg: #e2f8ed;
-  --hierarchy-icon-border: #b8ebd0;
-}
-.graph-panel .hierarchy-node-local .hierarchy-node-icon {
-  --hierarchy-icon-color: #b7791f;
-  --hierarchy-icon-bg: #fff3d6;
-  --hierarchy-icon-border: #f5d99b;
-}
-.graph-panel .hierarchy-node-police .hierarchy-node-icon {
-  --hierarchy-icon-color: #8b45c6;
-  --hierarchy-icon-bg: #f3e8ff;
-  --hierarchy-icon-border: #dfc2ff;
-}
