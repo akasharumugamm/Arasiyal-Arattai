@@ -3,7 +3,7 @@
 import "./CivilServicesDirectory.css";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, SlidersHorizontal, ArrowUpDown, ArrowUp, ArrowDown, RotateCcw, ShieldCheck, BriefcaseBusiness, MapPin, ExternalLink, Users, GraduationCap } from "lucide-react";
+import { Search, ArrowUpDown, RotateCcw, ShieldCheck, BriefcaseBusiness, MapPin, GraduationCap, Landmark, ChevronRight, BadgeCheck, SearchX } from "lucide-react";
 
 type Officer = {
   id: number; full_name: string; service_type: "IAS" | "IPS"; batch_year: number | null;
@@ -55,7 +55,7 @@ export default function CivilServicesDirectory() {
   const changeSort=(key:"full_name"|"batch_year"|"pay_level")=>setSort(s=>({key,dir:s.key===key&&s.dir==="asc"?"desc":"asc"}));
   const initials=(name:string)=>name.split(/\s+/).slice(0,2).map(p=>p[0]).join("").toUpperCase();
 
-  return <div className="cs-directory">
+  return <div className={`cs-directory cs-theme-${service.toLowerCase()}`}>
     <section className="cs-workspace">
       <div className="cs-toolbar">
         <label className="cs-search"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={service==="IPS"?"Search officer name, IPS ID, designation or posting…":"Search officer name, IAS ID, designation or posting…"}/>{query&&<button onClick={()=>setQuery("")} aria-label="Clear search">×</button>}</label>
@@ -72,31 +72,33 @@ export default function CivilServicesDirectory() {
           <button className="cs-reset" onClick={reset}><RotateCcw size={14}/> Clear filters</button>
         </div>
       </div>
-      <div className="cs-table-head"><div><span className="cs-live-dot"/> OFFICER DIRECTORY <span className="cs-count">{officers.length.toLocaleString("en-IN")} records</span></div><span><ShieldCheck size={14}/> Source-backed records</span></div>
-      <div className="cs-table-wrap">
-        <table className="cs-table">
-          <thead><tr><th>#</th><th>Officer</th><th>Current role / posting</th><th>Cadre</th><th><button onClick={()=>changeSort("batch_year")}>Batch <ArrowUpDown size={13}/></button></th><th>Source</th><th><button onClick={()=>changeSort("pay_level")}>Pay <ArrowUpDown size={13}/></button></th><th>Service</th></tr></thead>
-          <tbody>
-            {loading&&<tr><td colSpan={8} className="cs-state">Loading officer records…</td></tr>}
-            {!loading&&error&&<tr><td colSpan={8} className="cs-state cs-error">{error}</td></tr>}
-            {!loading&&!error&&sorted.length===0&&<tr><td colSpan={8} className="cs-state">No officers match these filters. Try clearing some filters.</td></tr>}
-            {!loading&&!error&&sorted.map((o,i)=>{
-              const years=o.batch_year?Math.max(0,new Date().getFullYear()-o.batch_year):null;
-              return <tr key={o.id} className={selected?.id===o.id?"is-selected":""} onClick={()=>setSelected(o)}>
-                <td className="cs-index">{i+1}</td>
-                <td><div className="cs-officer"><span className="cs-avatar">{initials(o.full_name)}</span><span className="cs-officer-text"><strong>{o.full_name}</strong><small>{o.employee_id}</small></span></div></td>
-                <td><div className="cs-role">{o.current_designation||"Posting not listed"}</div>{o.current_department&&<small className="cs-subline">{o.current_department}</small>}{o.posting_location&&<small className="cs-subline">{o.posting_location}</small>}</td>
-                <td><strong className="cs-cadre-name">{o.cadre||"—"}</strong></td>
-                <td className="cs-number">{o.batch_year||"—"}</td>
-                <td><span className="cs-source">{o.recruitment_type||o.source_name||"—"}</span></td>
-                <td className="cs-number">{o.pay_level||"—"}</td>
-                <td className="cs-years">{years===null?"—":years+"y"}</td>
-              </tr>;
-            })}
-          </tbody>
-        </table>
+      <div className="cs-list-heading">
+        <div className="cs-list-heading-title"><span className="cs-live-dot"/><span>OFFICER DIRECTORY</span><span className="cs-count">{officers.length.toLocaleString("en-IN")} records</span></div>
+        <span className="cs-source-note"><ShieldCheck size={14}/> Source-backed records</span>
       </div>
-      <footer className="cs-table-footer"><span>Showing {sorted.length.toLocaleString("en-IN")} of available {service} records</span><span>Officer details are based on the available source snapshot.</span></footer>
+      <div className="cs-list-columns">
+        <button className="cs-sort-rank" onClick={()=>changeSort("batch_year")} title="Sort by seniority"># <ArrowUpDown size={12}/></button>
+        <span className="cs-col-officer">OFFICER</span>
+        <span className="cs-col-role">CURRENT ROLE</span>
+        <span className="cs-col-cadre">CADRE</span>
+        <span className="cs-col-chevron"/>
+      </div>
+      <div className="cs-officer-list">
+        {loading&&<div className="cs-list-state">Loading officer records…</div>}
+        {!loading&&error&&<div className="cs-list-state cs-error">{error}</div>}
+        {!loading&&!error&&sorted.length===0&&<div className="cs-empty-state"><span className="cs-empty-icon"><SearchX size={21}/></span><strong>No {service} officers found</strong><span>Try a different name or adjust your filters.</span><button onClick={reset}>Clear filters</button></div>}
+        {!loading&&!error&&sorted.map((o,i)=>{
+          const years=o.batch_year?Math.max(0,new Date().getFullYear()-o.batch_year):null;
+          return <button type="button" key={o.id} className={`cs-officer-row${selected?.id===o.id?" is-selected":""}`} onClick={()=>setSelected(o)}>
+            <span className={`cs-rank${i<3?" top-rank":""}`}>{String(i+1).padStart(2,"0")}</span>
+            <span className="cs-officer-cell"><span className="cs-avatar">{initials(o.full_name)}</span><span className="cs-officer-text"><strong>{o.full_name}{i===0&&<BadgeCheck className="cs-verified-icon" size={14}/>}</strong><small>{o.employee_id} · {o.batch_year||"Batch not listed"}</small><small className="cs-mobile-role">{o.current_designation||"Posting not listed"}</small></span></span>
+            <span className="cs-role-cell"><strong>{o.current_designation||"Posting not listed"}</strong><small>{[o.current_department,o.posting_location].filter(Boolean).join(" · ")}</small></span>
+            <span className="cs-cadre-cell"><strong>{o.cadre||"—"}</strong><small>{o.recruitment_type||o.source_name||"Source not listed"}</small></span>
+            <span className="cs-row-chevron"><ChevronRight size={17}/></span>
+          </button>;
+        })}
+      </div>
+      <footer className="cs-table-footer"><span>Showing <strong>{sorted.length.toLocaleString("en-IN")}</strong> of available {service} records</span><span>{sort.key==="batch_year"?(sort.dir==="asc"?"Sorted by seniority":"Sorted by juniority"):"Sorted by "+sort.key.replace("_"," ")}</span></footer>
     </section>
     {selected&&<aside className="cs-selected-card">
       <button className="cs-close" onClick={()=>setSelected(null)} aria-label="Close officer details">×</button>
