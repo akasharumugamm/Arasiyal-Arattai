@@ -3,7 +3,7 @@
 import "./CivilServicesDirectory.css";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, ArrowUpDown, RotateCcw, ShieldCheck, BriefcaseBusiness, MapPin, GraduationCap, Landmark, ChevronRight, BadgeCheck, SearchX } from "lucide-react";
+import { Search, ArrowUpDown, RotateCcw, ShieldCheck, BriefcaseBusiness, MapPin, GraduationCap, ChevronRight, BadgeCheck, SearchX } from "lucide-react";
 
 type Officer = {
   id: number; full_name: string; service_type: "IAS" | "IPS"; batch_year: number | null;
