@@ -6179,3 +6179,63 @@ option {
   background: #dce8f7 !important;
   background-image: none !important;
 }
+
+
+/* Selected Chief Minister profile shown in the shared right sidebar. */
+.hierarchy-profile-card {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  overflow: hidden;
+  border: 1px solid #d7e2f2;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #ffffff 0%, #f1f6ff 100%);
+  box-shadow: 0 8px 24px rgba(31, 59, 103, 0.08);
+  color: #172554;
+}
+.hierarchy-profile-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 280px;
+  object-fit: cover;
+  object-position: center top;
+  border: 6px solid #e6ebf3;
+  border-radius: 22px;
+  box-sizing: border-box;
+  background: #fff;
+}
+.hierarchy-profile-kicker {
+  margin-top: 16px;
+  color: #4775c5;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-align: center;
+}
+.hierarchy-profile-card h2 {
+  margin: 7px 0 0;
+  color: #172554;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+.hierarchy-profile-role {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+.hierarchy-profile-divider {
+  height: 1px;
+  margin: 18px 0;
+  background: #dbe4f0;
+}
+.hierarchy-profile-description {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.65;
+}
