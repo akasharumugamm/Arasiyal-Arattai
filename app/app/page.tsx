@@ -204,7 +204,7 @@ const hierarchyIconById = {
   "hier-police-stations": ShieldCheck,
 } as const;
 
-function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
+function HierarchyNode({ id, data }: NodeProps<Node<HierarchyProfile>>) {
   const toneLabels: Record<HierarchyTone, string> = {
     political: "EXECUTIVE",
     administrative: "ADMINISTRATION",
@@ -217,7 +217,7 @@ function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
       {data.photoUrl ? (
         <img className="hierarchy-node-photo" src={data.photoUrl} alt="" />
       ) : (() => {
-        const NodeIcon = hierarchyIconById[data.id as keyof typeof hierarchyIconById];
+        const NodeIcon = hierarchyIconById[id as keyof typeof hierarchyIconById];
         return NodeIcon ? (
           <span className="hierarchy-node-icon" aria-hidden="true">
             <NodeIcon size={21} strokeWidth={1.9} />
