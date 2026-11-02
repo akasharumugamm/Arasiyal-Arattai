@@ -1222,9 +1222,9 @@ export default function Home() {
 
   return (
     <main className="app-shell" style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <div className={`app-header aa-home-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`}>
+      <div className={`app-header aa-home-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`} style={{ height: 62, minHeight: 62, maxHeight: 62, boxSizing: "border-box", display: "flex", flexWrap: "nowrap", alignItems: "center", overflow: "visible" }}>
         <a className="aa-brand" href="/" aria-label="Arasiyal Arattai home">
-          <img src="/aa-logo.svg" alt="" />
+          <img src="/aa-logo.svg" alt="" width={34} height={34} style={{ width: 34, height: 34, maxWidth: 34, maxHeight: 34, flex: "0 0 34px", objectFit: "contain" }} />
           <span>Arasiyal Arattai</span>
         </a>
 
