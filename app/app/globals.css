@@ -5929,23 +5929,27 @@ option {
 }
 
 .hierarchy-node-political {
-  border-color: #4775f5;
-  background: linear-gradient(145deg, #eff4ff 0%, #dce8ff 100%);
+  background: linear-gradient(145deg, #f5f8ff 0%, #eaf0fb 100%);
 }
 
 .hierarchy-node-administrative {
-  border-color: #26a269;
-  background: linear-gradient(145deg, #f0fdf6 0%, #dcfce9 100%);
+  background: linear-gradient(145deg, #f3faf9 0%, #e7f3f1 100%);
 }
 
 .hierarchy-node-local {
-  border-color: #d99019;
-  background: linear-gradient(145deg, #fff9e9 0%, #ffedc2 100%);
+  background: linear-gradient(145deg, #fffaf1 0%, #f8efdf 100%);
 }
 
 .hierarchy-node-police {
-  border-color: #9b59db;
-  background: linear-gradient(145deg, #faf5ff 0%, #eee2ff 100%);
+  background: linear-gradient(145deg, #f8f7fc 0%, #eeebf6 100%);
+}
+
+.hierarchy-node-legislative {
+  background: linear-gradient(145deg, #f3f9f5 0%, #e7f1ea 100%);
+}
+
+.hierarchy-node-judicial {
+  background: linear-gradient(145deg, #f5f7fa 0%, #e9edf2 100%);
 }
 
 .hierarchy-node .react-flow__handle {
