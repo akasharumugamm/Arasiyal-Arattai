@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, MessageSquareHeart, Menu, X, Sparkles } from "lucide-react";
 import PostActionsMenu from "@/components/PostActionsMenu";
 import { getAvatarColors, getAvatarInitials } from "@/lib/avatar";
 import { getOfficialIdentityKey } from "@/lib/official-identity";
@@ -842,6 +843,7 @@ export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const lastScrollY = useRef(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
@@ -1220,50 +1222,115 @@ export default function Home() {
 
   return (
     <main className="app-shell" style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <div className={`app-header aa-home-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
-          <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
-          <h1 className="brand-heading app-title" style={{ fontSize: 27, fontWeight: 650, margin: 0 }}>Arasiyal Arattai</h1>
-        </div>
-      <nav className="aa-primary-nav" aria-label="Main navigation">
-        {["Home", "Office Bearers", "Civil Services", "Result", "Constituency"].map((item) => (
-          <button key={item} type="button" className={item === "Home" ? "aa-primary-nav-link is-active" : "aa-primary-nav-link"} aria-current={item === "Home" ? "page" : undefined} onClick={() => { if (item !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item })); }}>{item}</button>
-        ))}
-        <a className="aa-primary-nav-link aa-primary-nav-feedback" href="/reviews?action=write">Share Feedback</a>
-      </nav>
-        <div className="app-header-actions">
-        <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
+      <div className={`app-header aa-home-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`}>
+        <a className="aa-brand" href="/" aria-label="Arasiyal Arattai home">
+          <img src="/aa-logo.svg" alt="" />
+          <span>Arasiyal Arattai</span>
+        </a>
+
+        <nav className="aa-primary-nav" aria-label="Main navigation">
+          {[
+            { label: "Home" },
+            { label: "Office Bearers" },
+            { label: "Civil Services", dropdown: true },
+            { label: "Result", badge: "New" },
+            { label: "Constituency", dropdown: true },
+          ].map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              className={item.label === "Home" ? "aa-primary-nav-link is-active" : "aa-primary-nav-link"}
+              aria-current={item.label === "Home" ? "page" : undefined}
+              onClick={() => {
+                if (item.label !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
+                setMobileNavOpen(false);
+              }}
+            >
+              <span>{item.label}</span>
+              {item.badge && <span className="aa-nav-badge">{item.badge}</span>}
+              {item.dropdown && <ChevronDown aria-hidden="true" className="aa-nav-chevron" />}
+              {item.label === "Home" && <span className="aa-nav-active-dot" />}
+            </button>
+          ))}
+        </nav>
+
+        <div className="app-header-actions aa-header-actions">
+          <a className="aa-feedback-cta" href="/reviews?action=write">
+            <MessageSquareHeart aria-hidden="true" />
+            <span>Share Feedback</span>
+          </a>
+          <div ref={profileMenuRef} className="aa-profile-menu-wrap">
+            <button
+              type="button"
+              className="aa-profile-trigger"
+              aria-label="Open profile menu"
+              aria-haspopup="menu"
+              aria-expanded={profileMenuOpen}
+              onClick={() => {
+                setProfileMenuOpen((open) => !open);
+                setAuthSetupNotice(false);
+                fetch("/api/auth/me", { cache: "no-store" })
+                  .then((response) => setIsAuthenticated(response.ok))
+                  .catch(() => setIsAuthenticated(false));
+              }}
+            >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M4.8 20c.7-3.4 3.2-5.2 7.2-5.2s6.5 1.8 7.2 5.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+            {profileMenuOpen && (
+              <div role="menu" aria-label="Profile menu" className="aa-profile-dropdown">
+                <div className="aa-profile-dropdown-heading">
+                  <div>Your account</div>
+                  <small>{isAuthenticated ? "Signed in with Cognito." : "Sign in to share feedback and vote."}</small>
+                </div>
+                {isAuthenticated ? (
+                  <>
+                    <a href="/profile" role="menuitem">View profile</a>
+                    <a href="/auth/logout" role="menuitem">Sign out</a>
+                  </>
+                ) : (
+                  <>
+                    <button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }}>Sign in</button>
+                    <button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }}>Create account</button>
+                  </>
+                )}
+                {authSetupNotice && <p role="status">Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
+              </div>
+            )}
+          </div>
           <button
             type="button"
-            aria-label="Open profile menu"
-            aria-haspopup="menu"
-            aria-expanded={profileMenuOpen}
-            onClick={() => {
-              setProfileMenuOpen((open) => !open);
-              setAuthSetupNotice(false);
-              fetch("/api/auth/me", { cache: "no-store" })
-                .then((response) => setIsAuthenticated(response.ok))
-                .catch(() => setIsAuthenticated(false));
-            }}
-            style={{ width: 44, height: 44, display: "grid", placeItems: "center", borderRadius: 999, border: "1px solid #cbd5e1", background: "white", color: "#172554", cursor: "pointer", boxShadow: "0 2px 6px #0f172a0a" }}
+            className="aa-mobile-menu-toggle"
+            aria-label={mobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen((open) => !open)}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M4.8 20c.7-3.4 3.2-5.2 7.2-5.2s6.5 1.8 7.2 5.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
+            {mobileNavOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
           </button>
-          {profileMenuOpen && (
-            <div role="menu" aria-label="Profile menu" style={{ position: "absolute", zIndex: 100, top: 52, right: 0, width: 230, padding: 10, border: "1px solid #dbe3ef", borderRadius: 14, background: "white", boxShadow: "0 12px 32px #0f172a1c" }}>
-              <div style={{ padding: "8px 9px 10px", borderBottom: "1px solid #e2e8f0", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#172554" }}>Your account</div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{isAuthenticated ? "Signed in with Cognito." : "Sign in to share feedback and vote."}</div>
-              </div>
-              {isAuthenticated ? <><a href="/profile" role="menuitem" style={{ display: "block", borderRadius: 9, padding: "10px 9px", color: "#172554", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>View profile</a><a href="/auth/logout" role="menuitem" style={{ display: "block", borderRadius: 9, padding: "10px 9px", color: "#172554", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>Sign out</a></> : <><button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Sign in</button><button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Create account</button></>}
-              {authSetupNotice && <p role="status" style={{ margin: "7px 5px 4px", padding: 9, borderRadius: 8, background: "#eff6ff", color: "#1d4ed8", fontSize: 11, lineHeight: 1.5 }}>Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
-            </div>
-          )}
         </div>
-        </div>
+        {mobileNavOpen && (
+          <nav className="aa-mobile-nav" aria-label="Mobile navigation">
+            {[
+              { label: "Home" },
+              { label: "Office Bearers" },
+              { label: "Civil Services", dropdown: true },
+              { label: "Result", badge: "New" },
+              { label: "Constituency", dropdown: true },
+            ].map((item) => (
+              <button key={item.label} type="button" className={item.label === "Home" ? "is-active" : ""} onClick={() => {
+                if (item.label !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
+                setMobileNavOpen(false);
+              }}>
+                <span>{item.label}</span>
+                {item.badge && <span className="aa-nav-badge">{item.badge}</span>}
+                {item.dropdown && <ChevronDown aria-hidden="true" className="aa-nav-chevron" />}
+              </button>
+            ))}
+            <a href="/reviews?action=write"><MessageSquareHeart aria-hidden="true" /> Share Feedback</a>
+          </nav>
+        )}
       </div>
 
       <p style={{ color: "#64748b", marginBottom: 16 }}>
