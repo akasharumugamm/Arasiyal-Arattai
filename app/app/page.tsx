@@ -20,7 +20,7 @@ import "@xyflow/react/dist/style.css";
 import mlaDirectory from "@/data/tn-mlas.json";
 import { ElectionResultsDashboard } from "@/components/ElectionResultsDashboard";
 import { PoliticianDashboard } from "@/components/PoliticianDashboard";
-import CivilServicesDirectory from "@/components/CivilServicesDirectory";
+import CivilServicesDirectory, { CivilServicesProfileCard, type CivilServiceOfficer } from "@/components/CivilServicesDirectory";
 
 type Category =
   | "Government"
@@ -991,6 +991,7 @@ export default function Home() {
   const [mlaPartyFilter, setMlaPartyFilter] = useState("All parties");
   const [mlaPartyOpen, setMlaPartyOpen] = useState(false);
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
+  const [selectedCivilOfficer, setSelectedCivilOfficer] = useState<CivilServiceOfficer | null>(null);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
   const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
@@ -1383,6 +1384,7 @@ export default function Home() {
                 if (item.label === "Home" || item.label === "Civil Services") {
                   setActiveMainSection(item.label);
                   setSelected(allNodes[0].data);
+                  if (item.label === "Home") setSelectedCivilOfficer(null);
                 } else {
                   window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
                 }
@@ -1539,7 +1541,7 @@ export default function Home() {
       <div className="page-with-profile">
         <div className="page-main-column">
       {activeMainSection === "Civil Services" ? (
-        <CivilServicesDirectory />
+        <CivilServicesDirectory onSelectOfficer={setSelectedCivilOfficer} selectedOfficerId={selectedCivilOfficer?.id ?? null} />
       ) : (
         <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
           <div key={category} className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
@@ -1742,7 +1744,9 @@ export default function Home() {
       </section>
         </div>
         <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
-          {selected.label === "Chief Minister" ? (
+          {activeMainSection === "Civil Services" && selectedCivilOfficer ? (
+            <CivilServicesProfileCard officer={selectedCivilOfficer} onClose={() => setSelectedCivilOfficer(null)} />
+          ) : selected.label === "Chief Minister" ? (
             <PoliticianDashboard />
           ) : (
             <ElectionResultsDashboard />
