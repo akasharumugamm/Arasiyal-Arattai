@@ -5,7 +5,7 @@ import "./CivilServicesDirectory.css";
 import { useEffect, useMemo, useState } from "react";
 import { Search, Shield, Landmark, ArrowUpDown, SearchX, BadgeCheck, X, ChevronRight, BriefcaseBusiness, ShieldCheck } from "lucide-react";
 
-type Officer = {
+export type CivilServiceOfficer = {
   id: number;
   full_name: string;
   service_type: "IAS" | "IPS";
@@ -25,14 +25,18 @@ type Officer = {
 
 const initials = (name: string) => name.split(/\\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
 
-export default function CivilServicesDirectory() {
+type CivilServicesDirectoryProps = {
+  onSelectOfficer: (officer: CivilServiceOfficer | null) => void;
+  selectedOfficerId: number | null;
+};
+
+export default function CivilServicesDirectory({ onSelectOfficer, selectedOfficerId }: CivilServicesDirectoryProps) {
   const [service, setService] = useState<"IPS" | "IAS">("IPS");
   const [query, setQuery] = useState("");
   const [seniorFirst, setSeniorFirst] = useState(true);
-  const [officers, setOfficers] = useState<Officer[]>([]);
+  const [officers, setOfficers] = useState<CivilServiceOfficer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selected, setSelected] = useState<Officer | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -83,7 +87,7 @@ export default function CivilServicesDirectory() {
           <div className="cs-reference-controls">
             <div className="cs-reference-tabs" role="tablist" aria-label="Civil service">
               {(["IAS", "IPS"] as const).map(s => (
-                <button key={s} type="button" role="tab" aria-selected={service === s} onClick={() => { setService(s); setSelected(null); }} className={service === s ? "active" : ""}>
+                <button key={s} type="button" role="tab" aria-selected={service === s} onClick={() => { setService(s); onSelectOfficer(null); }} className={service === s ? "active" : ""}>
                   <span className={service === s ? (s === "IPS" ? "ips-icon" : "ias-icon") : ""}>{s === "IPS" ? <Shield size={15} /> : <Landmark size={15} />}</span>
                   {s}
                   <small>{officers.length && service === s ? filtered.length : " "}</small>
@@ -118,7 +122,7 @@ export default function CivilServicesDirectory() {
             </div>
           )}
           {!loading && !error && filtered.map((officer, index) => (
-            <button type="button" key={officer.id} className={`cs-reference-row${selected?.id === officer.id ? " selected" : ""}`} onClick={() => setSelected(officer)}>
+            <button type="button" key={officer.id} className={`cs-reference-row${selectedOfficerId === officer.id ? " selected" : ""}`} onClick={() => onSelectOfficer(officer)}>
               <span className={`cs-reference-rank${index < 3 ? " top" : ""}`}>{String(index + 1).padStart(2, "0")}</span>
               <span className="cs-reference-officer">
                 <span className="cs-reference-avatar">{initials(officer.full_name)}</span>
@@ -147,23 +151,46 @@ export default function CivilServicesDirectory() {
         </footer>
       </section>
 
-      {selected && (
-        <aside className="cs-selected-card">
-          <button className="cs-close" onClick={() => setSelected(null)} aria-label="Close officer details">×</button>
-          <div className="cs-card-kicker">{selected.service_type} · OFFICER PROFILE</div>
-          <div className="cs-card-avatar">{initials(selected.full_name)}</div>
-          <h2>{selected.full_name}</h2>
-          <p>{selected.current_designation || "Designation not listed"}</p>
-          <div className="cs-card-grid">
-            <div><small>Cadre</small><strong>{selected.cadre || "—"}</strong></div>
-            <div><small>Batch</small><strong>{selected.batch_year || "—"}</strong></div>
-            <div><small>Employee ID</small><strong>{selected.employee_id}</strong></div>
-            <div><small>Pay level</small><strong>{selected.pay_level || "—"}</strong></div>
-          </div>
-          <div className="cs-card-detail"><BriefcaseBusiness size={15} /><span>{selected.current_department || selected.posting_location || "Posting details unavailable"}</span></div>
-          <div className="cs-card-detail"><ShieldCheck size={15} /><span>{selected.source_name || "Source not listed"}{selected.source_snapshot_date ? " · " + new Date(selected.source_snapshot_date).toLocaleDateString("en-IN") : ""}</span></div>
-        </aside>
-      )}
     </div>
+  );
+}
+
+
+export function CivilServicesProfileCard({ officer, onClose }: { officer: CivilServiceOfficer; onClose: () => void }) {
+  const location = [officer.current_department, officer.posting_location].filter(Boolean).join(" · ");
+  const sourceDate = officer.source_snapshot_date
+    ? new Date(officer.source_snapshot_date).toLocaleDateString("en-IN")
+    : "";
+
+  return (
+    <aside className="cs-sidebar-profile-card">
+      <button type="button" className="cs-sidebar-profile-close" onClick={onClose} aria-label="Close officer profile">
+        <X size={19} />
+      </button>
+      <div className="cs-sidebar-profile-kicker">{officer.service_type} · OFFICER PROFILE</div>
+      <div className="cs-sidebar-profile-avatar">{initials(officer.full_name)}</div>
+      <h2>{officer.full_name}</h2>
+      <p className="cs-sidebar-profile-role">{officer.current_designation || "Designation not listed"}</p>
+      <div className="cs-sidebar-profile-grid">
+        <div><small>Cadre</small><strong>{officer.cadre || "—"}</strong></div>
+        <div><small>Batch</small><strong>{officer.batch_year ?? "—"}</strong></div>
+        <div><small>Employee ID</small><strong>{officer.employee_id || "—"}</strong></div>
+        <div><small>Pay level</small><strong>{officer.pay_level || "—"}</strong></div>
+      </div>
+      <div className="cs-sidebar-profile-detail">
+        <BriefcaseBusiness size={15} />
+        <span>{location || officer.posting_location || "Posting details unavailable"}</span>
+      </div>
+      <div className="cs-sidebar-profile-detail">
+        <ShieldCheck size={15} />
+        <span>{officer.source_name || "Source not listed"}{sourceDate ? " · " + sourceDate : ""}</span>
+      </div>
+      {officer.education && (
+        <div className="cs-sidebar-profile-detail">
+          <Landmark size={15} />
+          <span>{officer.education}</span>
+        </div>
+      )}
+    </aside>
   );
 }
