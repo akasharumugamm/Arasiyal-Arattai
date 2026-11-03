@@ -3,7 +3,7 @@
 import "./CivilServicesDirectory.css";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Search, Shield, Landmark, ArrowUpDown, SearchX, BadgeCheck, X, ChevronRight, ShieldCheck, Medal, Award, GraduationCap, CalendarDays, Timer, MapPin, UserCheck, Star } from "lucide-react";
+import { Search, Shield, Landmark, ArrowUpDown, SearchX, X, ChevronRight, ShieldCheck, Medal, Award, GraduationCap, CalendarDays, Timer, MapPin, UserCheck, Star } from "lucide-react";
 
 export type CivilServiceOfficer = {
   id: number;
@@ -126,7 +126,6 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
               <h1>Civil Services Directory</h1>
               <p>{sourceLabel}</p>
             </div>
-            <span className="cs-reference-status"><span />{officers.some(o => o.source_snapshot_date) ? "Updated" : "Directory"}</span>
           </div>
 
           <div className="cs-reference-controls">
@@ -168,11 +167,11 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
           )}
           {!loading && !error && filtered.map((officer, index) => (
             <button type="button" key={officer.id} className={`cs-reference-row${activeSelectedOfficerId === officer.id ? " selected" : ""}`} onClick={() => selectOfficer(officer)}>
-              <span className={`cs-reference-rank${index < 3 ? " top" : ""}`}>{String(index + 1).padStart(2, "0")}</span>
+              <span className="cs-reference-rank">{String(index + 1).padStart(2, "0")}</span>
               <span className="cs-reference-officer">
                 <span className="cs-reference-avatar">{initials(officer.full_name)}</span>
                 <span className="cs-reference-officer-copy">
-                  <strong>{officer.full_name}{index === 0 && <BadgeCheck size={13} />}</strong>
+                  <strong>{officer.full_name}</strong>
                   <small>{officer.employee_id} · {officer.batch_year ?? (parseSourceDate(sourceText(officer.source_specific_data, "date_of_appointment_to_ips"))?.getFullYear() ?? "Batch not listed")} Batch</small>
                   <small className="cs-reference-mobile-role">{officer.current_designation || "Role not listed"}</small>
                 </span>
