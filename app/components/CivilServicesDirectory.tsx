@@ -258,50 +258,22 @@ export function CivilServicesProfileCard({
   };
   const medals: { code: string; name: string; year: string; index: number }[] = [];
   if (medalSource) {
-    const recognizedPattern = /\b(PPMDS|PPDS|PMMS|PPMG|PMG|PSM|MSM)\s*-\s*(\d{4})\b/gi;
-    for (const match of medalSource.matchAll(recognizedPattern)) {
-      const code = match[1].toUpperCase();
+    // Parse each code/year pair exactly once. The generic alternative handles
+    // source abbreviations not yet mapped to a verified full award title.
+    const medalPattern = /\b(UN\s+peace\s+keeping\s+Medal|PPMDS|PPDS|PMMS|PPMG|PMG|PSM|MSM|[A-Z][A-Z0-9]*)\s*-\s*(\d{4})\b/gi;
+    for (const match of medalSource.matchAll(medalPattern)) {
+      const code = match[1].toUpperCase().replace(/\s+/g, " ");
+      const isUnitedNationsMedal = code === "UN PEACE KEEPING MEDAL";
+      const normalizedCode = isUnitedNationsMedal ? "UN" : code;
       medals.push({
-        code,
-        name: medalTitles[code],
+        code: normalizedCode,
+        name: isUnitedNationsMedal
+          ? "United Nations Peacekeeping Medal"
+          : medalTitles[normalizedCode] || normalizedCode,
         year: match[2],
         index: match.index ?? 0,
       });
     }
-
-    const unPattern = /\bUN\s+peace\s+keeping\s+Medal\s*-\s*(\d{4})\b/gi;
-    for (const match of medalSource.matchAll(unPattern)) {
-      medals.push({
-        code: "UN",
-        name: "United Nations Peacekeeping Medal",
-        year: match[1],
-        index: match.index ?? 0,
-      });
-    }
-
-    // Preserve unfamiliar source abbreviations without guessing their meaning.
-    const genericPattern = /\b([A-Z][A-Z0-9]*)\s*-\s*(\d{4})\b/g;
-    for (const match of medalSource.matchAll(genericPattern)) {
-      const code = match[1].toUpperCase();
-      // "Medal-YYYY" is only the tail of the longer UN peacekeeping entry.
-      if (code === "MEDAL") continue;
-      const start = match.index ?? 0;
-      const end = start + match[0].length;
-      const alreadyParsed = medals.some((medal) => {
-        const medalEnd = medal.index + medal.code.length + 5;
-        return start >= medal.index && end <= medalEnd;
-      });
-      if (!alreadyParsed) {
-        medals.push({
-          code: match[1],
-          name: match[1],
-          year: match[2],
-          index: start,
-        });
-      }
-    }
-
-    medals.sort((a, b) => a.index - b.index);
   }
 
   return (
