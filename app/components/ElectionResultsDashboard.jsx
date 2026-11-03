@@ -56,8 +56,8 @@ export function ElectionResultsDashboard() {
         
         {/* === HERO (DARK) === */}
         <div className="relative bg-zinc-950 px-6 pt-6 pb-7 overflow-hidden">
-          <div aria-hidden className="pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full bg-amber-500/20 blur-3xl" />
-          <div aria-hidden className="pointer-events-none absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-rose-600/20 blur-3xl" />
+          <div aria-hidden className="pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full bg-blue-600/25 blur-3xl" />
+          <div aria-hidden className="pointer-events-none absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-indigo-600/20 blur-3xl" />
 
           <div className="relative">
             {/* Top row */}
@@ -70,8 +70,8 @@ export function ElectionResultsDashboard() {
             {/* Headline */}
             <h2 className="mt-4 text-xl font-bold leading-snug tracking-tight text-white">
               TVK leads, but the House is{' '}
-              <em className="font-serif font-medium text-amber-300">hung</em> and a{' '}
-              <em className="font-serif font-medium text-amber-300">coalition</em> rules
+              <em className="font-serif font-medium text-blue-300">hung</em> and a{' '}
+              <em className="font-serif font-medium text-blue-300">coalition</em> rules
             </h2>
             <p className="mt-2.5 text-xs leading-relaxed text-zinc-400">
               TVK won <span className="font-bold text-white tabular-nums">108 seats</span>, ten short of the <span className="font-semibold text-zinc-200">118</span> needed for a majority. It governs with its allies and outside support from <span className="font-semibold text-zinc-200">22 MLAs</span>.
