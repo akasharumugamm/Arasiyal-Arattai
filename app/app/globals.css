@@ -6829,3 +6829,18 @@ article.aa-social-post .aa-social-votes button > span {
   font-variant-numeric: tabular-nums;
 }
 
+
+
+/* Post category indicator dot from the supplied PostCard component. */
+article.aa-social-post .aa-social-flair {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+article.aa-social-post .aa-social-flair-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+}
