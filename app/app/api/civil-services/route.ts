@@ -16,7 +16,8 @@ export async function GET(request: NextRequest) {
       `SELECT id, full_name, service_type, batch_year, cadre, employee_id,
               current_designation, current_department, posting_location,
               recruitment_type, education, pay_level, source_name,
-              source_snapshot_date, verification_status
+              source_snapshot_date, verification_status, date_of_birth,
+              posting_effective_date, source_specific_data
        FROM government_officers
        WHERE service_type = $1
          AND ($2 = '' OR full_name ILIKE '%' || $2 || '%' OR employee_id ILIKE '%' || $2 || '%' OR COALESCE(current_designation, '') ILIKE '%' || $2 || '%' OR COALESCE(posting_location, '') ILIKE '%' || $2 || '%')
