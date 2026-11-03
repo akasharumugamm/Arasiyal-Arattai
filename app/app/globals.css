@@ -6722,3 +6722,110 @@ article.aa-social-post .aa-social-comment-button {
   article.aa-social-post > .aa-social-post-main { padding: 14px 13px 12px; }
 }
 
+
+/* Match the supplied PostCard JSX: plain official links and separate ghost actions. */
+article.aa-social-post .aa-social-officials {
+  display: block !important;
+  margin: 12px 0 0 !important;
+  padding: 0 !important;
+  color: #a1a1aa !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+article.aa-social-post .aa-social-officials .aa-social-official-item {
+  display: contents !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+article.aa-social-post .aa-social-officials a {
+  display: inline !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #a1a1aa !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  line-height: inherit !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+article.aa-social-post .aa-social-officials a:hover {
+  background: transparent !important;
+  color: #64748b !important;
+  text-decoration: underline !important;
+  text-decoration-color: #cbd5e1 !important;
+  text-underline-offset: 2px !important;
+}
+article.aa-social-post .aa-social-official-separator {
+  display: inline !important;
+  padding: 0 5px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #cbd5e1 !important;
+}
+article.aa-social-post .aa-social-votes {
+  display: contents !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+article.aa-social-post .aa-social-votes button,
+article.aa-social-post .aa-social-comment-button {
+  display: inline-flex !important;
+  min-width: 0 !important;
+  width: auto !important;
+  min-height: 32px !important;
+  height: 32px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: #a1a1aa !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  cursor: pointer;
+}
+article.aa-social-post .aa-social-votes button:hover,
+article.aa-social-post .aa-social-comment-button:hover {
+  background: #f4f4f5 !important;
+  color: #52525b !important;
+}
+article.aa-social-post .aa-social-votes button.is-upvoted {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+article.aa-social-post .aa-social-votes button.is-downvoted {
+  background: #fff1f2 !important;
+  color: #e11d48 !important;
+}
+article.aa-social-post .aa-social-votes button > svg,
+article.aa-social-post .aa-social-comment-button > svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 auto;
+}
+article.aa-social-post .aa-social-vote-count,
+article.aa-social-post .aa-social-comment-count,
+article.aa-social-post .aa-social-votes button > span {
+  color: inherit !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  font-variant-numeric: tabular-nums;
+}
+
