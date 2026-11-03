@@ -222,9 +222,7 @@ export function CivilServicesProfileCard({
   const serviceProgress = serviceYears === null
     ? 0
     : Math.min(100, Math.round((serviceYears / EXPECTED_SERVICE_TENURE_YEARS) * 100));
-  const expectedCompletionYear = displayBatchYear
-    ? displayBatchYear + EXPECTED_SERVICE_TENURE_YEARS
-    : null;
+  const currentYear = new Date().getFullYear();
 
   const sourceSnapshotDate = formatSourceDate(officer.source_snapshot_date);
   const presentPostDate = formatSourceDate(
@@ -237,9 +235,15 @@ export function CivilServicesProfileCard({
   const education = officer.education || sourceText(source, "educational_qualification");
   const payLevel = officer.pay_level || sourceText(source, "pay_level");
   const presentPost = officer.current_designation || sourceText(source, "present_post_held");
-  const posting = [presentPost, officer.current_department, officer.posting_location]
-    .filter(Boolean)
-    .join(" · ");
+  const commissioneratePosting = presentPost?.match(/^Addl\.?\s*DGP,\s*CP,\s*(.+)$/i);
+  const postingTitle = commissioneratePosting
+    ? "Addl. DGP, CP — " + commissioneratePosting[1]
+    : [presentPost, officer.current_department, officer.posting_location].filter(Boolean).join(" · ");
+  const postingRank = presentPost && /^Addl\.?\s*DGP/i.test(presentPost)
+    ? "ADGP rank"
+    : presentPost && /\b(DGP|IGP|DIG|SP|SSP|ASP|DSP)\b/i.test(presentPost)
+      ? (presentPost.match(/\b(DGP|IGP|DIG|SP|SSP|ASP|DSP)\b/i)?.[1].toUpperCase() ?? null) + " rank"
+      : null;
   const initialsText = initials(officer.full_name) || "TN";
 
   const medalSource = sourceText(source, "police_medals");
@@ -340,51 +344,51 @@ export function CivilServicesProfileCard({
       <div className="space-y-6 p-5">
         {/* Current Posting */}
         <ProfileSection title="Current Posting" icon={<Shield className="h-3.5 w-3.5" />}>
-          <div className="col-span-2 rounded-2xl bg-blue-50/70 p-4 ring-1 ring-inset ring-blue-900/5">
+          <div className="col-span-2 rounded-2xl border border-blue-100 bg-[#f3f7ff] p-5">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600">
                 <Shield className="h-5 w-5" />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div className="text-sm font-bold leading-snug text-zinc-900">
-                    {posting || "Current posting not listed"}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1 text-[14px] font-bold leading-[1.3] text-zinc-900">
+                    {postingTitle || "Current posting not listed"}
                   </div>
                   {payLevel && (
-                    <span className="shrink-0 rounded-full bg-blue-500/10 px-2.5 py-1 text-[10px] font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/10">
+                    <span className="shrink-0 rounded-full bg-blue-100 px-3 py-1 text-[10px] font-semibold text-blue-700 ring-1 ring-inset ring-blue-200">
                       {payLevel}
                     </span>
                   )}
                 </div>
-                <div className="mt-1 text-[11px] font-medium text-zinc-500">
-                  {presentPostDate ? "Since " + presentPostDate : "Posting effective date not listed"}
+                <div className="mt-1.5 text-[11px] font-medium text-zinc-500">
+                  {postingRank && <span>{postingRank}</span>}
+                  {postingRank && presentPostDate && <span> · </span>}
+                  {presentPostDate ? "since " + presentPostDate : !postingRank ? "Posting effective date not listed" : ""}
                 </div>
               </div>
             </div>
-            <div className="mt-4 border-t border-blue-900/10 pt-3.5">
+            <div className="mt-4 border-t border-blue-100 pt-3.5">
               <div className="mb-1.5 flex items-baseline justify-between">
-                <span className="text-[10px] font-semibold text-zinc-500">Service tenure</span>
+                <span className="text-[10px] font-semibold text-zinc-600">Service tenure</span>
                 <span className="text-xs font-bold text-zinc-900 tabular-nums">
-                  {serviceYears === null
-                    ? "Not available"
-                    : serviceYears + " / " + EXPECTED_SERVICE_TENURE_YEARS + " years"}
+                  {serviceYears === null ? "Not available" : serviceYears + " years"}
                 </span>
               </div>
               <div
-                className="h-1.5 w-full overflow-hidden rounded-full bg-blue-900/10"
+                className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200"
                 role="progressbar"
                 aria-label="Completed service tenure"
                 aria-valuemin={0}
                 aria-valuemax={EXPECTED_SERVICE_TENURE_YEARS}
-                aria-valuenow={serviceYears ?? 0}
+                aria-valuenow={Math.min(serviceYears ?? 0, EXPECTED_SERVICE_TENURE_YEARS)}
               >
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-[width] duration-500"
                   style={{ width: serviceYears === null ? "0%" : serviceProgress + "%" }}
                 />
               </div>
-              <div className="mt-2 flex justify-between text-[9px] font-medium text-zinc-400 tabular-nums">
-                <span>{displayBatchYear ?? "—"}</span><span>{expectedCompletionYear ?? "—"}</span>
+              <div className="mt-2 flex justify-between text-[9px] font-medium text-slate-400 tabular-nums">
+                <span>{displayBatchYear ?? "—"}</span><span>{currentYear}</span>
               </div>
             </div>
           </div>
