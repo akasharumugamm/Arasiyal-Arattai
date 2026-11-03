@@ -200,3 +200,23 @@
  .cs-reference-mobile-role{display:block;max-width:58vw}
  .cs-reference-footer{align-items:flex-start;flex-direction:column;padding:11px 14px;gap:5px}
 }
+
+
+/* Civil Services officer profile displayed in the shared right sidebar */
+.cs-sidebar-profile-card{position:relative;width:100%;box-sizing:border-box;padding:24px 20px 22px;border:1px solid #e4e8ef;border-radius:22px;background:#fff;box-shadow:0 12px 34px rgba(15,23,42,.08);color:#172554}
+.cs-sidebar-profile-close{position:absolute;top:13px;right:13px;display:grid;width:30px;height:30px;place-items:center;border:0;border-radius:9px;background:#f8fafc;color:#64748b;cursor:pointer}
+.cs-sidebar-profile-close:hover{background:#eef2f7;color:#172554}
+.cs-sidebar-profile-kicker{padding-right:30px;color:#4775c5;font-size:9px;font-weight:850;letter-spacing:.15em}
+.cs-theme-ias .cs-sidebar-profile-kicker{color:#7c3aed}
+.cs-sidebar-profile-avatar{display:grid;width:64px;height:64px;place-items:center;margin:22px auto 13px;border-radius:50%;background:#e5efff;color:#2457a6;font-size:19px;font-weight:800}
+.cs-theme-ias .cs-sidebar-profile-avatar{background:#f1eafe;color:#6d28d9}
+.cs-sidebar-profile-card h2{margin:0;text-align:center;color:#172554;font-size:19px;font-weight:800;line-height:1.3}
+.cs-sidebar-profile-role{margin:7px 0 19px;color:#64748b;font-size:12px;line-height:1.55;text-align:center}
+.cs-sidebar-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cs-sidebar-profile-grid>div{display:flex;min-width:0;min-height:62px;box-sizing:border-box;flex-direction:column;justify-content:center;gap:5px;padding:11px;border-radius:12px;background:#f8fafc}
+.cs-sidebar-profile-grid small{color:#94a3b8;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+.cs-sidebar-profile-grid strong{overflow-wrap:anywhere;color:#172554;font-size:12px;font-weight:750}
+.cs-sidebar-profile-detail{display:flex;align-items:flex-start;gap:9px;margin-top:14px;color:#64748b;font-size:11px;line-height:1.5}
+.cs-sidebar-profile-detail svg{flex:0 0 auto;margin-top:1px;color:#4775c5}
+.cs-theme-ias .cs-sidebar-profile-detail svg{color:#7c3aed}
+@media(max-width:760px){.cs-sidebar-profile-card{padding:20px 16px;border-radius:18px}}
