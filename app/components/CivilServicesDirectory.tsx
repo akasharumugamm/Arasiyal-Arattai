@@ -100,8 +100,10 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
   }, [service, query]);
 
   const filtered = useMemo(() => [...officers].sort((a, b) => {
-    const left = a.batch_year ?? (seniorFirst ? 9999 : 0);
-    const right = b.batch_year ?? (seniorFirst ? 9999 : 0);
+    const aYear = a.batch_year ?? parseSourceDate(sourceText(a.source_specific_data, "date_of_appointment_to_ips"))?.getFullYear() ?? null;
+    const bYear = b.batch_year ?? parseSourceDate(sourceText(b.source_specific_data, "date_of_appointment_to_ips"))?.getFullYear() ?? null;
+    const left = aYear ?? (seniorFirst ? 9999 : 0);
+    const right = bYear ?? (seniorFirst ? 9999 : 0);
     return seniorFirst ? left - right : right - left;
   }), [officers, seniorFirst]);
 
