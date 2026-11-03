@@ -6844,3 +6844,64 @@ article.aa-social-post .aa-social-flair-dot {
   flex: 0 0 5px;
   border-radius: 50%;
 }
+
+
+/* Exact reference action layout: no vote group container and no bordered comment button. */
+article.aa-social-post .aa-social-vote-buttons {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+article.aa-social-post .aa-post-action-button {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 0 6px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: #a1a1aa !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+}
+article.aa-social-post .aa-post-action-button:hover {
+  background: #f4f4f5 !important;
+  color: #71717a !important;
+}
+article.aa-social-post .aa-post-action-button.is-upvoted {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+article.aa-social-post .aa-post-action-button.is-downvoted {
+  background: #fff1f2 !important;
+  color: #e11d48 !important;
+}
+article.aa-social-post .aa-post-action-button > svg {
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+  stroke-width: 1.7 !important;
+  fill: none !important;
+}
+article.aa-social-post .aa-post-action-button .aa-social-vote-count,
+article.aa-social-post .aa-post-action-button .aa-social-comment-count {
+  color: inherit !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  font-variant-numeric: tabular-nums;
+}
