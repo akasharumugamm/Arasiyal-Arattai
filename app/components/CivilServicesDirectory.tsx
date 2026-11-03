@@ -58,6 +58,8 @@ const completedServiceYears = (start: Date, end = new Date()): number => {
   return Math.max(0, years);
 };
 
+const EXPECTED_SERVICE_TENURE_YEARS = 33;
+
 
 
 type CivilServicesDirectoryProps = {
@@ -217,6 +219,12 @@ export function CivilServicesProfileCard({
     : displayBatchYear
       ? Math.max(0, new Date().getFullYear() - displayBatchYear)
       : null;
+  const serviceProgress = serviceYears === null
+    ? 0
+    : Math.min(100, Math.round((serviceYears / EXPECTED_SERVICE_TENURE_YEARS) * 100));
+  const expectedCompletionYear = displayBatchYear
+    ? displayBatchYear + EXPECTED_SERVICE_TENURE_YEARS
+    : null;
 
   const sourceSnapshotDate = formatSourceDate(officer.source_snapshot_date);
   const presentPostDate = formatSourceDate(
@@ -357,12 +365,26 @@ export function CivilServicesProfileCard({
               <div className="mb-1.5 flex items-baseline justify-between">
                 <span className="text-[10px] font-semibold text-zinc-500">Service tenure</span>
                 <span className="text-xs font-bold text-zinc-900 tabular-nums">
-                  {serviceYears === null ? "Not available" : serviceYears + " years"}
+                  {serviceYears === null
+                    ? "Not available"
+                    : serviceYears + " / " + EXPECTED_SERVICE_TENURE_YEARS + " years"}
                 </span>
               </div>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-blue-900/10" />
+              <div
+                className="h-1.5 w-full overflow-hidden rounded-full bg-blue-900/10"
+                role="progressbar"
+                aria-label="Completed service tenure"
+                aria-valuemin={0}
+                aria-valuemax={EXPECTED_SERVICE_TENURE_YEARS}
+                aria-valuenow={serviceYears ?? 0}
+              >
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-[width] duration-500"
+                  style={{ width: serviceYears === null ? "0%" : serviceProgress + "%" }}
+                />
+              </div>
               <div className="mt-2 flex justify-between text-[9px] font-medium text-zinc-400 tabular-nums">
-                <span>{displayBatchYear ?? "—"}</span><span>{new Date().getFullYear()}</span>
+                <span>{displayBatchYear ?? "—"}</span><span>{expectedCompletionYear ?? "—"}</span>
               </div>
             </div>
           </div>
