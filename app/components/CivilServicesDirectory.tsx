@@ -249,6 +249,7 @@ export function CivilServicesProfileCard({
   const medalSource = sourceText(source, "police_medals");
   const medalTitles: Record<string, string> = {
     PPMDS: "President’s Police Medal for Distinguished Service",
+    PPM: "President’s Police Medal for Distinguished Service",
     PPDS: "President’s Police Medal for Distinguished Service",
     PMMS: "Police Medal for Meritorious Service",
     PPMG: "President’s Police Medal for Gallantry",
@@ -260,7 +261,7 @@ export function CivilServicesProfileCard({
   if (medalSource) {
     // Parse each code/year pair exactly once. The generic alternative handles
     // source abbreviations not yet mapped to a verified full award title.
-    const medalPattern = /\b(UN\s+peace\s+keeping\s+Medal|PPMDS|PPDS|PMMS|PPMG|PMG|PSM|MSM|[A-Z][A-Z0-9]*)\s*-\s*(\d{4})\b/gi;
+    const medalPattern = /\b(UN\s+peace\s+keeping\s+Medal|PPMDS|PPM|PPDS|PMMS|PPMG|PMG|PSM|MSM|[A-Z][A-Z0-9]*)\s*-\s*(\d{4})\b/gi;
     for (const match of medalSource.matchAll(medalPattern)) {
       const code = match[1].toUpperCase().replace(/\s+/g, " ");
       const isUnitedNationsMedal = code === "UN PEACE KEEPING MEDAL";
