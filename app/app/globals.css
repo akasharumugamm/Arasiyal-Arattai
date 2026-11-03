@@ -6307,3 +6307,240 @@ option {
 .cs-card-detail{display:flex;align-items:flex-start;gap:9px;margin-top:14px;color:#64748b;font-size:11px;line-height:1.5}
 .cs-card-detail svg{flex:0 0 auto;color:#4775c5}
 @media(max-width:700px){.cs-directory{padding:18px 12px 40px}.cs-intro{padding:18px 4px}.cs-intro p{font-size:13px}.cs-service-tabs{width:100%}.cs-service-tabs button{min-width:0;flex:1;padding:10px}.cs-toolbar{padding:13px}.cs-filter-row{gap:6px}.cs-filter{flex:1 1 auto}.cs-table-head{padding:13px}.cs-table-wrap{padding:0 10px}.cs-table-footer{flex-direction:column}.cs-selected-card{top:auto;right:12px;bottom:12px}}
+
+
+/* Global post-card presentation — shared by Home Community Voice and Profile feeds.
+   Data, voting, comments, tagging and deletion remain wired to the existing app logic. */
+article.aa-social-post {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e4e8ef;
+  border-radius: 18px;
+  background: #fff;
+  color: #202d43;
+  box-shadow: 0 4px 14px rgb(15 23 42 / 4%);
+  transform: none;
+}
+article.aa-social-post:hover,
+article.aa-social-post:focus-within {
+  border-color: #d6dfeb;
+  box-shadow: 0 4px 14px rgb(15 23 42 / 4%);
+  transform: none;
+}
+article.aa-social-post > .aa-social-post-main {
+  min-width: 0;
+  padding: 17px 18px 15px;
+}
+article.aa-social-post .aa-social-post-header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+article.aa-social-post .aa-social-avatar {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 750;
+}
+article.aa-social-post .aa-social-author strong {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+article.aa-social-post .aa-social-author > span {
+  margin-top: 1px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 500;
+}
+article.aa-social-post .aa-social-flair {
+  min-height: 24px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+}
+article.aa-social-post .aa-post-menu {
+  margin-left: 1px;
+}
+article.aa-social-post .aa-social-title {
+  margin: 11px 0 4px;
+  color: #18181b;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+  line-height: 1.4;
+}
+article.aa-social-post .aa-social-body {
+  margin: 0;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+article.aa-social-post .aa-social-media {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  margin: 12px 0 12px;
+  overflow: hidden;
+  border: 1px solid #e5eaf1;
+  border-radius: 11px;
+  background: #f1f5f9;
+}
+article.aa-social-post .aa-social-media > img,
+article.aa-social-post .aa-social-media > button,
+article.aa-social-post .aa-social-media > button img {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  max-height: 420px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+article.aa-social-post .aa-social-media.media-1 {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+}
+article.aa-social-post .aa-social-media.media-1 > img,
+article.aa-social-post .aa-social-media.media-1 > button img {
+  width: 100%;
+  max-height: 420px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+}
+article.aa-social-post .aa-social-media.media-3 > img:first-child {
+  grid-row: span 2;
+  height: 100%;
+  min-height: 100%;
+  aspect-ratio: auto;
+}
+article.aa-social-post .aa-social-media.media-3 > img:nth-child(n + 2) {
+  aspect-ratio: 2 / 1;
+}
+article.aa-social-post .aa-social-officials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 7px;
+}
+article.aa-social-post .aa-social-officials a,
+article.aa-social-post .aa-social-officials span {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #edf0f4;
+  border-radius: 6px;
+  background: #f5f6f8;
+  color: #596579;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+}
+article.aa-social-post .aa-social-officials a:hover {
+  border-color: #dbeafe;
+  background: #eff6ff;
+  color: #2563eb;
+}
+article.aa-social-post .aa-social-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid #edf0f5;
+}
+article.aa-social-post .aa-social-votes {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 2px;
+  border: 1px solid #e3e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+article.aa-social-post .aa-social-votes button {
+  display: inline-flex;
+  min-width: 46px;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #718096;
+  font-size: 11px;
+  font-weight: 650;
+}
+article.aa-social-post .aa-social-votes button:hover {
+  background: #eef2f7;
+  color: #334155;
+}
+article.aa-social-post .aa-social-votes button.is-upvoted {
+  background: #eaf2ff;
+  color: #2563eb;
+}
+article.aa-social-post .aa-social-votes button.is-downvoted {
+  background: #fff0e8;
+  color: #c2410c;
+}
+article.aa-social-post .aa-social-comment-button {
+  display: inline-flex;
+  min-width: 58px;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 1px solid #e3e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #718096;
+  font-size: 11px;
+  font-weight: 650;
+}
+article.aa-social-post .aa-social-comment-button:hover {
+  border-color: #cbd5e1;
+  background: #eef2f7;
+  color: #334155;
+}
+article.aa-social-post .aa-social-vote-count,
+article.aa-social-post .aa-social-comment-count,
+article.aa-social-post .aa-social-votes button > span {
+  font-size: 11px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 520px) {
+  article.aa-social-post > .aa-social-post-main {
+    padding: 14px 13px 12px;
+  }
+  article.aa-social-post .aa-social-media {
+    width: 100%;
+  }
+  article.aa-social-post .aa-social-title {
+    font-size: 15px;
+  }
+  article.aa-social-post .aa-social-comment-button {
+    min-height: 38px;
+  }
+}
+
