@@ -21,9 +21,44 @@ export type CivilServiceOfficer = {
   source_name: string | null;
   source_snapshot_date: string | null;
   verification_status: string | null;
+  date_of_birth: string | null;
+  posting_effective_date: string | null;
+  source_specific_data: Record<string, unknown> | null;
 };
 
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
+
+const sourceText = (source: Record<string, unknown> | null | undefined, key: string): string | null => {
+  const value = source?.[key];
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+};
+
+const parseSourceDate = (value: string | null | undefined): Date | null => {
+  if (!value) return null;
+  const dmy = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  const date = dmy
+    ? new Date(Number(dmy[3]), Number(dmy[2]) - 1, Number(dmy[1]))
+    : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const formatSourceDate = (value: string | null | undefined): string | null => {
+  const date = parseSourceDate(value);
+  return date
+    ? date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+    : null;
+};
+
+const completedServiceYears = (start: Date, end = new Date()): number => {
+  let years = end.getFullYear() - start.getFullYear();
+  const beforeAnniversary =
+    end.getMonth() < start.getMonth() ||
+    (end.getMonth() === start.getMonth() && end.getDate() < start.getDate());
+  if (beforeAnniversary) years -= 1;
+  return Math.max(0, years);
+};
+
+
 
 type CivilServicesDirectoryProps = {
   onSelectOfficer?: (officer: CivilServiceOfficer | null) => void;
@@ -134,7 +169,7 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
                 <span className="cs-reference-avatar">{initials(officer.full_name)}</span>
                 <span className="cs-reference-officer-copy">
                   <strong>{officer.full_name}{index === 0 && <BadgeCheck size={13} />}</strong>
-                  <small>{officer.employee_id} · {officer.batch_year ?? "Batch not listed"} Batch</small>
+                  <small>{officer.employee_id} · {officer.batch_year ?? (parseSourceDate(sourceText(officer.source_specific_data, "date_of_appointment_to_ips"))?.getFullYear() ?? "Batch not listed")} Batch</small>
                   <small className="cs-reference-mobile-role">{officer.current_designation || "Role not listed"}</small>
                 </span>
               </span>
@@ -171,23 +206,37 @@ export function CivilServicesProfileCard({
   officer: CivilServiceOfficer;
   onClose: () => void;
 }) {
-  const currentYear = new Date().getFullYear();
-  const serviceYears = officer.batch_year
-    ? Math.max(0, currentYear - officer.batch_year)
-    : null;
-  const sourceDate = officer.source_snapshot_date
-    ? new Date(officer.source_snapshot_date).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-    : null;
-  const posting = [officer.current_designation, officer.current_department, officer.posting_location]
+  const source = officer.source_specific_data ?? {};
+  const appointmentDateRaw = sourceText(source, "date_of_appointment_to_ips");
+  const appointmentDate = parseSourceDate(appointmentDateRaw);
+  const displayBatchYear = officer.batch_year ?? appointmentDate?.getFullYear() ?? null;
+  const serviceYears = appointmentDate
+    ? completedServiceYears(appointmentDate)
+    : displayBatchYear
+      ? Math.max(0, new Date().getFullYear() - displayBatchYear)
+      : null;
+
+  const sourceSnapshotDate = formatSourceDate(officer.source_snapshot_date);
+  const presentPostDate = formatSourceDate(
+    officer.posting_effective_date || sourceText(source, "date_of_appointment_to_present_post")
+  );
+  const sourceLabel = officer.source_name?.trim() || sourceText(source, "source_document") || "Source not listed";
+  const statusLabel = officer.verification_status?.trim() || "Officer record";
+  const cadre = officer.cadre || sourceText(source, "cadre");
+  const recruitment = officer.recruitment_type || sourceText(source, "recruitment_source");
+  const education = officer.education || sourceText(source, "educational_qualification");
+  const payLevel = officer.pay_level || sourceText(source, "pay_level");
+  const presentPost = officer.current_designation || sourceText(source, "present_post_held");
+  const posting = [presentPost, officer.current_department, officer.posting_location]
     .filter(Boolean)
     .join(" · ");
-  const statusLabel = officer.verification_status?.trim() || "Officer record";
-  const sourceLabel = officer.source_name?.trim() || "Source not listed";
   const initialsText = initials(officer.full_name) || "TN";
+
+  const medalSource = sourceText(source, "police_medals");
+  const medals = medalSource
+    ? Array.from(medalSource.matchAll(/([A-Z][A-Z0-9]*)\s*-\s*(\d{4})/g))
+        .map((match) => ({ code: match[1], year: match[2] }))
+    : [];
 
   return (
     <aside className="relative w-full overflow-hidden rounded-[28px] bg-white text-zinc-900 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.18)] ring-1 ring-zinc-950/5">
@@ -237,12 +286,12 @@ export function CivilServicesProfileCard({
                 {officer.full_name}
               </h2>
               <p className="mt-0.5 text-xs font-medium leading-snug text-zinc-400">
-                {officer.current_designation || "Designation not listed"}
+                {presentPost || "Designation not listed"}
               </p>
               <div className="mt-2.5 flex flex-wrap gap-1.5">
-                <GlassChip>{officer.cadre || "Cadre not listed"}</GlassChip>
-                <GlassChip accent>{officer.batch_year ? officer.batch_year + " Batch" : "Batch not listed"}</GlassChip>
-                <GlassChip>{officer.recruitment_type || "Entry not listed"}</GlassChip>
+                <GlassChip>{cadre || "Cadre not listed"}</GlassChip>
+                <GlassChip accent>{displayBatchYear ? displayBatchYear + " Batch" : "Batch not listed"}</GlassChip>
+                <GlassChip>{recruitment || "Entry not listed"}</GlassChip>
               </div>
             </div>
           </div>
@@ -291,27 +340,28 @@ export function CivilServicesProfileCard({
                   <div className="text-sm font-bold leading-snug text-zinc-900">
                     {posting || "Current posting not listed"}
                   </div>
-                  {officer.pay_level && (
+                  {payLevel && (
                     <span className="shrink-0 rounded-full bg-blue-500/10 px-2.5 py-1 text-[10px] font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/10">
-                      {officer.pay_level}
+                      {payLevel}
                     </span>
                   )}
                 </div>
                 <div className="mt-1 text-[11px] font-medium text-zinc-500">
-                  {sourceDate ? "Officer record snapshot · " + sourceDate : "Posting date not provided in this record"}
+                  {presentPostDate ? "Since " + presentPostDate : "Posting effective date not listed"}
                 </div>
               </div>
             </div>
             <div className="mt-4 border-t border-blue-900/10 pt-3.5">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-[10px] font-semibold text-zinc-500">Posting location</span>
-                <span className="text-right text-xs font-bold text-zinc-900">
-                  {officer.posting_location || "Not listed"}
+              <div className="mb-1.5 flex items-baseline justify-between">
+                <span className="text-[10px] font-semibold text-zinc-500">Service tenure</span>
+                <span className="text-xs font-bold text-zinc-900 tabular-nums">
+                  {serviceYears === null ? "Not available" : serviceYears + " years"}
                 </span>
               </div>
-              <p className="mt-2 text-[10px] leading-relaxed text-zinc-500">
-                Current designation and posting details are shown from the available officer record.
-              </p>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-blue-900/10" />
+              <div className="mt-2 flex justify-between text-[9px] font-medium text-zinc-400 tabular-nums">
+                <span>{displayBatchYear ?? "—"}</span><span>{new Date().getFullYear()}</span>
+              </div>
             </div>
           </div>
         </ProfileSection>
@@ -321,28 +371,28 @@ export function CivilServicesProfileCard({
           <ProfileStatTile
             icon={<CalendarDays className="h-3.5 w-3.5" />}
             label="Batch"
-            value={officer.batch_year?.toString() || "Not listed"}
-            sub={officer.batch_year ? "Batch year " + officer.batch_year : "Joining date not listed"}
+            value={displayBatchYear?.toString() || "Not listed"}
+            sub={appointmentDateRaw ? "Joined " + (formatSourceDate(appointmentDateRaw) || appointmentDateRaw) : "Joining date not listed"}
             theme="blue"
           />
           <ProfileStatTile
             icon={<Timer className="h-3.5 w-3.5" />}
             label="Service"
-            value={serviceYears === null ? "Not listed" : "~" + serviceYears + " yrs"}
-            sub={serviceYears === null ? "Batch year unavailable" : officer.batch_year + " — present (approx.)"}
+            value={serviceYears === null ? "Not listed" : serviceYears + " yrs"}
+            sub={displayBatchYear ? displayBatchYear + " — present" : "Service start date unavailable"}
             theme="emerald"
           />
           <ProfileStatTile
             icon={<MapPin className="h-3.5 w-3.5" />}
             label="Cadre"
-            value={officer.cadre || "Not listed"}
+            value={cadre || "Not listed"}
             sub="Cadre in officer record"
             theme="orange"
           />
           <ProfileStatTile
             icon={<UserCheck className="h-3.5 w-3.5" />}
             label="Entry"
-            value={officer.recruitment_type || "Not listed"}
+            value={recruitment || "Not listed"}
             sub="Recruitment type"
             theme="violet"
           />
@@ -358,37 +408,54 @@ export function CivilServicesProfileCard({
                   <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-100">
                     Decorations
                   </div>
-                  <div className="mt-1.5 text-2xl font-bold leading-none tracking-tight">
-                    Not listed
+                  <div className="mt-1.5 text-4xl font-bold leading-none tracking-tighter tabular-nums">
+                    {medals.length}
+                    <span className="ml-2 text-base font-semibold tracking-normal text-amber-100">
+                      {medals.length === 1 ? "medal" : "medals"}
+                    </span>
                   </div>
-                  <p className="mt-2 text-[10px] leading-relaxed text-amber-100/80">
-                    Decoration details are not present in the current officer record.
-                  </p>
                 </div>
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-inset ring-white/20">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-inset ring-white/20">
                   <Medal className="h-4 w-4" />
                 </span>
               </div>
-              <div className="mt-4 flex items-center gap-2 rounded-xl bg-white/10 px-3.5 py-2.5 ring-1 ring-inset ring-white/15">
-                <Star className="h-3.5 w-3.5 shrink-0 text-amber-200" />
-                <span className="text-[11px] font-semibold leading-snug">
-                  No verified awards are available in this dataset.
-                </span>
-              </div>
+
+              {medals.length > 0 ? (
+                <div className="mt-5 space-y-2.5">
+                  {medals.map((medal) => (
+                    <div key={medal.code + medal.year} className="flex items-center justify-between gap-3 rounded-xl bg-white/10 px-3.5 py-2.5 ring-1 ring-inset ring-white/15">
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <Star className="h-3.5 w-3.5 shrink-0 text-amber-200" />
+                        <span className="text-[11px] font-semibold leading-snug">{medal.code}</span>
+                      </div>
+                      <span className="ml-3 shrink-0 text-xs font-bold tabular-nums">{medal.year}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-3 text-[10px] leading-relaxed text-amber-100/80">
+                  No decoration details are included in this officer source record.
+                </p>
+              )}
+              {medalSource && (
+                <p className="mt-3 text-[9px] leading-relaxed text-amber-100/75">
+                  Source notation: {medalSource}
+                </p>
+              )}
             </div>
           </div>
 
           <ProfileStatTile
             icon={<GraduationCap className="h-3.5 w-3.5" />}
             label="Education"
-            value={officer.education || "Not listed"}
+            value={education || "Not listed"}
             sub="Education record"
             theme="violet"
           />
           <ProfileStatTile
             icon={<ShieldCheck className="h-3.5 w-3.5" />}
             label={officer.service_type + " ID"}
-            value={officer.employee_id || "Not listed"}
+            value={officer.employee_id || sourceText(source, "ips_id") || "Not listed"}
             sub={sourceLabel}
             theme="blue"
           />
@@ -399,7 +466,7 @@ export function CivilServicesProfileCard({
       <div className="border-t border-zinc-100 bg-zinc-50/80 px-5 py-3.5">
         <p className="text-center text-[10px] leading-relaxed text-zinc-500">
           <span className="font-semibold text-zinc-700">Source:</span> {sourceLabel}.
-          {sourceDate ? " Snapshot: " + sourceDate + "." : " Source snapshot date not listed."}
+          {sourceSnapshotDate ? " Snapshot: " + sourceSnapshotDate + "." : " Source snapshot date not listed."}
         </p>
       </div>
     </aside>
