@@ -23,20 +23,26 @@ export type CivilServiceOfficer = {
   verification_status: string | null;
 };
 
-const initials = (name: string) => name.split(/\\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
+const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
 
 type CivilServicesDirectoryProps = {
-  onSelectOfficer: (officer: CivilServiceOfficer | null) => void;
-  selectedOfficerId: number | null;
+  onSelectOfficer?: (officer: CivilServiceOfficer | null) => void;
+  selectedOfficerId?: number | null;
 };
 
-export default function CivilServicesDirectory({ onSelectOfficer, selectedOfficerId }: CivilServicesDirectoryProps) {
+export default function CivilServicesDirectory({ onSelectOfficer, selectedOfficerId }: CivilServicesDirectoryProps = {}) {
   const [service, setService] = useState<"IPS" | "IAS">("IPS");
   const [query, setQuery] = useState("");
   const [seniorFirst, setSeniorFirst] = useState(true);
   const [officers, setOfficers] = useState<CivilServiceOfficer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [localSelected, setLocalSelected] = useState<CivilServiceOfficer | null>(null);
+  const activeSelectedOfficerId = onSelectOfficer ? (selectedOfficerId ?? null) : (localSelected?.id ?? null);
+  const selectOfficer = (officer: CivilServiceOfficer | null) => {
+    setLocalSelected(officer);
+    onSelectOfficer?.(officer);
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -87,7 +93,7 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
           <div className="cs-reference-controls">
             <div className="cs-reference-tabs" role="tablist" aria-label="Civil service">
               {(["IAS", "IPS"] as const).map(s => (
-                <button key={s} type="button" role="tab" aria-selected={service === s} onClick={() => { setService(s); onSelectOfficer(null); }} className={service === s ? "active" : ""}>
+                <button key={s} type="button" role="tab" aria-selected={service === s} onClick={() => { setService(s); selectOfficer(null); }} className={service === s ? "active" : ""}>
                   <span className={service === s ? (s === "IPS" ? "ips-icon" : "ias-icon") : ""}>{s === "IPS" ? <Shield size={15} /> : <Landmark size={15} />}</span>
                   {s}
                   <small>{officers.length && service === s ? filtered.length : " "}</small>
@@ -122,7 +128,7 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
             </div>
           )}
           {!loading && !error && filtered.map((officer, index) => (
-            <button type="button" key={officer.id} className={`cs-reference-row${selectedOfficerId === officer.id ? " selected" : ""}`} onClick={() => onSelectOfficer(officer)}>
+            <button type="button" key={officer.id} className={`cs-reference-row${activeSelectedOfficerId === officer.id ? " selected" : ""}`} onClick={() => selectOfficer(officer)}>
               <span className={`cs-reference-rank${index < 3 ? " top" : ""}`}>{String(index + 1).padStart(2, "0")}</span>
               <span className="cs-reference-officer">
                 <span className="cs-reference-avatar">{initials(officer.full_name)}</span>
@@ -150,7 +156,9 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
           <p>Sorted by {seniorFirst ? "seniority" : "juniority"}</p>
         </footer>
       </section>
-
+      {!onSelectOfficer && localSelected && (
+        <CivilServicesProfileCard officer={localSelected} onClose={() => selectOfficer(null)} />
+      )}
     </div>
   );
 }
@@ -163,7 +171,7 @@ export function CivilServicesProfileCard({ officer, onClose }: { officer: CivilS
     : "";
 
   return (
-    <aside className="cs-sidebar-profile-card">
+    <aside className={`cs-sidebar-profile-card cs-theme-${officer.service_type.toLowerCase()}`}>
       <button type="button" className="cs-sidebar-profile-close" onClick={onClose} aria-label="Close officer profile">
         <X size={19} />
       </button>
