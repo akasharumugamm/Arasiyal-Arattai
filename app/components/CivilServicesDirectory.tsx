@@ -183,7 +183,7 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
               </span>
               <span className="cs-reference-cadre">
                 <strong>{officer.cadre || "—"}</strong>
-                <small>{officer.recruitment_type || officer.source_name || "—"}</small>
+                <small>{sourceText(officer.source_specific_data, "home_state") || sourceText(officer.source_specific_data, "home_state_or_domicile") || "—"}</small>
               </span>
               <ChevronRight className="cs-reference-chevron" size={16} />
             </button>
