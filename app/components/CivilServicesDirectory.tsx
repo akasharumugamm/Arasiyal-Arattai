@@ -247,10 +247,59 @@ export function CivilServicesProfileCard({
   const initialsText = initials(officer.full_name) || "TN";
 
   const medalSource = sourceText(source, "police_medals");
-  const medals = medalSource
-    ? Array.from(medalSource.matchAll(/([A-Z][A-Z0-9]*)\s*-\s*(\d{4})/g))
-        .map((match) => ({ code: match[1], year: match[2] }))
-    : [];
+  const medalTitles: Record<string, string> = {
+    PPMDS: "President’s Police Medal for Distinguished Service",
+    PPDS: "President’s Police Medal for Distinguished Service",
+    PMMS: "Police Medal for Meritorious Service",
+    PPMG: "President’s Police Medal for Gallantry",
+    PMG: "Police Medal for Gallantry",
+    PSM: "President’s Medal for Distinguished Service",
+    MSM: "Medal for Meritorious Service",
+  };
+  const medals: { code: string; name: string; year: string; index: number }[] = [];
+  if (medalSource) {
+    const recognizedPattern = /\b(PPMDS|PPDS|PMMS|PPMG|PMG|PSM|MSM)\s*-\s*(\d{4})\b/gi;
+    for (const match of medalSource.matchAll(recognizedPattern)) {
+      const code = match[1].toUpperCase();
+      medals.push({
+        code,
+        name: medalTitles[code],
+        year: match[2],
+        index: match.index ?? 0,
+      });
+    }
+
+    const unPattern = /\bUN\s+peace\s+keeping\s+Medal\s*-\s*(\d{4})\b/gi;
+    for (const match of medalSource.matchAll(unPattern)) {
+      medals.push({
+        code: "UN",
+        name: "United Nations Peacekeeping Medal",
+        year: match[1],
+        index: match.index ?? 0,
+      });
+    }
+
+    // Preserve unfamiliar source abbreviations without guessing their meaning.
+    const genericPattern = /\b([A-Z][A-Z0-9]*)\s*-\s*(\d{4})\b/g;
+    for (const match of medalSource.matchAll(genericPattern)) {
+      const start = match.index ?? 0;
+      const end = start + match[0].length;
+      const alreadyParsed = medals.some((medal) => {
+        const medalSourceEnd = medal.index + (medal.code === "UN" ? match[0].length : medal.code.length + 5);
+        return start >= medal.index && end <= medalSourceEnd;
+      });
+      if (!alreadyParsed) {
+        medals.push({
+          code: match[1],
+          name: match[1],
+          year: match[2],
+          index: start,
+        });
+      }
+    }
+
+    medals.sort((a, b) => a.index - b.index);
+  }
 
   return (
     <aside className="relative w-full overflow-hidden rounded-[28px] bg-white text-zinc-900 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.18)] ring-1 ring-zinc-950/5">
@@ -450,11 +499,11 @@ export function CivilServicesProfileCard({
 
               {medals.length > 0 ? (
                 <div className="mt-5 space-y-2.5">
-                  {medals.map((medal) => (
-                    <div key={medal.code + medal.year} className="flex items-center justify-between gap-3 rounded-xl bg-white/10 px-3.5 py-2.5 ring-1 ring-inset ring-white/15">
+                  {medals.map((medal, index) => (
+                    <div key={medal.code + medal.year + index} className="flex items-center justify-between gap-3 rounded-xl bg-white/10 px-3.5 py-2.5 ring-1 ring-inset ring-white/15">
                       <div className="flex min-w-0 items-center gap-2.5">
                         <Star className="h-3.5 w-3.5 shrink-0 text-amber-200" />
-                        <span className="text-[11px] font-semibold leading-snug">{medal.code}</span>
+                        <span className="min-w-0 text-[11px] font-semibold leading-snug">{medal.name}</span>
                       </div>
                       <span className="ml-3 shrink-0 text-xs font-bold tabular-nums">{medal.year}</span>
                     </div>
