@@ -3,7 +3,8 @@
 import "./CivilServicesDirectory.css";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, Shield, Landmark, ArrowUpDown, SearchX, BadgeCheck, X, ChevronRight, BriefcaseBusiness, ShieldCheck } from "lucide-react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { Search, Shield, Landmark, ArrowUpDown, SearchX, BadgeCheck, X, ChevronRight, ShieldCheck, Medal, Award, GraduationCap, CalendarDays, Timer, MapPin, UserCheck, Star } from "lucide-react";
 
 export type CivilServiceOfficer = {
   id: number;
