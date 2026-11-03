@@ -282,11 +282,14 @@ export function CivilServicesProfileCard({
     // Preserve unfamiliar source abbreviations without guessing their meaning.
     const genericPattern = /\b([A-Z][A-Z0-9]*)\s*-\s*(\d{4})\b/g;
     for (const match of medalSource.matchAll(genericPattern)) {
+      const code = match[1].toUpperCase();
+      // "Medal-YYYY" is only the tail of the longer UN peacekeeping entry.
+      if (code === "MEDAL") continue;
       const start = match.index ?? 0;
       const end = start + match[0].length;
       const alreadyParsed = medals.some((medal) => {
-        const medalSourceEnd = medal.index + (medal.code === "UN" ? match[0].length : medal.code.length + 5);
-        return start >= medal.index && end <= medalSourceEnd;
+        const medalEnd = medal.index + medal.code.length + 5;
+        return start >= medal.index && end <= medalEnd;
       });
       if (!alreadyParsed) {
         medals.push({
