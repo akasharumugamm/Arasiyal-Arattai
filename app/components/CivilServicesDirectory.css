@@ -128,16 +128,17 @@
 .cs-reference-status{display:inline-flex;flex:0 0 auto;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(16,185,129,.09);color:#047857;font-size:10px;font-weight:700;box-shadow:inset 0 0 0 1px rgba(5,150,105,.10)}
 .cs-reference-status>span{width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.10)}
 .cs-reference-controls{display:flex;align-items:center;gap:10px;margin-top:17px}
-.cs-reference-tabs{display:flex;flex:0 0 auto;align-items:center;gap:2px;padding:0;border-radius:999px;background:transparent;box-shadow:none}
+.cs-reference-tabs{display:flex;flex:0 0 auto;align-items:center;gap:2px;padding:4px;border-radius:999px;background:#f4f4f5;box-shadow:inset 0 0 0 1px rgba(24,24,27,.035)}
 .cs-reference-tabs button{display:flex;min-height:34px;align-items:center;justify-content:center;gap:7px;padding:0 15px;border:0;border-radius:999px;background:transparent;color:#71717a;font-size:12px;font-weight:650;cursor:pointer;transition:background .18s,color .18s,box-shadow .18s}
 .cs-reference-tabs button>span{display:flex;align-items:center}
 .cs-reference-tabs button small{padding:2px 5px;border-radius:999px;background:rgba(24,24,27,.05);color:#a1a1aa;font-size:9px;font-weight:750;font-variant-numeric:tabular-nums}
-.cs-reference-tabs button.active{border:1px solid #e4e4e7;background:#fff;color:#18181b;box-shadow:none}
+.cs-reference-tabs button.active{background:#fff;color:#18181b;box-shadow:0 1px 4px rgba(0,0,0,.08),inset 0 0 0 1px rgba(24,24,27,.055)}
 .cs-reference-tabs button.active small{background:var(--cs-chip-bg);color:var(--cs-chip-color)}
 .cs-theme-ips{--cs-accent:#2563eb;--cs-chip-bg:rgba(59,130,246,.10);--cs-chip-color:#1d4ed8;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8}
 .cs-theme-ias{--cs-accent:#7c3aed;--cs-chip-bg:rgba(139,92,246,.10);--cs-chip-color:#6d28d9;--cs-avatar-bg:rgba(139,92,246,.10);--cs-avatar-fg:#6d28d9}
 .cs-theme-ips .cs-reference-tabs button.active .ips-icon{color:#2563eb}
-.cs-theme-ias .cs-reference-tabs button.active .ias-icon{color:#7c3aed}
+.cs-theme-ias .cs-reference-tabs button.active .ias-icon{color:#2563eb}
+.cs-theme-ias .cs-reference-tabs button.active small{background:rgba(59,130,246,.10);color:#1d4ed8}
 .cs-reference-search{display:flex;height:38px;min-width:0;flex:1;align-items:center;gap:10px;padding:0 13px;border-radius:999px;background:#f4f4f5;color:#a1a1aa;box-shadow:inset 0 0 0 1px rgba(24,24,27,.035);transition:background .18s,box-shadow .18s}
 .cs-reference-search:focus-within{background:#fff;box-shadow:inset 0 0 0 1px var(--cs-accent),0 0 0 3px var(--cs-chip-bg)}
 .cs-reference-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#18181b;font:inherit;font-size:12px;font-weight:500}
@@ -157,8 +158,7 @@
 .cs-reference-row:hover{background:#fafafa}
 .cs-reference-row:hover:before,.cs-reference-row.selected:before{opacity:1}
 .cs-reference-row.selected{background:#f8fafc}
-.cs-reference-rank{width:32px;flex:0 0 32px;color:#a1a1aa;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums}
-.cs-reference-rank.top{color:#27272a}
+.cs-reference-rank{width:32px;flex:0 0 32px;color:#27272a;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums}
 .cs-reference-officer{display:flex;min-width:0;flex:1.25;align-items:center;gap:11px}
 .cs-reference-avatar{display:flex;width:39px;height:39px;flex:0 0 39px;align-items:center;justify-content:center;border-radius:50%;background:var(--cs-avatar-bg);color:var(--cs-avatar-fg);font-size:11px;font-weight:750;box-shadow:inset 0 0 0 1px rgba(24,24,27,.035)}
 .cs-reference-officer-copy{display:flex;min-width:0;flex-direction:column;gap:3px}
@@ -182,7 +182,7 @@
 .cs-reference-empty button{margin-top:7px;padding:7px 14px;border:0;border-radius:999px;background:#18181b;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
 .cs-reference-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 20px;border-top:1px solid #f4f4f5;background:rgba(250,250,250,.8)}
 .cs-reference-footer p{margin:0;color:#a1a1aa;font-size:10px;font-weight:500}
-.cs-reference-footer strong{color:#3f3f46;font-weight:750;font-variant-numeric:tabular-nums}
+.cs-reference-footer strong{color:#52525b;font-weight:550;font-variant-numeric:tabular-nums}
 @media(max-width:700px){
  .cs-workspace{border-radius:18px}
  .cs-reference-header{padding:15px}
