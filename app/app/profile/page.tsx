@@ -1,5 +1,6 @@
-import { ArrowBigUp, ArrowBigDown, MessageCircle } from "lucide-react";
 "use client";
+
+import { ArrowBigUp, ArrowBigDown, MessageCircle } from "lucide-react";
 
 import Link from "next/link";
 import PostActionsMenu from "@/components/PostActionsMenu";
