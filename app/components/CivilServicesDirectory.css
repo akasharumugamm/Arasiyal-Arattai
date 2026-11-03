@@ -56,13 +56,13 @@
 .cs-service-tabs-inline button span{font-size:11px}
 .cs-service-tabs-inline button small{font-size:9px}
 .cs-theme-ips{--cs-accent:#2563eb;--cs-accent-soft:rgba(37,99,235,.18);--cs-accent-tint:#eff6ff;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8;--cs-gradient:linear-gradient(135deg,#3b82f6,#4f46e5)}
-.cs-theme-ias{--cs-accent:#7c3aed;--cs-accent-soft:rgba(124,58,237,.18);--cs-accent-tint:#f5f3ff;--cs-avatar-bg:rgba(139,92,246,.10);--cs-avatar-fg:#6d28d9;--cs-gradient:linear-gradient(135deg,#8b5cf6,#c026d3)}
+.cs-theme-ias{--cs-accent:#2563eb;--cs-accent-soft:rgba(37,99,235,.18);--cs-accent-tint:#eff6ff;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8;--cs-gradient:linear-gradient(135deg,#3b82f6,#4f46e5)}
 .cs-theme-ips .cs-service-tabs-inline button.active{color:#1d4ed8}
-.cs-theme-ias .cs-service-tabs-inline button.active{color:#6d28d9}
+.cs-theme-ias .cs-service-tabs-inline button.active{color:#1d4ed8}
 .cs-theme-ips .cs-cadre{background:#eff6ff;border-color:#dbeafe;color:#2563eb}
-.cs-theme-ias .cs-cadre{background:#f5f3ff;border-color:#ede9fe;color:#7c3aed}
+.cs-theme-ias .cs-cadre{background:#eff6ff;border-color:#dbeafe;color:#2563eb}
 .cs-theme-ips .cs-cadre select{color:#1d4ed8}
-.cs-theme-ias .cs-cadre select{color:#6d28d9}
+.cs-theme-ias .cs-cadre select{color:#1d4ed8}
 .cs-list-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px 10px;color:#71717a;font-size:10px;font-weight:800;letter-spacing:.13em}
 .cs-list-heading-title,.cs-source-note{display:flex;align-items:center;gap:9px}
 .cs-source-note{letter-spacing:.06em}
@@ -121,7 +121,7 @@
 .cs-reference-header{padding:20px 22px 18px;border-bottom:1px solid #f4f4f5;background:#fff}
 .cs-reference-brand{display:flex;min-width:0;align-items:center;gap:13px}
 .cs-reference-logo{display:flex;width:44px;height:44px;flex:0 0 44px;align-items:center;justify-content:center;border-radius:15px;background:linear-gradient(135deg,#3b82f6,#4f46e5);color:white;box-shadow:none}
-.cs-theme-ias .cs-reference-logo{background:linear-gradient(135deg,#8b5cf6,#c026d3);box-shadow:none}
+.cs-theme-ias .cs-reference-logo{background:linear-gradient(135deg,#3b82f6,#4f46e5);box-shadow:none}
 .cs-reference-heading{min-width:0;flex:1}
 .cs-reference-heading h1{margin:0;color:#09090b;font-size:16px;font-weight:750;letter-spacing:-.035em;line-height:1.3}
 .cs-reference-heading p{margin:3px 0 0;overflow:hidden;color:#71717a;font-size:11px;font-weight:550;text-overflow:ellipsis;white-space:nowrap}
@@ -135,7 +135,7 @@
 .cs-reference-tabs button.active{background:#fff;color:#18181b;box-shadow:0 1px 4px rgba(0,0,0,.08),inset 0 0 0 1px rgba(24,24,27,.055)}
 .cs-reference-tabs button.active small{background:var(--cs-chip-bg);color:var(--cs-chip-color)}
 .cs-theme-ips{--cs-accent:#2563eb;--cs-chip-bg:rgba(59,130,246,.10);--cs-chip-color:#1d4ed8;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8}
-.cs-theme-ias{--cs-accent:#7c3aed;--cs-chip-bg:rgba(139,92,246,.10);--cs-chip-color:#6d28d9;--cs-avatar-bg:rgba(139,92,246,.10);--cs-avatar-fg:#6d28d9}
+.cs-theme-ias{--cs-accent:#2563eb;--cs-chip-bg:rgba(59,130,246,.10);--cs-chip-color:#1d4ed8;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8}
 .cs-theme-ips .cs-reference-tabs button.active .ips-icon{color:#2563eb}
 .cs-theme-ias .cs-reference-tabs button.active .ias-icon{color:#2563eb}
 .cs-theme-ias .cs-reference-tabs button.active small{background:rgba(59,130,246,.10);color:#1d4ed8}
@@ -154,7 +154,7 @@
 .cs-reference-list{max-height:416px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#e4e4e7 transparent}
 .cs-reference-row{position:relative;display:flex;width:100%;min-height:65px;align-items:center;gap:12px;padding:10px 20px;border:0;border-bottom:1px solid #f4f4f5;background:#fff;text-align:left;cursor:pointer;transition:background .16s}
 .cs-reference-row:before{position:absolute;top:9px;bottom:9px;left:0;width:4px;border-radius:0 5px 5px 0;background:linear-gradient(180deg,#3b82f6,#6366f1);content:"";opacity:0;transition:opacity .16s}
-.cs-theme-ias .cs-reference-row:before{background:linear-gradient(180deg,#8b5cf6,#d946ef)}
+.cs-theme-ias .cs-reference-row:before{background:linear-gradient(180deg,#3b82f6,#6366f1)}
 .cs-reference-row:hover{background:#fafafa}
 .cs-reference-row:hover:before,.cs-reference-row.selected:before{opacity:1}
 .cs-reference-row.selected{background:#f8fafc}
