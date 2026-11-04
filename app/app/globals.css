@@ -6609,6 +6609,7 @@ article.aa-social-post .aa-social-media {
   margin: 14px 0 12px;
   border-radius: 16px;
   overflow: hidden;
+  isolation: isolate;
 }
 article.aa-social-post .aa-social-media > img,
 article.aa-social-post .aa-social-media > button,
@@ -6619,10 +6620,11 @@ article.aa-social-post .aa-social-media > button img {
   object-fit: cover;
 }
 article.aa-social-post .aa-social-media > img {
-  transition: transform 300ms ease;
+  will-change: transform;
+  transition: transform 700ms ease;
 }
 article.aa-social-post .aa-social-media > img:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 @media (prefers-reduced-motion: reduce) {
   article.aa-social-post .aa-social-media > img {
@@ -6929,11 +6931,11 @@ article.aa-social-post .aa-social-media > button {
 }
 article.aa-social-post .aa-social-media > button img {
   will-change: transform;
-  transition: transform 280ms ease;
+  transition: transform 700ms ease;
 }
 article.aa-social-post .aa-social-media > button:hover img,
 article.aa-social-post .aa-social-media > button:focus-visible img {
-  transform: scale(1.12) !important;
+  transform: scale(1.02) !important;
 }
 @media (prefers-reduced-motion: reduce) {
   article.aa-social-post .aa-social-media > button img {
@@ -6951,11 +6953,11 @@ article.aa-social-post .aa-social-media > button.aa-image-zoom {
 }
 article.aa-social-post .aa-social-media > button.aa-image-zoom > img {
   transform: scale(1);
-  transition: transform 300ms ease;
+  transition: transform 700ms ease;
 }
 article.aa-social-post .aa-social-media > button.aa-image-zoom:hover > img,
 article.aa-social-post .aa-social-media > button.aa-image-zoom:focus-visible > img {
-  transform: scale(1.12) !important;
+  transform: scale(1.02) !important;
 }
 @media (prefers-reduced-motion: reduce) {
   article.aa-social-post .aa-social-media > button.aa-image-zoom > img {
