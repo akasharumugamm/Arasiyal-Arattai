@@ -3245,9 +3245,14 @@ option {
 
 .aa-post-menu-trigger:hover,
 .aa-post-menu-trigger[aria-expanded="true"] {
-  border-color: #e5eaf1;
-  background: #f5f7fb;
-  color: #263449;
+  border-color: transparent;
+  background: #f4f4f5;
+  color: #71717a;
+}
+.aa-post-menu-trigger svg {
+  width: 16px;
+  height: 16px;
+  color: #a1a1aa;
 }
 
 .aa-post-menu-dismiss {
@@ -3265,27 +3270,27 @@ option {
 .aa-post-menu-popover {
   position: absolute;
   z-index: 2;
-  top: calc(100% + 6px);
+  top: calc(100% + 4px);
   right: 0;
   display: grid;
-  min-width: 190px;
-  gap: 3px;
-  padding: 6px;
-  border: 1px solid #e7ebf2;
-  border-radius: 13px;
+  min-width: 160px;
+  gap: 1px;
+  padding: 5px;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
   background: #fff;
-  box-shadow: 0 12px 34px rgb(15 23 42 / 14%);
+  box-shadow: 0 10px 24px rgb(15 23 42 / 14%);
 }
 
 .aa-post-menu-item {
   display: flex;
   width: 100%;
-  min-height: 39px;
+  min-height: 34px;
   align-items: center;
-  gap: 10px;
-  padding: 0 10px;
+  gap: 9px;
+  padding: 0 9px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
   color: #334155;
   text-align: left;
@@ -3300,7 +3305,7 @@ option {
 }
 
 .aa-post-menu-item small {
-  color: #94a3b8;
+  display: none;
   font-size: 10px;
   font-weight: 500;
 }
@@ -3311,13 +3316,13 @@ option {
 
 .aa-post-menu-item.is-unavailable,
 .aa-post-menu-item:disabled {
-  color: #7b8798;
+  color: #71717a;
   cursor: not-allowed;
-  opacity: .82;
+  opacity: 1;
 }
 
 .aa-post-menu-item.is-danger {
-  color: #c2413a;
+  color: #f43f5e;
 }
 
 .aa-post-menu-item.is-danger:hover {
@@ -6976,10 +6981,30 @@ article.aa-social-post .aa-post-action-button .aa-social-comment-count {
   border: 0;
   cursor: zoom-in;
 }
+.aa-social-media > button img {
+  transition: transform 500ms ease;
+}
+.aa-social-media > button:hover img,
+.aa-social-media > button:focus-visible img {
+  transform: scale(1.04);
+}
 .aa-comments {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #f1f5f9;
+}
+article.aa-social-post .aa-social-officials a,
+article.aa-social-post .aa-social-officials {
+  color: #a1a1aa !important;
+}
+article.aa-social-post .aa-social-official-separator {
+  color: #d4d4d8 !important;
+}
+article.aa-social-post .aa-post-action-button {
+  color: #a1a1aa !important;
+}
+article.aa-social-post .aa-post-action-button:hover {
+  color: #71717a !important;
 }
 .aa-comment {
   padding: 8px 0;
