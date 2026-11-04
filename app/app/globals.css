@@ -6911,6 +6911,38 @@ article.aa-social-post .aa-post-action-button .aa-social-comment-count {
   font-variant-numeric: tabular-nums;
 }
 
+article.aa-social-post .aa-social-officials {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em;
+  line-height: 1.4 !important;
+}
+article.aa-social-post .aa-social-officials a {
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+}
+article.aa-social-post .aa-social-media > button {
+  overflow: hidden;
+}
+article.aa-social-post .aa-social-media > button img {
+  will-change: transform;
+  transition: transform 280ms ease;
+}
+article.aa-social-post .aa-social-media > button:hover img,
+article.aa-social-post .aa-social-media > button:focus-visible img {
+  transform: scale(1.08);
+}
+@media (prefers-reduced-motion: reduce) {
+  article.aa-social-post .aa-social-media > button img {
+    transition: none;
+  }
+  article.aa-social-post .aa-social-media > button:hover img,
+  article.aa-social-post .aa-social-media > button:focus-visible img {
+    transform: none;
+  }
+}
+
 .aa-feed-controls {
   display: flex;
   align-items: center;
