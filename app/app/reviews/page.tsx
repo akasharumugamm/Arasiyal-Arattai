@@ -416,7 +416,7 @@ export default function ReviewsPage() {
                   {images.length > 0 && (
                     <div className={`aa-social-media media-${images.length}`}>
                       {images.map((url, index) => (
-                        <button key={url} type="button" onClick={() => setLightbox({ urls: review.imageUrls, index })} aria-label={`View image ${index + 1}`}>
+                        <button className="aa-image-zoom" key={url} type="button" onClick={() => setLightbox({ urls: review.imageUrls, index })} aria-label={`View image ${index + 1}`}>
                           <img src={url} alt={`Discussion attachment: ${review.title}`} loading="lazy" />
                           {index === 3 && remainingImages > 0 && <span className="aa-media-more">+{remainingImages}</span>}
                         </button>
