@@ -7081,6 +7081,56 @@ article.aa-social-post .aa-post-action-button {
 article.aa-social-post .aa-post-action-button:hover {
   color: #71717a !important;
 }
+
+/* Shared application surfaces. Keep page-level cards on one neutral system. */
+:root {
+  --aa-surface: #fff;
+  --aa-surface-border: #e2e8f0;
+  --aa-surface-radius: 16px;
+  --aa-surface-shadow: 0 6px 20px rgb(15 23 42 / 5%);
+}
+
+.app-header,
+.community-feedback,
+.graph-panel,
+.feedback-overview-card,
+.discussion-overview-card,
+.profile-column > *,
+.cs-workspace {
+  border: 1px solid var(--aa-surface-border) !important;
+  border-radius: var(--aa-surface-radius) !important;
+  box-shadow: var(--aa-surface-shadow) !important;
+}
+
+.app-header {
+  background: var(--aa-surface) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.community-feedback,
+.feedback-overview-card,
+.discussion-overview-card,
+.profile-column > *,
+.cs-workspace {
+  background: var(--aa-surface) !important;
+}
+
+.graph-panel {
+  background: var(--aa-surface) !important;
+  box-shadow: none !important;
+}
+
+.graph-panel .react-flow,
+.graph-panel .react-flow__renderer,
+.graph-panel .react-flow__pane,
+.graph-panel .react-flow__background {
+  background: var(--aa-surface) !important;
+}
+
+.graph-panel .react-flow__background pattern circle {
+  fill: #cbd5e1 !important;
+}
 .aa-comment {
   padding: 8px 0;
   color: #475569;
