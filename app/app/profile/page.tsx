@@ -173,7 +173,7 @@ export default function ProfilePage() {
                 </div>
                 <h3 className="aa-social-title">{post.title}</h3>
                 <p className="aa-social-body">{post.body}</p>
-                {post.imageUrls?.length > 0 && <div className={`aa-social-media media-${Math.min(post.imageUrls.length, 4)}`}>{post.imageUrls.slice(0, 4).map((url) => <img key={url} src={url} alt={`Discussion attachment: ${post.title}`} loading="lazy" />)}</div>}
+                {post.imageUrls?.length > 0 && <div className={`aa-social-media media-${Math.min(post.imageUrls.length, 4)}`}>{post.imageUrls.slice(0, 4).map((url) => <span className="aa-social-media-image-cell" key={url}><img src={url} alt={`Discussion attachment: ${post.title}`} loading="lazy" /></span>)}</div>}
                 {post.officials?.length > 0 ? <div className="aa-social-officials">{post.officials.map((official, index) => <Link key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}{index < post.officials.length - 1 ? " · " : ""}</Link>)}</div> : null}
                 <div className="aa-social-actions">
                   <div className="aa-social-vote-buttons">

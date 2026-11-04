@@ -1721,7 +1721,7 @@ export default function Home() {
                     <h3 className="aa-social-title">{review.title}</h3>
                     <p className="aa-social-body">{review.body}</p>
                     
-                    {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div> : null}
+                    {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <span className="aa-social-media-image-cell" key={url}><img src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" /></span>)}</div> : null}
                     {review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official, index) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}{index < review.officials.length - 1 ? " · " : ""}</a>)}</div> : null}
                     <div className="aa-social-actions">
                       <div className="aa-social-vote-buttons">
