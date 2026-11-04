@@ -6621,6 +6621,7 @@ article.aa-social-post .aa-social-media > button img {
 }
 article.aa-social-post .aa-social-media > img {
   will-change: transform;
+  clip-path: inset(0);
   transition: transform 700ms ease;
 }
 article.aa-social-post .aa-social-media > img:hover {
