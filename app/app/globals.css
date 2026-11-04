@@ -6905,3 +6905,129 @@ article.aa-social-post .aa-post-action-button .aa-social-comment-count {
   font-weight: 600 !important;
   font-variant-numeric: tabular-nums;
 }
+
+.aa-feed-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -8px 0 16px;
+}
+.aa-feed-search {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+}
+.aa-feed-search input,
+.aa-feed-controls select {
+  box-sizing: border-box;
+  min-height: 40px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  color: #334155;
+  font: inherit;
+  font-size: 12px;
+  outline: 0;
+}
+.aa-feed-search input {
+  width: 100%;
+  padding: 0 12px;
+}
+.aa-feed-controls select {
+  padding: 0 10px;
+  cursor: pointer;
+}
+.aa-feed-search input:focus,
+.aa-feed-controls select:focus {
+  border-color: #93b4f7;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+.aa-feed {
+  display: grid;
+  gap: 14px;
+}
+.aa-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 28px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+.aa-empty strong {
+  color: #334155;
+  font-size: 15px;
+}
+.aa-media-more {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(15 23 42 / 60%);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+}
+.aa-social-media > button {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+}
+.aa-comments {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+.aa-comment {
+  padding: 8px 0;
+  color: #475569;
+  font-size: 12px;
+}
+.aa-comment strong {
+  color: #334155;
+  font-size: 11px;
+}
+.aa-comment p {
+  margin: 3px 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.aa-comment button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #64748b;
+  font-size: 10px;
+  cursor: pointer;
+}
+.aa-comment-form {
+  display: flex;
+  gap: 7px;
+  margin-top: 8px;
+}
+.aa-comment-form input {
+  min-width: 0;
+  flex: 1;
+  padding: 9px 11px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  outline: 0;
+  font: inherit;
+  font-size: 12px;
+}
+.aa-comment-form button {
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #172554;
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+}
+@media (max-width: 520px) {
+  .aa-feed-controls { align-items: stretch; flex-direction: column; }
+  .aa-feed-controls select { width: 100%; }
+}
