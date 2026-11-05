@@ -91,7 +91,7 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
       service,
       q: query,
       cadre: "Tamil Nadu",
-      senior: String(seniorFirst),
+      sort: seniorFirst ? "senior" : "junior",
       limit: String(OFFICER_PAGE_SIZE),
       offset: String(offset),
     });

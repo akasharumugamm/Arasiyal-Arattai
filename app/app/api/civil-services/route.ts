@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const batchFrom = Number(params.get("batchFrom")) || null;
     const batchTo = Number(params.get("batchTo")) || null;
     const senior = params.get("senior") === "true";
+    const sortSeniorFirst = params.get("sort") !== "junior";
     const limit = Math.min(Math.max(Number(params.get("limit")) || 20, 1), 100);
     const offset = Math.max(Number(params.get("offset")) || 0, 0);
     const result = await query(
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
          CASE WHEN $9 = false THEN batch_year END DESC NULLS LAST,
          full_name ASC
        LIMIT $10 OFFSET $11`,
-      [service, search, cadre === "All Cadres" ? "" : cadre, source, pay, batchFrom, batchTo, senior, senior, limit, offset],
+      [service, search, cadre === "All Cadres" ? "" : cadre, source, pay, batchFrom, batchTo, senior, sortSeniorFirst, limit, offset],
     );
     return NextResponse.json({ officers: result.rows, hasMore: result.rows.length === limit });
   } catch (error) {
