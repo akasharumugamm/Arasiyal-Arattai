@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Landmark, Users, Vote, TrendingUp, Target, 
-  Scale, CircleDashed, User, BarChart3
+  Scale,   CircleDashed, User, BarChart3, TrendingUp
 } from 'lucide-react';
 
 // === Data ===
@@ -125,9 +125,9 @@ export function ElectionResultsDashboard({ sentimentScore = null, sentimentChang
                       <span className="text-4xl font-bold leading-none tracking-tighter text-white tabular-nums">{score === null ? '—' : score}</span>
                       <span className="text-sm font-medium text-zinc-500">/ 100</span>
                     </div>
-                    {sentimentChange !== null && (
-                      <span className={`text-right text-[10px] font-semibold ${sentimentChange >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
-                        {sentimentChange >= 0 ? '↗' : '↘'} {sentimentChange >= 0 ? '+' : ''}{sentimentChange} pts this week
+                    {sentimentChange !== null && sentimentChange > 0 && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300">
+                        <TrendingUp className="h-3 w-3" /> +{sentimentChange} pts this week
                       </span>
                     )}
                   </div>
