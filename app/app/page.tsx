@@ -993,6 +993,7 @@ export default function Home() {
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
   const [selectedCivilOfficer, setSelectedCivilOfficer] = useState<CivilServiceOfficer | null>(null);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
+  const [reviewScoreChange, setReviewScoreChange] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
   const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Concern" | "Allegation" | "Request">("All");
@@ -1058,7 +1059,23 @@ export default function Home() {
         );
         const positive = relevant.filter((review) => review.type === "Positive").length;
         setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
-      } catch { if (!cancelled) { setRecentReviews([]); setReviewScore(null); } }
+        const now = Date.now();
+        const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+        const twoWeeksAgo = now - 14 * 24 * 60 * 60 * 1000;
+        const recent = relevant.filter((review) => {
+          const timestamp = new Date(review.date).getTime();
+          return timestamp >= weekAgo && timestamp <= now;
+        });
+        const previous = relevant.filter((review) => {
+          const timestamp = new Date(review.date).getTime();
+          return timestamp >= twoWeeksAgo && timestamp < weekAgo;
+        });
+        const recentPositive = recent.filter((review) => review.type === "Positive").length;
+        const previousPositive = previous.filter((review) => review.type === "Positive").length;
+        const recentScore = recent.length ? (recentPositive / recent.length) * 100 : null;
+        const previousScore = previous.length ? (previousPositive / previous.length) * 100 : null;
+        setReviewScoreChange(recentScore !== null && previousScore !== null ? Math.round(recentScore - previousScore) : null);
+      } catch { if (!cancelled) { setRecentReviews([]); setReviewScore(null); setReviewScoreChange(null); } }
     }
     void loadReviews();
     return () => { cancelled = true; };
@@ -1749,7 +1766,11 @@ export default function Home() {
           ) : selected.label === "Chief Minister" ? (
             <PoliticianDashboard />
           ) : (
-            <ElectionResultsDashboard />
+            <ElectionResultsDashboard
+              isMlaProfile={Boolean(selected.mlaNumber)}
+              sentimentScore={selected.mlaNumber ? reviewScore : null}
+              sentimentChange={selected.mlaNumber ? reviewScoreChange : null}
+            />
           )}
         </div>
       </div>

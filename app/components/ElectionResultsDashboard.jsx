@@ -48,7 +48,10 @@ function buildHemicycle(parties, rows = 6, innerR = 52, gap = 12) {
 
 const HEMICYCLE = buildHemicycle(PARTIES);
 
-export function ElectionResultsDashboard() {
+export function ElectionResultsDashboard({ sentimentScore = null, sentimentChange = null, isMlaProfile = false }) {
+  const score = sentimentScore === null ? null : Math.max(0, Math.min(100, Math.round(sentimentScore)));
+  const sentiment = score === null ? 'Awaiting feedback' : score >= 70 ? 'Mostly positive' : score >= 45 ? 'Mixed feedback' : 'Needs improvement';
+  const sentimentColor = score === null ? 'text-zinc-400' : score >= 70 ? 'text-emerald-300' : score >= 45 ? 'text-amber-300' : 'text-rose-300';
   return (
     <div className="w-full flex items-start justify-center font-[Inter] text-zinc-900 antialiased">
       
@@ -110,6 +113,32 @@ export function ElectionResultsDashboard() {
                   </span>
                 ))}
               </div>
+
+              {isMlaProfile && (
+                <div className="mt-5 rounded-2xl bg-white/[0.06] p-4 ring-1 ring-inset ring-white/10 backdrop-blur-xl">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400">Public sentiment</span>
+                    <span className={`rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-semibold ${sentimentColor}`}>{sentiment}</span>
+                  </div>
+                  <div className="mt-3 flex items-end justify-between gap-3">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-4xl font-bold leading-none tracking-tighter text-white tabular-nums">{score === null ? '—' : score}</span>
+                      <span className="text-sm font-medium text-zinc-500">/ 100</span>
+                    </div>
+                    {sentimentChange !== null && (
+                      <span className={`text-right text-[10px] font-semibold ${sentimentChange >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
+                        {sentimentChange >= 0 ? '↗' : '↘'} {sentimentChange >= 0 ? '+' : ''}{sentimentChange} pts this week
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
+                    <div className={`h-full rounded-full ${score === null ? 'bg-zinc-600' : score >= 70 ? 'bg-emerald-400' : score >= 45 ? 'bg-amber-400' : 'bg-rose-400'}`} style={{ width: `${score ?? 0}%` }} />
+                  </div>
+                  <p className="mt-3 text-[10px] leading-relaxed text-zinc-500">
+                    {score === null ? 'No positive or concern feedback yet.' : 'Calculated from positive and concern feedback.'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
