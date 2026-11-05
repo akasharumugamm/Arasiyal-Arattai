@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Landmark, Users, Vote, TrendingUp, Target, 
-  Scale,   CircleDashed, User, BarChart3, TrendingUp
+  Scale, CircleDashed, User, BarChart3
 } from 'lucide-react';
 
 // === Data ===
