@@ -6956,6 +6956,14 @@ article.aa-social-post .aa-post-action-button:hover {
   background: #f4f4f5 !important;
   color: #71717a !important;
 }
+article.aa-social-post .aa-social-vote-buttons .aa-post-action-button:first-child:hover {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+article.aa-social-post .aa-social-vote-buttons .aa-post-action-button:nth-child(2):hover {
+  background: #fff1f2 !important;
+  color: #e11d48 !important;
+}
 article.aa-social-post .aa-post-action-button.is-upvoted {
   background: #eff6ff !important;
   color: #2563eb !important;
