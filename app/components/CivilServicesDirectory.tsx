@@ -2,7 +2,7 @@
 
 import "./CivilServicesDirectory.css";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Search, Shield, Landmark, ArrowUpDown, SearchX, X, ChevronRight, ShieldCheck, Medal, Award, GraduationCap, CalendarDays, Timer, MapPin, UserCheck, Star } from "lucide-react";
 
 export type CivilServiceOfficer = {
@@ -59,6 +59,7 @@ const completedServiceYears = (start: Date, end = new Date()): number => {
 };
 
 const EXPECTED_SERVICE_TENURE_YEARS = 33;
+const OFFICER_PAGE_SIZE = 20;
 
 
 
@@ -73,33 +74,87 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
   const [seniorFirst, setSeniorFirst] = useState(true);
   const [officers, setOfficers] = useState<CivilServiceOfficer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState("");
   const [localSelected, setLocalSelected] = useState<CivilServiceOfficer | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
   const activeSelectedOfficerId = onSelectOfficer ? (selectedOfficerId ?? null) : (localSelected?.id ?? null);
   const selectOfficer = (officer: CivilServiceOfficer | null) => {
     setLocalSelected(officer);
     onSelectOfficer?.(officer);
   };
 
+  const loadPage = useCallback(async (offset: number, signal: AbortSignal) => {
+    const params = new URLSearchParams({
+      service,
+      q: query,
+      cadre: "Tamil Nadu",
+      senior: String(seniorFirst),
+      limit: String(OFFICER_PAGE_SIZE),
+      offset: String(offset),
+    });
+    const response = await fetch("/api/civil-services?" + params.toString(), { cache: "no-store", signal });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not load officers");
+    return {
+      officers: Array.isArray(data.officers) ? data.officers as CivilServiceOfficer[] : [],
+      hasMore: data.hasMore === true,
+    };
+  }, [query, seniorFirst, service]);
+
   useEffect(() => {
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       setLoading(true);
       setError("");
-      const params = new URLSearchParams({ service, q: query, cadre: "Tamil Nadu" });
       try {
-        const response = await fetch("/api/civil-services?" + params.toString(), { cache: "no-store", signal: controller.signal });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Could not load officers");
-        setOfficers(Array.isArray(data.officers) ? data.officers : []);
+        const page = await loadPage(0, controller.signal);
+        setOfficers(page.officers);
+        setHasMore(page.hasMore);
       } catch (err) {
         if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "Unable to load officers");
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
     }, 180);
-    return () => { controller.abort(); window.clearTimeout(timer); };
-  }, [service, query]);
+    return () => {
+      controller.abort();
+      loadMoreControllerRef.current?.abort();
+      loadMoreControllerRef.current = null;
+      setLoadingMore(false);
+      window.clearTimeout(timer);
+    };
+  }, [loadPage]);
+
+  const loadMore = useCallback(async () => {
+    if (loading || loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    setError("");
+    const controller = new AbortController();
+    loadMoreControllerRef.current = controller;
+    try {
+      const page = await loadPage(officers.length, controller.signal);
+      setOfficers(current => [...current, ...page.officers]);
+      setHasMore(page.hasMore);
+    } catch (err) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Unable to load more officers");
+    } finally {
+      if (loadMoreControllerRef.current === controller) {
+        loadMoreControllerRef.current = null;
+        setLoadingMore(false);
+      }
+    }
+  }, [hasMore, loadPage, loading, loadingMore, officers.length]);
+
+  const handleListScroll = () => {
+    const list = listRef.current;
+    if (list && list.scrollTop + list.clientHeight >= list.scrollHeight - 80) {
+      void loadMore();
+    }
+  };
 
   const filtered = useMemo(() => [...officers].sort((a, b) => {
     const aYear = a.batch_year ?? parseSourceDate(sourceText(a.source_specific_data, "date_of_appointment_to_ips"))?.getFullYear() ?? null;
@@ -154,7 +209,7 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
           <span className="cs-reference-chevron-col" />
         </div>
 
-        <div className="cs-reference-list">
+        <div ref={listRef} className="cs-reference-list" onScroll={handleListScroll}>
           {loading && <div className="cs-reference-state">Loading officer records…</div>}
           {!loading && error && <div className="cs-reference-state cs-error">{error}</div>}
           {!loading && !error && filtered.length === 0 && (
@@ -187,10 +242,11 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
               <ChevronRight className="cs-reference-chevron" size={16} />
             </button>
           ))}
+          {!loading && !error && loadingMore && <div className="cs-reference-state">Loading more officer records…</div>}
         </div>
 
         <footer className="cs-reference-footer">
-          <p>Showing <strong>{filtered.length}</strong> of <strong>{officers.length}</strong> {service} officers</p>
+          <p>Showing <strong>{filtered.length}</strong> loaded {service} officers{hasMore ? " · Scroll to load more" : ""}</p>
           <p>Sorted by {seniorFirst ? "seniority" : "juniority"}</p>
         </footer>
       </section>
