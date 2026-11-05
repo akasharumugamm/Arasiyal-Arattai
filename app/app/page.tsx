@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, MessageSquareHeart, Menu, X, Sparkles, Landmark, Crown, Users, BriefcaseBusiness, Building2, Network, Shield, MapPinned, MapIcon, GitBranch, MapPin, Building, Trees, ShieldCheck, Siren, ArrowBigUp, ArrowBigDown, MessageCircle } from "lucide-react";
+import { ChevronDown, MessageSquareHeart, Menu, X, ArrowBigUp, ArrowBigDown, MessageCircle } from "lucide-react";
 import PostActionsMenu from "@/components/PostActionsMenu";
 import { getAvatarColors, getAvatarInitials } from "@/lib/avatar";
 import { getOfficialIdentityKey } from "@/lib/official-identity";
@@ -310,31 +310,6 @@ const governmentHierarchyEdges: Edge[] = [
   { id: "hier-e18", source: "hier-local", target: "hier-rural", type: "smoothstep" },
   { id: "hier-e19", source: "hier-sp", target: "hier-police-stations", type: "smoothstep" },
 ];
-
-function RatingGauge({ value }: { value: number | null }) {
-  const score = value === null ? null : Math.max(0, Math.min(100, Math.round(value)));
-  const sentiment = score === null ? "Awaiting feedback" : score >= 70 ? "Mostly positive" : score >= 45 ? "Mixed feedback" : "Needs improvement";
-  const sentimentColor = score === null ? "#64748b" : score >= 70 ? "#15803d" : score >= 45 ? "#b45309" : "#b91c1c";
-  const sentimentBg = score === null ? "#f1f5f9" : score >= 70 ? "#dcfce7" : score >= 45 ? "#fef3c7" : "#fee2e2";
-  return (
-    <div style={{ marginTop: 12, padding: 14, borderRadius: 12, border: "1px solid #e2e8f0", background: "white" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-        <div>
-          <div style={{ fontSize: 11, color: "#64748b", fontWeight: 700, letterSpacing: 0.4, textTransform: "uppercase" }}>Public sentiment</div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 3 }}>
-            <span style={{ fontSize: 30, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>{score === null ? "—" : score}</span>
-            <span style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>/ 100</span>
-          </div>
-        </div>
-        <span style={{ padding: "6px 9px", borderRadius: 999, background: sentimentBg, color: sentimentColor, fontSize: 10, fontWeight: 700, whiteSpace: "nowrap" }}>{sentiment}</span>
-      </div>
-      <div role="progressbar" aria-label="Positive public sentiment score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? 0} style={{ height: 8, borderRadius: 999, overflow: "hidden", background: "#e2e8f0", marginTop: 12 }}>
-        <div style={{ width: `${score ?? 0}%`, height: "100%", borderRadius: 999, background: score === null ? "#cbd5e1" : score >= 70 ? "#16a34a" : score >= 45 ? "#f59e0b" : "#ef4444", transition: "width 220ms ease" }} />
-      </div>
-      <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 11, lineHeight: 1.5 }}>{score === null ? "No positive or negative reviews yet." : "Calculated from positive and negative reviews only."}</p>
-    </div>
-  );
-}
 
 const nodeTypes = { info: InfoNode, hierarchy: HierarchyNode };
 
@@ -943,40 +918,9 @@ const categoryNodes: Record<Category, string[]> = {
   "Schemes & Projects": [],
 };
 
-const categories: Category[] = [
-  "Government",
-  "Ministers",
-  "MLAs",
-  "IAS Officers",
-  "IPS Officers",
-  "Departments",
-  "Schemes & Projects",
-];
-
-const categoryDescriptions: Record<Category, string> = {
-  Government: "Governor, Chief Minister, Council of Ministers and the state executive structure.",
-  Ministers: "Meet the Chief Minister and ministers, and explore their portfolios and profiles.",
-  MLAs: "Explore all 234 Assembly constituencies. Select a party group to expand its member profiles; search by name or constituency.",
-  "IAS Officers": "Explore administrative officers and postings.",
-  "IPS Officers": "Explore police leadership and IPS officer profiles.",
-  Departments: "Explore department structures and responsibilities.",
-  "Schemes & Projects": "Explore schemes, projects and documented outcomes.",
-};
-
-function HomeCategoryMenu({ value, onChange }: {
-  value: "All" | "Positive" | "Concern" | "Allegation" | "Request";
-  onChange: (value: "All" | "Positive" | "Concern" | "Allegation" | "Request") => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const options = [{ value: "All" as const, label: "All categories" }, { value: "Positive" as const, label: "Positive" }, { value: "Concern" as const, label: "Concern" }, { value: "Allegation" as const, label: "Allegation" }, { value: "Request" as const, label: "Request" }];
-  const current = options.find((item) => item.value === value) ?? options[0];
-  return <div className="home-category-menu"><button type="button" className="home-category-trigger" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen((v) => !v)}><span>{current.label}</span><span>⌄</span></button>{open && <><button type="button" className="home-category-away" aria-label="Close category menu" onClick={() => setOpen(false)} /><div className="home-category-options" role="listbox" aria-label="Discussion category">{options.map((option) => <button key={option.value} type="button" role="option" aria-selected={value === option.value} className={value === option.value ? "selected" : ""} onClick={() => { onChange(option.value); setOpen(false); }}>{option.label}{value === option.value && <span>✓</span>}</button>)}</div></>}</div>;
-}
-
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
   const [activeMainSection, setActiveMainSection] = useState<"Home" | "Civil Services">("Home");
-  const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const lastScrollY = useRef(0);
@@ -1350,8 +1294,6 @@ export default function Home() {
     // This is a one-time deep-link handoff from tagged names in profile posts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
 
   async function voteHomeReview(id: string, direction: "up" | "down") {
     if (!isAuthenticated) { setAuthMode("Log In"); setAuthModalOpen(true); return; }
@@ -1739,7 +1681,7 @@ export default function Home() {
                     <p className="aa-social-body">{review.body}</p>
                     
                     {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <span className="aa-social-media-image-cell" key={url}><img src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" /></span>)}</div> : null}
-                    {review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official, index) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}{index < review.officials.length - 1 ? " · " : ""}</a>)}</div> : null}
+                    {review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official, index, officials) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}{index < officials.length - 1 ? " · " : ""}</a>)}</div> : null}
                     <div className="aa-social-actions">
                       <div className="aa-social-vote-buttons">
                         <button type="button" className={`aa-post-action-button ${homeVotes[review.id] === "up" ? "is-upvoted" : ""}`} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><ArrowBigUp className="h-4 w-4" /><span className="aa-social-vote-count">{review.votes?.up ?? 0}</span></button>
@@ -1768,8 +1710,8 @@ export default function Home() {
           ) : (
             <ElectionResultsDashboard
               isMlaProfile={Boolean(selected.mlaNumber)}
-              sentimentScore={selected.mlaNumber ? reviewScore : null}
-              sentimentChange={selected.mlaNumber ? reviewScoreChange : null}
+              sentimentScore={selected.mlaNumber ? reviewScore ?? undefined : undefined}
+              sentimentChange={selected.mlaNumber ? reviewScoreChange ?? undefined : undefined}
             />
           )}
         </div>
