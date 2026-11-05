@@ -2049,8 +2049,39 @@ option {
   overflow-y: auto;
   padding: 2px 7px 8px 2px;
   overscroll-behavior: contain;
-  scrollbar-color: #cbd5e1 transparent;
   scrollbar-width: thin;
+  scrollbar-color: #b8c5d8 transparent;
+  scrollbar-gutter: stable;
+}
+
+.home-discussion-feed::-webkit-scrollbar,
+.aa-feed::-webkit-scrollbar,
+.aa-profile-post-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.home-discussion-feed::-webkit-scrollbar-track,
+.aa-feed::-webkit-scrollbar-track,
+.aa-profile-post-list::-webkit-scrollbar-track {
+  margin: 8px 0;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.home-discussion-feed::-webkit-scrollbar-thumb,
+.aa-feed::-webkit-scrollbar-thumb,
+.aa-profile-post-list::-webkit-scrollbar-thumb {
+  min-height: 56px;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #c8d3e2, #9eafc6) padding-box;
+  background-clip: padding-box;
+}
+
+.home-discussion-feed::-webkit-scrollbar-thumb:hover,
+.aa-feed::-webkit-scrollbar-thumb:hover,
+.aa-profile-post-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #9fb3d0, #7d94b2) padding-box;
 }
 .home-discussion-feed {
   height: 620px;
@@ -2064,14 +2095,20 @@ option {
 }
 .home-discussion-feed::-webkit-scrollbar,
 .aa-feed::-webkit-scrollbar,
-.aa-profile-post-list::-webkit-scrollbar { width: 7px; }
+.aa-profile-post-list::-webkit-scrollbar { width: 10px; }
 .home-discussion-feed::-webkit-scrollbar-thumb,
 .aa-feed::-webkit-scrollbar-thumb,
 .aa-profile-post-list::-webkit-scrollbar-thumb {
-  border: 2px solid transparent;
+  min-height: 56px;
+  border: 3px solid transparent;
   border-radius: 999px;
-  background: #cbd5e1;
+  background: linear-gradient(180deg, #c8d3e2, #9eafc6) padding-box;
   background-clip: padding-box;
+}
+.home-discussion-feed::-webkit-scrollbar-thumb:hover,
+.aa-feed::-webkit-scrollbar-thumb:hover,
+.aa-profile-post-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #9fb3d0, #7d94b2) padding-box;
 }
 .community-feedback {
   color: #172033;
