@@ -1710,8 +1710,8 @@ export default function Home() {
           ) : (
             <ElectionResultsDashboard
               isMlaProfile={Boolean(selected.mlaNumber)}
-              sentimentScore={selected.mlaNumber ? reviewScore ?? undefined : undefined}
-              sentimentChange={selected.mlaNumber ? reviewScoreChange ?? undefined : undefined}
+              sentimentScore={undefined}
+              sentimentChange={undefined}
             />
           )}
         </div>
