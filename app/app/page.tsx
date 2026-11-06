@@ -938,6 +938,8 @@ export default function Home() {
   const [selectedCivilOfficer, setSelectedCivilOfficer] = useState<CivilServiceOfficer | null>(null);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
   const [reviewScoreChange, setReviewScoreChange] = useState<number | null>(null);
+  const [officerReviewScore, setOfficerReviewScore] = useState<number | null>(null);
+  const [officerReviewScoreChange, setOfficerReviewScoreChange] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
   const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Concern" | "Allegation" | "Request">("All");
@@ -1024,6 +1026,44 @@ export default function Home() {
     void loadReviews();
     return () => { cancelled = true; };
   }, [selected.label]);
+
+  // Fetch sentiment score for a selected civil services officer
+  useEffect(() => {
+    if (!selectedCivilOfficer) {
+      setOfficerReviewScore(null);
+      setOfficerReviewScoreChange(null);
+      return;
+    }
+    let cancelled = false;
+    async function loadOfficerReviews() {
+      try {
+        const profile = encodeURIComponent(selectedCivilOfficer!.full_name);
+        const response = await fetch(`/api/reviews?profile=${profile}`, { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok || cancelled) return;
+        const loaded: ReviewSummary[] = (Array.isArray(data.reviews) ? data.reviews : []).map((review: Record<string, unknown>): ReviewSummary => {
+          const officials = Array.isArray(review.officials) ? review.officials as { name: string; category: string }[] : [];
+          const imageUrls = Array.isArray(review.imageUrls) ? review.imageUrls as string[] : [];
+          return { ...review, profile: officials.map((o) => o.name).join(", "), officials, imageUrls, image: imageUrls[0] } as ReviewSummary;
+        });
+        const relevant = loaded.filter((r) => r.type === "Positive" || r.type === "Concern");
+        const positive = relevant.filter((r) => r.type === "Positive").length;
+        setOfficerReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
+        const now = Date.now();
+        const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+        const twoWeeksAgo = now - 14 * 24 * 60 * 60 * 1000;
+        const recent = relevant.filter((r) => { const t = new Date(r.date).getTime(); return t >= weekAgo && t <= now; });
+        const previous = relevant.filter((r) => { const t = new Date(r.date).getTime(); return t >= twoWeeksAgo && t < weekAgo; });
+        const recentPositive = recent.filter((r) => r.type === "Positive").length;
+        const previousPositive = previous.filter((r) => r.type === "Positive").length;
+        const recentScore = recent.length ? (recentPositive / recent.length) * 100 : null;
+        const previousScore = previous.length ? (previousPositive / previous.length) * 100 : null;
+        setOfficerReviewScoreChange(recentScore !== null && previousScore !== null ? Math.round(recentScore - previousScore) : null);
+      } catch { if (!cancelled) { setOfficerReviewScore(null); setOfficerReviewScoreChange(null); } }
+    }
+    void loadOfficerReviews();
+    return () => { cancelled = true; };
+  }, [selectedCivilOfficer]);
 
   useEffect(() => {
     if (!profileMenuOpen) return;
@@ -1704,14 +1744,19 @@ export default function Home() {
         </div>
         <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
           {activeMainSection === "Civil Services" && selectedCivilOfficer ? (
-            <CivilServicesProfileCard officer={selectedCivilOfficer} onClose={() => setSelectedCivilOfficer(null)} />
+            <CivilServicesProfileCard
+              officer={selectedCivilOfficer}
+              onClose={() => setSelectedCivilOfficer(null)}
+              sentimentScore={officerReviewScore}
+              sentimentChange={officerReviewScoreChange}
+            />
           ) : selected.label === "Chief Minister" ? (
             <PoliticianDashboard />
           ) : (
             <ElectionResultsDashboard
               isMlaProfile={Boolean(selected.mlaNumber)}
-              sentimentScore={undefined}
-              sentimentChange={undefined}
+              sentimentScore={selected.isPerson ? reviewScore : undefined}
+              sentimentChange={selected.isPerson ? reviewScoreChange : undefined}
             />
           )}
         </div>

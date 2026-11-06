@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  Landmark, Users, Vote, TrendingUp, Target, 
+  Landmark, Users, Vote, TrendingUp, TrendingDown, Target, 
   Scale, CircleDashed, User, BarChart3
 } from 'lucide-react';
 
@@ -52,6 +52,8 @@ export function ElectionResultsDashboard({ sentimentScore = null, sentimentChang
   const score = sentimentScore === null ? null : Math.max(0, Math.min(100, Math.round(sentimentScore)));
   const sentiment = score === null ? 'Awaiting feedback' : score >= 70 ? 'Mostly positive' : score >= 45 ? 'Mixed feedback' : 'Needs improvement';
   const sentimentColor = score === null ? 'text-zinc-400' : score >= 70 ? 'text-emerald-300' : score >= 45 ? 'text-amber-300' : 'text-rose-300';
+  // Show sentiment panel whenever we're on a person profile (sentimentScore prop provided, even if null) or isMlaProfile
+  const showSentiment = isMlaProfile || sentimentScore !== undefined;
   return (
     <div className="w-full flex items-start justify-center font-[Inter] text-zinc-900 antialiased">
       
@@ -114,7 +116,7 @@ export function ElectionResultsDashboard({ sentimentScore = null, sentimentChang
                 ))}
               </div>
 
-              {isMlaProfile && (
+              {showSentiment && (
                 <div className="mt-5 rounded-2xl bg-white/[0.06] p-4 ring-1 ring-inset ring-white/10 backdrop-blur-xl">
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400">Public sentiment</span>
@@ -130,9 +132,24 @@ export function ElectionResultsDashboard({ sentimentScore = null, sentimentChang
                         <TrendingUp className="h-3 w-3" /> +{sentimentChange} pts this week
                       </span>
                     )}
+                    {sentimentChange !== null && sentimentChange < 0 && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-300">
+                        <TrendingDown className="h-3 w-3" /> {sentimentChange} pts this week
+                      </span>
+                    )}
+                    {sentimentChange !== null && sentimentChange === 0 && (
+                      <span className="text-right text-[10px] font-semibold text-zinc-400">
+                        No change this week
+                      </span>
+                    )}
+                    {sentimentChange === null && score !== null && (
+                      <span className="text-right text-[10px] font-semibold text-zinc-400">
+                        No data last week
+                      </span>
+                    )}
                   </div>
                   <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
-                    <div className={`h-full rounded-full ${score === null ? 'bg-zinc-600' : score >= 70 ? 'bg-emerald-400' : score >= 45 ? 'bg-amber-400' : 'bg-rose-400'}`} style={{ width: `${score ?? 0}%` }} />
+                    <div className={`h-full rounded-full transition-[width] duration-500 ${score === null ? 'bg-zinc-600' : score >= 70 ? 'bg-emerald-400' : score >= 45 ? 'bg-amber-400' : 'bg-rose-400'}`} style={{ width: `${score ?? 0}%` }} />
                   </div>
                   <p className="mt-3 text-[10px] leading-relaxed text-zinc-500">
                     {score === null ? 'No positive or concern feedback yet.' : 'Calculated from positive and concern feedback.'}

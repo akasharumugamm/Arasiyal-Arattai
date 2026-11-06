@@ -3,7 +3,7 @@
 import "./CivilServicesDirectory.css";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Search, Shield, Landmark, ArrowUpDown, SearchX, X, ChevronRight, ShieldCheck, Medal, Award, GraduationCap, CalendarDays, Timer, MapPin, UserCheck, Star } from "lucide-react";
+import { Search, Shield, Landmark, ArrowUpDown, SearchX, X, ChevronRight, ShieldCheck, Medal, Award, GraduationCap, CalendarDays, Timer, MapPin, UserCheck, Star, TrendingUp, TrendingDown } from "lucide-react";
 
 export type CivilServiceOfficer = {
   id: number;
@@ -261,9 +261,13 @@ export default function CivilServicesDirectory({ onSelectOfficer, selectedOffice
 export function CivilServicesProfileCard({
   officer,
   onClose,
+  sentimentScore = null,
+  sentimentChange = null,
 }: {
   officer: CivilServiceOfficer;
   onClose: () => void;
+  sentimentScore?: number | null;
+  sentimentChange?: number | null;
 }) {
   const source = officer.source_specific_data ?? {};
   const appointmentDateRaw = sourceText(source, "date_of_appointment_to_ips");
@@ -391,32 +395,69 @@ export function CivilServicesProfileCard({
           </div>
 
           {/* Public Sentiment */}
-          <div className="mt-6 rounded-2xl bg-white/[0.06] p-4 ring-1 ring-inset ring-white/10 backdrop-blur-xl">
-            <div className="mb-3.5 flex items-center justify-between gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400">
-                Public Sentiment
-              </span>
-              <span className="rounded-full bg-amber-400/10 px-2.5 py-1 text-[9px] font-semibold text-amber-300 ring-1 ring-inset ring-amber-400/25">
-                Awaiting review data
-              </span>
-            </div>
-            <div className="flex items-end justify-between gap-3">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-4xl font-bold leading-none tracking-tighter text-white tabular-nums">—</span>
-                <span className="text-sm font-medium text-zinc-500">/ 100</span>
+          {(() => {
+            const score = sentimentScore === null ? null : Math.max(0, Math.min(100, Math.round(sentimentScore)));
+            const sentimentLabel = score === null ? "Awaiting review data" : score >= 70 ? "Mostly positive" : score >= 45 ? "Mixed feedback" : "Needs improvement";
+            const sentimentBadgeClass = score === null
+              ? "bg-amber-400/10 text-amber-300 ring-amber-400/25"
+              : score >= 70 ? "bg-emerald-400/10 text-emerald-300 ring-emerald-400/25"
+              : score >= 45 ? "bg-amber-400/10 text-amber-300 ring-amber-400/25"
+              : "bg-rose-400/10 text-rose-300 ring-rose-400/25";
+            const barClass = score === null ? "bg-zinc-600" : score >= 70 ? "bg-emerald-400" : score >= 45 ? "bg-amber-400" : "bg-rose-400";
+            return (
+              <div className="mt-6 rounded-2xl bg-white/[0.06] p-4 ring-1 ring-inset ring-white/10 backdrop-blur-xl">
+                <div className="mb-3.5 flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400">
+                    Public Sentiment
+                  </span>
+                  <span className={`rounded-full px-2.5 py-1 text-[9px] font-semibold ring-1 ring-inset ${sentimentBadgeClass}`}>
+                    {sentimentLabel}
+                  </span>
+                </div>
+                <div className="flex items-end justify-between gap-3">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-4xl font-bold leading-none tracking-tighter text-white tabular-nums">
+                      {score === null ? "—" : score}
+                    </span>
+                    <span className="text-sm font-medium text-zinc-500">/ 100</span>
+                  </div>
+                  {score !== null && sentimentChange !== null && sentimentChange !== 0 ? (
+                    sentimentChange > 0 ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300">
+                        <TrendingUp className="h-3 w-3" /> +{sentimentChange} pts this week
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-300">
+                        <TrendingDown className="h-3 w-3" /> {sentimentChange} pts this week
+                      </span>
+                    )
+                  ) : score !== null && sentimentChange === 0 ? (
+                    <span className="text-right text-[10px] font-semibold text-zinc-400">
+                      No change this week
+                    </span>
+                  ) : (
+                    <span className="text-right text-[10px] font-semibold text-zinc-400">
+                      {score === null ? "No verified score yet" : "No data last week"}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                  <div
+                    className={`h-full rounded-full transition-[width] duration-500 ${barClass}`}
+                    style={{ width: score === null ? "0%" : `${score}%` }}
+                  />
+                </div>
+                <div className="mt-2 flex justify-between text-[9px] font-medium text-zinc-500 tabular-nums">
+                  <span>0</span><span>50</span><span>100</span>
+                </div>
+                <p className="mt-3 text-[10px] leading-relaxed text-zinc-500">
+                  {score === null
+                    ? "A public sentiment score will appear when review data for this officer is available."
+                    : "Calculated from positive and concern feedback in the last 90 days."}
+                </p>
               </div>
-              <span className="text-right text-[10px] font-semibold text-zinc-400">
-                No verified score yet
-              </span>
-            </div>
-            <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/10" />
-            <div className="mt-2 flex justify-between text-[9px] font-medium text-zinc-500 tabular-nums">
-              <span>0</span><span>50</span><span>100</span>
-            </div>
-            <p className="mt-3 text-[10px] leading-relaxed text-zinc-500">
-              A public sentiment score will appear when review data for this officer is available.
-            </p>
-          </div>
+            );
+          })()}
         </div>
       </div>
 
