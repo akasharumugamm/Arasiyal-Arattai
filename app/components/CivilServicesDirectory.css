@@ -1,0 +1,202 @@
+/* Civil Services directory — page-scoped global styles */
+.cs-directory{width:100%;max-width:none;min-width:0;box-sizing:border-box;margin:0;padding:0;color:#17233f;font-family:Inter,Arial,sans-serif}
+.cs-workspace{overflow:hidden;border:1px solid #e5eaf1;border-radius:19px;background:#fff;box-shadow:0 12px 36px #0f172a08}
+.cs-toolbar{padding:16px 18px 14px;border-bottom:1px solid #edf1f6}
+.cs-search{display:flex;align-items:center;gap:11px;height:46px;padding:0 14px;border:1px solid #e1e7ef;border-radius:11px;background:#f8fafc;color:#94a3b8}
+.cs-search:focus-within{border-color:#93b4f7;box-shadow:0 0 0 3px #dbeafe88}
+.cs-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#172554;font:inherit;font-size:13px}
+.cs-search button{border:0;background:none;color:#64748b;font-size:22px;cursor:pointer}
+.cs-filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.cs-filter{display:flex;align-items:center;gap:7px;min-height:36px;padding:0 10px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#64748b}
+.cs-filter select,.cs-filter input{max-width:150px;border:0;outline:0;background:transparent;color:#334155;font:inherit;font-size:11px}
+.cs-cadre{background:#eff6ff;border-color:#bfdbfe;color:#2563eb}.cs-cadre select{font-weight:700;color:#1d4ed8}
+.cs-year span{font-size:10px;white-space:nowrap}.cs-year input{width:52px}
+.cs-toggle,.cs-reset{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 11px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#64748b;font-size:11px;font-weight:650;cursor:pointer}
+.cs-toggle.selected{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}.cs-reset{background:#f8fafc}
+.cs-table-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 21px;color:#64748b;font-size:10px;font-weight:800;letter-spacing:.12em}
+.cs-table-head>div,.cs-table-head>span{display:flex;align-items:center;gap:9px}
+.cs-live-dot{width:6px;height:6px;background:#10b981;box-shadow:0 0 0 4px #d1fae5}
+.cs-count{margin-left:4px;padding:4px 8px;border-radius:20px;background:#f1f5f9;color:#64748b;font-size:10px;letter-spacing:0}
+.cs-table-wrap{overflow-x:auto;padding:0 20px}
+.cs-table{width:100%;min-width:880px;border-collapse:collapse;text-align:left}
+.cs-table thead th{height:42px;border-bottom:1px solid #dfe6ef;color:#94a3b8;font-size:10px;font-weight:750;letter-spacing:.1em;white-space:nowrap}
+.cs-table th button{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer}
+.cs-table tbody tr{height:66px;border-bottom:1px solid #f0f3f7;cursor:pointer;transition:background .15s}
+.cs-table tbody tr:hover,.cs-table tbody tr.is-selected{background:#f4f8ff}
+.cs-table td{padding:9px 10px;color:#334155;font-size:12px;vertical-align:middle}
+.cs-index{width:38px;color:#94a3b8!important;font-size:11px!important}
+.cs-officer{display:flex;align-items:center;gap:11px;min-width:220px}
+.cs-avatar,.cs-card-avatar{display:grid;place-items:center;flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:#e5efff;color:#2457a6;font-size:11px;font-weight:800}
+.cs-officer-text{display:flex;flex-direction:column;gap:3px}.cs-officer-text strong{color:#172554;font-size:12px;font-weight:750}
+.cs-officer-text small,.cs-subline{color:#94a3b8;font-size:10px}
+.cs-role{max-width:390px;color:#1e293b;font-weight:600;line-height:1.4}.cs-subline{display:block;margin-top:2px}
+.cs-cadre-name{color:#334155;font-size:11px;font-weight:650}.cs-number{font-variant-numeric:tabular-nums;font-weight:650}
+.cs-source{display:inline-block;padding:4px 7px;border-radius:5px;background:#eff6ff;color:#315da8;font-size:9px;font-weight:800}
+.cs-years{color:#64748b!important;font-variant-numeric:tabular-nums}
+.cs-state{height:120px;text-align:center!important;color:#64748b!important}.cs-error{color:#b91c1c!important}
+.cs-table-footer{display:flex;justify-content:space-between;gap:12px;padding:13px 21px;border-top:1px solid #edf1f6;color:#94a3b8;font-size:10px}
+.cs-selected-card{position:fixed;z-index:180;top:100px;right:28px;width:min(360px,calc(100vw - 32px));padding:24px;border:1px solid #dce6f4;border-radius:20px;background:#fff;box-shadow:0 22px 70px #0f172a26;color:#172554}
+.cs-close{position:absolute;top:12px;right:14px;border:0;background:none;color:#64748b;font-size:24px;cursor:pointer}
+.cs-card-kicker{color:#4775c5;font-size:9px;font-weight:800;letter-spacing:.15em}
+.cs-card-avatar{width:64px;height:64px;margin:20px auto 12px;font-size:18px}
+.cs-selected-card h2{margin:0;text-align:center;font-size:20px;font-weight:750}.cs-selected-card>p{margin:5px 0 20px;text-align:center;color:#64748b;font-size:12px}
+.cs-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.cs-card-grid>div{display:flex;flex-direction:column;gap:5px;padding:12px;border-radius:11px;background:#f8fafc}
+.cs-card-grid small{color:#94a3b8;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.cs-card-grid strong{font-size:12px}
+.cs-card-detail{display:flex;align-items:flex-start;gap:9px;margin-top:14px;color:#64748b;font-size:11px;line-height:1.5}.cs-card-detail svg{flex:0 0 auto;color:#4775c5}
+@media(max-width:700px){.cs-directory{width:100%;padding:0}.cs-toolbar{padding:12px}.cs-filter-row{gap:6px}.cs-service-tabs-inline{order:-1;width:auto}.cs-service-tabs-inline button{padding:0 8px}.cs-service-tabs-inline button small{display:none}.cs-filter{flex:1 1 auto}.cs-table-head{padding:13px;align-items:flex-start;flex-direction:column}.cs-table-wrap{padding:0 10px}.cs-table-footer{flex-direction:column}.cs-selected-card{top:auto;right:12px;bottom:12px}}
+
+/* Compact officer-directory visual system */
+.cs-workspace{border:1px solid #e8ebf0;border-radius:22px;background:#fff;box-shadow:0 18px 48px rgba(15,23,42,.07)}
+.cs-toolbar{padding:18px 20px 16px}
+.cs-search{height:42px;border:0;border-radius:999px;background:#f4f5f7;padding:0 15px}
+.cs-search:focus-within{background:#fff;box-shadow:0 0 0 2px var(--cs-accent-soft)}
+.cs-filter-row{gap:7px;margin-top:13px}
+.cs-service-tabs-inline{height:38px;padding:3px;border:0;border-radius:999px;background:#f1f2f4}
+.cs-service-tabs-inline button{height:32px;padding:0 14px;border-radius:999px;gap:7px}
+.cs-service-tabs-inline button span{font-size:11px}
+.cs-service-tabs-inline button small{font-size:9px}
+.cs-theme-ips{--cs-accent:#2563eb;--cs-accent-soft:rgba(37,99,235,.18);--cs-accent-tint:#eff6ff;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8;--cs-gradient:linear-gradient(135deg,#3b82f6,#4f46e5)}
+.cs-theme-ias{--cs-accent:#2563eb;--cs-accent-soft:rgba(37,99,235,.18);--cs-accent-tint:#eff6ff;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8;--cs-gradient:linear-gradient(135deg,#3b82f6,#4f46e5)}
+.cs-theme-ips .cs-service-tabs-inline button.active{color:#1d4ed8}
+.cs-theme-ias .cs-service-tabs-inline button.active{color:#1d4ed8}
+.cs-theme-ips .cs-cadre{background:#eff6ff;border-color:#dbeafe;color:#2563eb}
+.cs-theme-ias .cs-cadre{background:#eff6ff;border-color:#dbeafe;color:#2563eb}
+.cs-theme-ips .cs-cadre select{color:#1d4ed8}
+.cs-theme-ias .cs-cadre select{color:#1d4ed8}
+.cs-list-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px 10px;color:#71717a;font-size:10px;font-weight:800;letter-spacing:.13em}
+.cs-list-heading-title,.cs-source-note{display:flex;align-items:center;gap:9px}
+.cs-source-note{letter-spacing:.06em}
+.cs-count{font-size:10px}
+.cs-list-columns{display:flex;align-items:center;gap:12px;margin:0 20px;padding:10px 0;border-bottom:1px solid #eceef2;color:#a1a1aa;font-size:9px;font-weight:800;letter-spacing:.12em}
+.cs-sort-rank{display:flex;align-items:center;gap:4px;width:32px;flex:0 0 32px;padding:0;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.cs-col-officer{flex:1.25;min-width:180px}.cs-col-role{flex:1.6;min-width:180px}.cs-col-cadre{width:112px;text-align:right}.cs-col-chevron{width:18px}
+.cs-officer-list{max-height:560px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#d4d4d8 transparent}
+.cs-officer-row{position:relative;display:flex;width:100%;min-height:68px;align-items:center;gap:12px;padding:11px 20px;border:0;border-bottom:1px solid #f0f1f3;background:#fff;text-align:left;cursor:pointer;transition:background .16s}
+.cs-officer-row:before{position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 4px 4px 0;background:var(--cs-gradient);content:"";opacity:0;transition:opacity .16s}
+.cs-officer-row:hover,.cs-officer-row.is-selected{background:#fafbfc}
+.cs-officer-row:hover:before,.cs-officer-row.is-selected:before{opacity:1}
+.cs-rank{width:32px;flex:0 0 32px;color:#a1a1aa;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums}
+.cs-rank.top-rank{color:#3f3f46}
+.cs-officer-cell{display:flex;min-width:0;flex:1.25;align-items:center;gap:11px}
+.cs-avatar{width:39px;height:39px;background:var(--cs-avatar-bg);color:var(--cs-avatar-fg);font-size:11px;ring:0}
+.cs-officer-text{display:flex;min-width:0;flex-direction:column;gap:3px}
+.cs-officer-text strong{display:flex;align-items:center;gap:5px;min-width:0;color:#18181b;font-size:12px;font-weight:700}
+.cs-officer-text small{color:#a1a1aa;font-size:10px;font-weight:500}
+.cs-verified-icon{flex:0 0 auto;color:var(--cs-accent)}
+.cs-role-cell{display:flex;min-width:0;flex:1.6;flex-direction:column;gap:4px}
+.cs-role-cell strong{display:-webkit-box;overflow:hidden;color:#3f3f46;font-size:11px;font-weight:600;line-height:1.4;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.cs-role-cell small,.cs-cadre-cell small{color:#a1a1aa;font-size:10px}
+.cs-cadre-cell{display:flex;width:112px;flex:0 0 112px;flex-direction:column;gap:4px;text-align:right}
+.cs-cadre-cell strong{color:#3f3f46;font-size:11px;font-weight:650}
+.cs-row-chevron{width:18px;flex:0 0 18px;color:#d4d4d8;transition:transform .16s,color .16s}
+.cs-officer-row:hover .cs-row-chevron{transform:translateX(2px);color:#71717a}
+.cs-mobile-role{display:none}
+.cs-list-state{display:grid;min-height:150px;place-items:center;padding:24px;color:#71717a;font-size:13px;text-align:center}
+.cs-empty-state{display:flex;min-height:240px;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:#71717a;text-align:center}
+.cs-empty-icon{display:grid;width:46px;height:46px;place-items:center;border-radius:14px;background:#f4f4f5;color:#a1a1aa}
+.cs-empty-state strong{margin-top:5px;color:#27272a;font-size:13px}
+.cs-empty-state>span:not(.cs-empty-icon){font-size:11px}
+.cs-empty-state button{margin-top:8px;padding:8px 14px;border:0;border-radius:999px;background:#18181b;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
+.cs-table-footer{padding:12px 20px;background:#fafafa;color:#a1a1aa}
+.cs-table-footer strong{color:#52525b}
+.cs-selected-card{border-color:#e4e4e7;border-radius:22px;box-shadow:0 22px 65px rgba(0,0,0,.16)}
+@media(max-width:760px){
+ .cs-toolbar{padding:13px}
+ .cs-filter-row{gap:6px}
+ .cs-service-tabs-inline button{padding:0 12px}
+ .cs-service-tabs-inline button small{display:none}
+ .cs-list-heading{padding:14px 14px 9px}
+ .cs-list-columns{margin:0 14px}
+ .cs-col-role,.cs-col-cadre{display:none}
+ .cs-officer-row{gap:9px;padding:11px 14px}
+ .cs-officer-cell{flex:1;gap:9px}
+ .cs-mobile-role{display:block;max-width:55vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .cs-row-chevron{margin-left:auto}
+ .cs-table-footer{padding:12px 14px}
+}
+
+/* Reference-matched Civil Services directory */
+.cs-directory{width:100%;max-width:none;min-width:0;margin:0;padding:0;box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#18181b}
+.cs-workspace{width:100%;overflow:hidden;border:1px solid rgba(24,24,27,.055);border-radius:26px;background:#fff;box-shadow:0 24px 60px -18px rgba(0,0,0,.14)}
+.cs-reference-header{padding:20px 22px 18px;border-bottom:1px solid #f4f4f5;background:#fff}
+.cs-reference-brand{display:flex;min-width:0;align-items:center;gap:13px}
+.cs-reference-logo{display:flex;width:44px;height:44px;flex:0 0 44px;align-items:center;justify-content:center;border-radius:15px;background:linear-gradient(135deg,#3b82f6,#4f46e5);color:white;box-shadow:none}
+.cs-theme-ias .cs-reference-logo{background:linear-gradient(135deg,#3b82f6,#4f46e5);box-shadow:none}
+.cs-reference-heading{min-width:0;flex:1}
+.cs-reference-heading h1{margin:0;color:#09090b;font-size:16px;font-weight:750;letter-spacing:-.035em;line-height:1.3}
+.cs-reference-heading p{margin:3px 0 0;overflow:hidden;color:#71717a;font-size:11px;font-weight:550;text-overflow:ellipsis;white-space:nowrap}
+.cs-reference-status{display:inline-flex;flex:0 0 auto;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(16,185,129,.09);color:#047857;font-size:10px;font-weight:700;box-shadow:inset 0 0 0 1px rgba(5,150,105,.10)}
+.cs-reference-status>span{width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.10)}
+.cs-reference-controls{display:flex;align-items:center;gap:10px;margin-top:17px}
+.cs-reference-tabs{display:flex;flex:0 0 auto;align-items:center;gap:2px;padding:4px;border-radius:999px;background:#f4f4f5;box-shadow:inset 0 0 0 1px rgba(24,24,27,.035)}
+.cs-reference-tabs button{display:flex;min-height:34px;align-items:center;justify-content:center;gap:7px;padding:0 15px;border:0;border-radius:999px;background:transparent;color:#71717a;font-size:12px;font-weight:650;cursor:pointer;transition:background .18s,color .18s,box-shadow .18s}
+.cs-reference-tabs button>span{display:flex;align-items:center}
+.cs-reference-tabs button small{padding:2px 5px;border-radius:999px;background:rgba(24,24,27,.05);color:#a1a1aa;font-size:9px;font-weight:750;font-variant-numeric:tabular-nums}
+.cs-reference-tabs button.active{background:#fff;color:#18181b;box-shadow:0 1px 4px rgba(0,0,0,.08),inset 0 0 0 1px rgba(24,24,27,.055)}
+.cs-reference-tabs button.active small{background:var(--cs-chip-bg);color:var(--cs-chip-color)}
+.cs-theme-ips{--cs-accent:#2563eb;--cs-chip-bg:rgba(59,130,246,.10);--cs-chip-color:#1d4ed8;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8}
+.cs-theme-ias{--cs-accent:#2563eb;--cs-chip-bg:rgba(59,130,246,.10);--cs-chip-color:#1d4ed8;--cs-avatar-bg:rgba(59,130,246,.10);--cs-avatar-fg:#1d4ed8}
+.cs-theme-ips .cs-reference-tabs button.active .ips-icon{color:#2563eb}
+.cs-theme-ias .cs-reference-tabs button.active .ias-icon{color:#2563eb}
+.cs-theme-ias .cs-reference-tabs button.active small{background:rgba(59,130,246,.10);color:#1d4ed8}
+.cs-reference-search{display:flex;height:38px;min-width:0;flex:1;align-items:center;gap:10px;padding:0 13px;border-radius:999px;background:#f4f4f5;color:#a1a1aa;box-shadow:inset 0 0 0 1px rgba(24,24,27,.035);transition:background .18s,box-shadow .18s}
+.cs-reference-search:focus-within{background:#fff;box-shadow:inset 0 0 0 1px var(--cs-accent),0 0 0 3px var(--cs-chip-bg)}
+.cs-reference-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#18181b;font:inherit;font-size:12px;font-weight:500}
+.cs-reference-search input::placeholder{color:#a1a1aa}
+.cs-reference-search button{display:flex;width:22px;height:22px;flex:0 0 22px;align-items:center;justify-content:center;border:0;border-radius:50%;background:#e4e4e7;color:#71717a;cursor:pointer}
+.cs-reference-columns{display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid #f4f4f5;background:rgba(250,250,250,.8)}
+.cs-reference-columns>button{display:flex;width:32px;flex:0 0 32px;align-items:center;gap:3px;padding:0;border:0;background:transparent;color:#a1a1aa;font-size:10px;font-weight:800;cursor:pointer}
+.cs-reference-officer-col,.cs-reference-role-col,.cs-reference-cadre-col{color:#a1a1aa;font-size:9px;font-weight:800;letter-spacing:.12em}
+.cs-reference-officer-col{min-width:0;flex:1.25}
+.cs-reference-role-col{min-width:0;flex:1.6}
+.cs-reference-cadre-col{width:112px;text-align:right}
+.cs-reference-chevron-col{width:16px;flex:0 0 16px}
+.cs-reference-list{max-height:416px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#e4e4e7 transparent}
+.cs-reference-row{position:relative;display:flex;width:100%;min-height:65px;align-items:center;gap:12px;padding:10px 20px;border:0;border-bottom:1px solid #f4f4f5;background:#fff;text-align:left;cursor:pointer;transition:background .16s}
+.cs-reference-row:before{position:absolute;top:9px;bottom:9px;left:0;width:4px;border-radius:0 5px 5px 0;background:linear-gradient(180deg,#3b82f6,#6366f1);content:"";opacity:0;transition:opacity .16s}
+.cs-theme-ias .cs-reference-row:before{background:linear-gradient(180deg,#3b82f6,#6366f1)}
+.cs-reference-row:hover{background:#fafafa}
+.cs-reference-row:hover:before,.cs-reference-row.selected:before{opacity:1}
+.cs-reference-row.selected{background:#f8fafc}
+.cs-reference-rank{width:32px;flex:0 0 32px;color:#27272a;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums}
+.cs-reference-officer{display:flex;min-width:0;flex:1.25;align-items:center;gap:11px}
+.cs-reference-avatar{display:flex;width:39px;height:39px;flex:0 0 39px;align-items:center;justify-content:center;border-radius:50%;background:var(--cs-avatar-bg);color:var(--cs-avatar-fg);font-size:11px;font-weight:750;box-shadow:inset 0 0 0 1px rgba(24,24,27,.035)}
+.cs-reference-officer-copy{display:flex;min-width:0;flex-direction:column;gap:3px}
+.cs-reference-officer-copy strong{display:flex;min-width:0;align-items:center;gap:5px;overflow:hidden;color:#09090b;font-size:12px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+.cs-reference-officer-copy strong svg{flex:0 0 auto;color:var(--cs-accent)}
+.cs-reference-officer-copy small{overflow:hidden;color:#a1a1aa;font-size:10px;font-weight:550;text-overflow:ellipsis;white-space:nowrap}
+.cs-reference-role{display:flex;min-width:0;flex:1.6;flex-direction:column;gap:4px}
+.cs-reference-role strong{display:-webkit-box;overflow:hidden;color:#3f3f46;font-size:11px;font-weight:650;line-height:1.4;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.cs-reference-role small,.cs-reference-cadre small{overflow:hidden;color:#a1a1aa;font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.cs-reference-cadre{display:flex;width:112px;flex:0 0 112px;flex-direction:column;gap:4px;text-align:right}
+.cs-reference-cadre strong{color:#27272a;font-size:11px;font-weight:700}
+.cs-reference-chevron{width:16px;flex:0 0 16px;color:#d4d4d8;transition:transform .18s,color .18s}
+.cs-reference-row:hover .cs-reference-chevron{transform:translateX(2px);color:#71717a}
+.cs-reference-mobile-role{display:none}
+.cs-reference-state{display:grid;min-height:140px;place-items:center;padding:24px;color:#71717a;font-size:12px;text-align:center}
+.cs-reference-state.cs-error{color:#dc2626}
+.cs-reference-empty{display:flex;min-height:220px;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:#71717a;text-align:center}
+.cs-reference-empty>span{display:grid;width:46px;height:46px;place-items:center;border-radius:15px;background:#f4f4f5;color:#a1a1aa}
+.cs-reference-empty strong{margin-top:4px;color:#27272a;font-size:13px;font-weight:750}
+.cs-reference-empty small{color:#a1a1aa;font-size:11px}
+.cs-reference-empty button{margin-top:7px;padding:7px 14px;border:0;border-radius:999px;background:#18181b;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
+.cs-reference-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 20px;border-top:1px solid #f4f4f5;background:rgba(250,250,250,.8)}
+.cs-reference-footer p{margin:0;color:#a1a1aa;font-size:10px;font-weight:500}
+.cs-reference-footer strong{color:#52525b;font-weight:550;font-variant-numeric:tabular-nums}
+@media(max-width:700px){
+ .cs-workspace{border-radius:18px}
+ .cs-reference-header{padding:15px}
+ .cs-reference-logo{width:40px;height:40px;flex-basis:40px}
+ .cs-reference-heading h1{font-size:14px}
+ .cs-reference-status{padding:4px 7px;font-size:9px}
+ .cs-reference-controls{align-items:stretch;flex-direction:column;gap:9px;margin-top:14px}
+ .cs-reference-tabs{width:max-content;max-width:100%}
+ .cs-reference-search{height:38px;flex:none}
+ .cs-reference-columns{gap:8px;padding:9px 12px}
+ .cs-reference-columns .cs-reference-role-col,.cs-reference-columns .cs-reference-cadre-col{display:none}
+ .cs-reference-row{gap:8px;padding:10px 12px}
+ .cs-reference-officer{flex:1}
+ .cs-reference-role,.cs-reference-cadre{display:none}
+ .cs-reference-mobile-role{display:block;max-width:58vw}
+ .cs-reference-footer{align-items:flex-start;flex-direction:column;padding:11px 14px;gap:5px}
+}

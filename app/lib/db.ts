@@ -12,7 +12,7 @@ function createPool(): Pool {
   }
 
   // pg URL SSL parameters can override the explicit SSL object below.
-  // Remove them from this in-memory copy so the RDS CA bundle is used.
+  // Remove them from this in-memory copy so the configured CA is used.
   const url = new URL(configuredUrl);
   const sslMode = url.searchParams.get("sslmode");
   const sslRootCert = url.searchParams.get("sslrootcert");
@@ -21,6 +21,9 @@ function createPool(): Pool {
   url.searchParams.delete("sslcert");
   url.searchParams.delete("sslkey");
 
+  // When Codespaces reaches RDS through an SSH tunnel, the TCP hostname is
+  // 127.0.0.1 but TLS must still validate against the actual RDS hostname.
+  const sslServername = process.env.DATABASE_SSL_SERVERNAME || url.hostname;
   const caPath =
     process.env.RDS_CA_CERT_PATH ?? "/etc/ssl/certs/rds/global-bundle.pem";
 
@@ -32,11 +35,13 @@ function createPool(): Pool {
     }
     ssl = {
       ca: readFileSync(sslRootCert, "utf8"),
+      servername: sslServername,
       rejectUnauthorized: true,
     };
   } else if (existsSync(caPath)) {
     ssl = {
       ca: readFileSync(caPath, "utf8"),
+      servername: sslServername,
       rejectUnauthorized: true,
     };
   } else if (url.hostname.endsWith(".rds.amazonaws.com")) {
@@ -44,7 +49,10 @@ function createPool(): Pool {
       `RDS CA bundle not found. Set RDS_CA_CERT_PATH to the AWS RDS CA bundle file (currently expected at ${caPath}).`,
     );
   } else if (sslMode) {
-    ssl = { rejectUnauthorized: true };
+    ssl = {
+      servername: sslServername,
+      rejectUnauthorized: true,
+    };
   }
 
   return new Pool({

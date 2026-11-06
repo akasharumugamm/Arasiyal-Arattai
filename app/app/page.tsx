@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, MessageSquareHeart, Menu, X, ArrowBigUp, ArrowBigDown, MessageCircle } from "lucide-react";
 import PostActionsMenu from "@/components/PostActionsMenu";
 import { getAvatarColors, getAvatarInitials } from "@/lib/avatar";
 import { getOfficialIdentityKey } from "@/lib/official-identity";
@@ -17,6 +18,9 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import mlaDirectory from "@/data/tn-mlas.json";
+import { ElectionResultsDashboard } from "@/components/ElectionResultsDashboard";
+import { PoliticianDashboard } from "@/components/PoliticianDashboard";
+import CivilServicesDirectory, { CivilServicesProfileCard, type CivilServiceOfficer } from "@/components/CivilServicesDirectory";
 
 type Category =
   | "Government"
@@ -175,32 +179,139 @@ function InfoNode({ id, data }: NodeProps<Node<Profile>>) {
 }
 
 
-function RatingGauge({ value }: { value: number | null }) {
-  const score = value === null ? null : Math.max(0, Math.min(100, Math.round(value)));
-  const sentiment = score === null ? "Awaiting feedback" : score >= 70 ? "Mostly positive" : score >= 45 ? "Mixed feedback" : "Needs improvement";
-  const sentimentColor = score === null ? "#64748b" : score >= 70 ? "#15803d" : score >= 45 ? "#b45309" : "#b91c1c";
-  const sentimentBg = score === null ? "#f1f5f9" : score >= 70 ? "#dcfce7" : score >= 45 ? "#fef3c7" : "#fee2e2";
+
+type HierarchyTone = "political" | "administrative" | "local" | "police" | "legislative" | "judicial";
+type HierarchyProfile = Profile & { hierarchyTone: HierarchyTone };
+
+function HierarchyNode({ data }: NodeProps<Node<HierarchyProfile>>) {
+  const toneLabels: Record<HierarchyTone, string> = {
+    political: "EXECUTIVE",
+    administrative: "ADMINISTRATION",
+    local: "LOCAL GOVERNMENT",
+    police: "POLICE",
+    legislative: "LEGISLATURE",
+    judicial: "JUDICIARY",
+  };
+  const toneColors: Record<HierarchyTone, { border: string; kicker: string }> = {
+    political: { border: "#4775c5", kicker: "#4775c5" },
+    administrative: { border: "#398b83", kicker: "#398b83" },
+    local: { border: "#c18a3b", kicker: "#a87527" },
+    police: { border: "#7867a8", kicker: "#7867a8" },
+    legislative: { border: "#47866a", kicker: "#47866a" },
+    judicial: { border: "#65758b", kicker: "#65758b" },
+  };
   return (
-    <div style={{ marginTop: 12, padding: 14, borderRadius: 12, border: "1px solid #e2e8f0", background: "white" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-        <div>
-          <div style={{ fontSize: 11, color: "#64748b", fontWeight: 700, letterSpacing: 0.4, textTransform: "uppercase" }}>Public sentiment</div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 3 }}>
-            <span style={{ fontSize: 30, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>{score === null ? "—" : score}</span>
-            <span style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>/ 100</span>
-          </div>
-        </div>
-        <span style={{ padding: "6px 9px", borderRadius: 999, background: sentimentBg, color: sentimentColor, fontSize: 10, fontWeight: 700, whiteSpace: "nowrap" }}>{sentiment}</span>
-      </div>
-      <div role="progressbar" aria-label="Positive public sentiment score" aria-valuemin={0} aria-valuemax={100} aria-valuenow={score ?? 0} style={{ height: 8, borderRadius: 999, overflow: "hidden", background: "#e2e8f0", marginTop: 12 }}>
-        <div style={{ width: `${score ?? 0}%`, height: "100%", borderRadius: 999, background: score === null ? "#cbd5e1" : score >= 70 ? "#16a34a" : score >= 45 ? "#f59e0b" : "#ef4444", transition: "width 220ms ease" }} />
-      </div>
-      <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 11, lineHeight: 1.5 }}>{score === null ? "No positive or negative reviews yet." : "Calculated from positive and negative reviews only."}</p>
+    <div
+      className={`hierarchy-node hierarchy-node-${data.hierarchyTone}`}
+      style={{ borderColor: toneColors[data.hierarchyTone].border }}
+    >
+      <Handle type="target" position={Position.Top} />
+      {data.photoUrl && (
+        <img className="hierarchy-node-photo" src={data.photoUrl} alt="" />
+      )}
+      <span className="hierarchy-node-kicker" style={{ color: toneColors[data.hierarchyTone].kicker }}>{toneLabels[data.hierarchyTone]}</span>
+      <strong>{data.label}</strong>
+      <Handle type="source" position={Position.Bottom} />
     </div>
   );
 }
 
-const nodeTypes = { info: InfoNode };
+function makeHierarchyNode(
+  id: string,
+  label: string,
+  role: string,
+  description: string,
+  hierarchyTone: HierarchyTone,
+  x: number,
+  y: number,
+  photoUrl?: string,
+): Node<HierarchyProfile> {
+  return {
+    id,
+    type: "hierarchy",
+    position: { x, y },
+    data: { label, role, description, hierarchyTone, photoUrl },
+  };
+}
+
+const governmentHierarchyNodes: Node<HierarchyProfile>[] = [
+  // Shared constitutional root and three independent branches.
+  makeHierarchyNode("hier-state", "STATE OF TAMIL NADU", "State government", "The constitutional and administrative framework of the State of Tamil Nadu.", "political", 510, -320),
+  makeHierarchyNode("hier-executive", "EXECUTIVE", "State executive", "The executive branch administers the state and implements laws and public policy.", "political", 510, -140),
+  makeHierarchyNode("hier-legislature", "LEGISLATURE", "Law-making institution", "The Legislature is institutionally separate from the Executive and consists of the Governor and the Tamil Nadu Legislative Assembly.", "legislative", -900, -140),
+  makeHierarchyNode("hier-assembly", "Tamil Nadu Legislative Assembly", "234 seats", "The elected House of the Tamil Nadu Legislature. It debates and passes state laws, approves the budget and holds the government accountable.", "legislative", -900, 0),
+  makeHierarchyNode("hier-speaker", "Speaker", "Presiding officer of the Assembly", "The Speaker presides over the proceedings of the Tamil Nadu Legislative Assembly.", "legislative", -1320, 300),
+  makeHierarchyNode("hier-mlas", "MLAs", "234 constituencies", "Members of the Legislative Assembly represent constituencies across Tamil Nadu. The Assembly has 234 seats.", "legislative", -900, 300),
+  makeHierarchyNode("hier-committees", "Legislative Committees", "Assembly oversight and scrutiny", "Legislative committees examine bills, public expenditure and matters referred to them by the Assembly.", "legislative", -480, 300),
+  makeHierarchyNode("hier-judiciary", "JUDICIARY", "Independent judicial branch", "The Judiciary is independent of the Executive and Legislature and interprets and applies the law.", "judicial", 1900, -140),
+  makeHierarchyNode("hier-high-court", "Madras High Court", "High Court of Tamil Nadu", "The Madras High Court is the state's constitutional court, with its principal seat at Chennai and a bench at Madurai.", "judicial", 1900, 0),
+  makeHierarchyNode("hier-chief-justice", "Chief Justice", "Head of the Madras High Court", "The Chief Justice leads the Madras High Court and its judicial administration.", "judicial", 1480, 300),
+  makeHierarchyNode("hier-high-court-judges", "High Court Judges", "Judges of the Madras High Court", "High Court judges hear and decide cases within the jurisdiction of the Madras High Court.", "judicial", 1780, 300),
+  makeHierarchyNode("hier-madurai-bench", "Madurai Bench", "Bench of the Madras High Court", "The Madurai Bench of the Madras High Court exercises jurisdiction over specified districts in southern Tamil Nadu.", "judicial", 2080, 300),
+  makeHierarchyNode("hier-subordinate-judiciary", "Subordinate Judiciary", "District and subordinate courts", "The subordinate judiciary includes district courts and other civil and criminal courts across Tamil Nadu.", "judicial", 2380, 300),
+  makeHierarchyNode("hier-district-courts", "District Courts", "District-level judiciary", "District courts administer civil and criminal justice at the district level.", "judicial", 2380, 600),
+  makeHierarchyNode("hier-civil-criminal-courts", "Civil & Criminal Courts", "Courts below district level", "Civil and criminal courts hear matters according to their subject-matter and territorial jurisdiction.", "judicial", 2380, 900),
+  makeHierarchyNode("hier-governor", "Governor of Tamil Nadu", "Constitutional head", "The Governor of Tamil Nadu, shown at the top of the supplied administrative hierarchy.", "political", 510, 0, "https://upload.wikimedia.org/wikipedia/commons/1/16/Rajendra_Arlekar%2C_Governor_of_Kerala.jpg"),
+  makeHierarchyNode("hier-cm", "Chief Minister", "Head of the elected state government", "The Chief Minister heads the Council of Ministers and leads the state executive.", "political", 510, 300, "https://i.ibb.co/0Rv80BLn/HR-9-Y6yb0-AAzx-FY.jpg"),
+  makeHierarchyNode("council-summary", "Council of Ministers", "Cabinet and ministers", "The Council of Ministers is headed by the Chief Minister. Select this node to explore individual minister profiles.", "political", 175, 600),
+  makeHierarchyNode("hier-chief-secretary", "Chief Secretary", "Senior-most state civil servant", "The Chief Secretary leads the State Secretariat and coordinates the administrative machinery.", "administrative", 845, 600),
+  makeHierarchyNode("hier-secretariat", "State Secretariat", "Government administration", "The State Secretariat supports the work of government departments and policy administration.", "administrative", 845, 730),
+  makeHierarchyNode("hier-departments", "Government Departments", "Departmental administration", "Government departments organise policy, administration and delivery across the state.", "administrative", 845, 860),
+  makeHierarchyNode("hier-hods", "Heads of Departments", "Department leadership", "Heads of Departments lead their respective departments and supervise the relevant field administration.", "administrative", 285, 1005),
+  makeHierarchyNode("hier-home", "Home Department", "Home and internal administration", "The Home Department branch shown in the supplied hierarchy oversees the police administration branch.", "police", 1125, 1005),
+  makeHierarchyNode("hier-regional", "Regional / Zonal Offices", "Regional administration", "Regional and zonal offices connect departmental leadership with district administration.", "administrative", 285, 1150),
+  makeHierarchyNode("hier-dgp", "Director General of Police", "State police leadership", "The Director General of Police heads the state police organisation in the supplied hierarchy.", "police", 1125, 1150),
+  makeHierarchyNode("hier-district", "District Administration", "District-level administration", "District Administration coordinates district-level public administration and local governance interfaces.", "administrative", 285, 1295),
+  makeHierarchyNode("hier-ranges", "Police Ranges / Zones", "Police regional administration", "Police ranges and zones coordinate policing across their respective regions.", "police", 1125, 1295),
+  makeHierarchyNode("hier-revenue", "Revenue Divisions / Sub-Divisions", "Revenue administration", "Revenue divisions and sub-divisions form the next tier below district administration.", "administrative", 0, 1440),
+  makeHierarchyNode("hier-local", "Local Government", "Urban and rural local bodies", "Local Government branches into urban local bodies and rural panchayat institutions.", "local", 565, 1440),
+  makeHierarchyNode("hier-sp", "District SP / Police Commissionerates", "District and city policing", "District Superintendents of Police and Police Commissionerates lead district and city-level policing.", "police", 1125, 1440),
+  makeHierarchyNode("hier-taluks", "Taluks / Tahsildars", "Taluk administration", "Taluks and Tahsildars form the next tier of revenue administration.", "administrative", 0, 1585),
+  makeHierarchyNode("hier-urban", "Corporations / Municipalities", "Urban local bodies", "Corporations and Municipalities form the urban local-government branch.", "local", 335, 1585),
+  makeHierarchyNode("hier-rural", "District / Block / Village Panchayats", "Rural local bodies", "District, Block and Village Panchayats form the rural local-government branch.", "local", 690, 1585),
+  makeHierarchyNode("hier-police-stations", "Police Stations", "Local policing", "Police Stations are the local operational tier in the police branch.", "police", 1125, 1585),
+  makeHierarchyNode("hier-village", "Fir ka / Village Administration", "Village-level administration", "Village administration is shown beneath Taluks / Tahsildars, preserving the wording in the supplied diagram.", "administrative", 0, 1730),
+];
+
+const governmentHierarchyEdges: Edge[] = [
+  // Three separate branches under the State of Tamil Nadu.
+  { id: "hier-root-executive", source: "hier-state", target: "hier-executive", type: "smoothstep" },
+  { id: "hier-root-legislature", source: "hier-state", target: "hier-legislature", type: "smoothstep" },
+  { id: "hier-root-judiciary", source: "hier-state", target: "hier-judiciary", type: "smoothstep" },
+  { id: "hier-executive-governor", source: "hier-executive", target: "hier-governor", type: "smoothstep" },
+  { id: "hier-legislature-assembly", source: "hier-legislature", target: "hier-assembly", type: "smoothstep" },
+  { id: "hier-assembly-speaker", source: "hier-assembly", target: "hier-speaker", type: "smoothstep" },
+  { id: "hier-assembly-mlas", source: "hier-assembly", target: "hier-mlas", type: "smoothstep" },
+  { id: "hier-assembly-committees", source: "hier-assembly", target: "hier-committees", type: "smoothstep" },
+  { id: "hier-judiciary-high-court", source: "hier-judiciary", target: "hier-high-court", type: "smoothstep" },
+  { id: "hier-high-court-chief-justice", source: "hier-high-court", target: "hier-chief-justice", type: "smoothstep" },
+  { id: "hier-high-court-judges-edge", source: "hier-high-court", target: "hier-high-court-judges", type: "smoothstep" },
+  { id: "hier-high-court-madurai", source: "hier-high-court", target: "hier-madurai-bench", type: "smoothstep" },
+  { id: "hier-high-court-subordinate", source: "hier-high-court", target: "hier-subordinate-judiciary", type: "smoothstep" },
+  { id: "hier-subordinate-district", source: "hier-subordinate-judiciary", target: "hier-district-courts", type: "smoothstep" },
+  { id: "hier-district-civil-criminal", source: "hier-district-courts", target: "hier-civil-criminal-courts", type: "smoothstep" },
+  { id: "hier-e1", source: "hier-governor", target: "hier-cm", type: "smoothstep" },
+  { id: "hier-e2", source: "hier-cm", target: "council-summary", type: "smoothstep" },
+  { id: "hier-e3", source: "hier-cm", target: "hier-chief-secretary", type: "smoothstep" },
+  { id: "hier-e4", source: "hier-chief-secretary", target: "hier-secretariat", type: "smoothstep" },
+  { id: "hier-e5", source: "hier-secretariat", target: "hier-departments", type: "smoothstep" },
+  { id: "hier-e6", source: "hier-departments", target: "hier-hods", type: "smoothstep" },
+  { id: "hier-e7", source: "hier-departments", target: "hier-home", type: "smoothstep" },
+  { id: "hier-e8", source: "hier-hods", target: "hier-regional", type: "smoothstep" },
+  { id: "hier-e9", source: "hier-home", target: "hier-dgp", type: "smoothstep" },
+  { id: "hier-e10", source: "hier-regional", target: "hier-district", type: "smoothstep" },
+  { id: "hier-e11", source: "hier-dgp", target: "hier-ranges", type: "smoothstep" },
+  { id: "hier-e12", source: "hier-district", target: "hier-revenue", type: "smoothstep" },
+  { id: "hier-e13", source: "hier-district", target: "hier-local", type: "smoothstep" },
+  { id: "hier-e14", source: "hier-ranges", target: "hier-sp", type: "smoothstep" },
+  { id: "hier-e15", source: "hier-revenue", target: "hier-taluks", type: "smoothstep" },
+  { id: "hier-e16", source: "hier-taluks", target: "hier-village", type: "smoothstep" },
+  { id: "hier-e17", source: "hier-local", target: "hier-urban", type: "smoothstep" },
+  { id: "hier-e18", source: "hier-local", target: "hier-rural", type: "smoothstep" },
+  { id: "hier-e19", source: "hier-sp", target: "hier-police-stations", type: "smoothstep" },
+];
+
+const nodeTypes = { info: InfoNode, hierarchy: HierarchyNode };
 
 const allNodes: Node<Profile>[] = [
   {
@@ -807,40 +918,11 @@ const categoryNodes: Record<Category, string[]> = {
   "Schemes & Projects": [],
 };
 
-const categories: Category[] = [
-  "Government",
-  "Ministers",
-  "MLAs",
-  "IAS Officers",
-  "IPS Officers",
-  "Departments",
-  "Schemes & Projects",
-];
-
-const categoryDescriptions: Record<Category, string> = {
-  Government: "Governor, Chief Minister, Council of Ministers and the state executive structure.",
-  Ministers: "Meet the Chief Minister and ministers, and explore their portfolios and profiles.",
-  MLAs: "Explore all 234 Assembly constituencies. Select a party group to expand its member profiles; search by name or constituency.",
-  "IAS Officers": "Explore administrative officers and postings.",
-  "IPS Officers": "Explore police leadership and IPS officer profiles.",
-  Departments: "Explore department structures and responsibilities.",
-  "Schemes & Projects": "Explore schemes, projects and documented outcomes.",
-};
-
-function HomeCategoryMenu({ value, onChange }: {
-  value: "All" | "Positive" | "Concern" | "Allegation" | "Request";
-  onChange: (value: "All" | "Positive" | "Concern" | "Allegation" | "Request") => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const options = [{ value: "All" as const, label: "All categories" }, { value: "Positive" as const, label: "Positive" }, { value: "Concern" as const, label: "Concern" }, { value: "Allegation" as const, label: "Allegation" }, { value: "Request" as const, label: "Request" }];
-  const current = options.find((item) => item.value === value) ?? options[0];
-  return <div className="home-category-menu"><button type="button" className="home-category-trigger" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen((v) => !v)}><span>{current.label}</span><span>⌄</span></button>{open && <><button type="button" className="home-category-away" aria-label="Close category menu" onClick={() => setOpen(false)} /><div className="home-category-options" role="listbox" aria-label="Discussion category">{options.map((option) => <button key={option.value} type="button" role="option" aria-selected={value === option.value} className={value === option.value ? "selected" : ""} onClick={() => { onChange(option.value); setOpen(false); }}>{option.label}{value === option.value && <span>✓</span>}</button>)}</div></>}</div>;
-}
-
 export default function Home() {
   const [category, setCategory] = useState<Category>("Government");
-  const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
+  const [activeMainSection, setActiveMainSection] = useState<"Home" | "Civil Services">("Home");
   const [mobileHeaderVisible, setMobileHeaderVisible] = useState(true);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const lastScrollY = useRef(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authSetupNotice, setAuthSetupNotice] = useState(false);
@@ -853,7 +935,11 @@ export default function Home() {
   const [mlaPartyFilter, setMlaPartyFilter] = useState("All parties");
   const [mlaPartyOpen, setMlaPartyOpen] = useState(false);
   const [selected, setSelected] = useState<Profile>(allNodes[0].data);
+  const [selectedCivilOfficer, setSelectedCivilOfficer] = useState<CivilServiceOfficer | null>(null);
   const [reviewScore, setReviewScore] = useState<number | null>(null);
+  const [reviewScoreChange, setReviewScoreChange] = useState<number | null>(null);
+  const [officerReviewScore, setOfficerReviewScore] = useState<number | null>(null);
+  const [officerReviewScoreChange, setOfficerReviewScoreChange] = useState<number | null>(null);
   const [recentReviews, setRecentReviews] = useState<ReviewSummary[]>([]);
   const [homeVotes, setHomeVotes] = useState<Record<string, "up" | "down">>({});
   const [homeReviewType, setHomeReviewType] = useState<"All" | "Positive" | "Concern" | "Allegation" | "Request">("All");
@@ -919,11 +1005,65 @@ export default function Home() {
         );
         const positive = relevant.filter((review) => review.type === "Positive").length;
         setReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
-      } catch { if (!cancelled) { setRecentReviews([]); setReviewScore(null); } }
+        const now = Date.now();
+        const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+        const twoWeeksAgo = now - 14 * 24 * 60 * 60 * 1000;
+        const recent = relevant.filter((review) => {
+          const timestamp = new Date(review.date).getTime();
+          return timestamp >= weekAgo && timestamp <= now;
+        });
+        const previous = relevant.filter((review) => {
+          const timestamp = new Date(review.date).getTime();
+          return timestamp >= twoWeeksAgo && timestamp < weekAgo;
+        });
+        const recentPositive = recent.filter((review) => review.type === "Positive").length;
+        const previousPositive = previous.filter((review) => review.type === "Positive").length;
+        const recentScore = recent.length ? (recentPositive / recent.length) * 100 : null;
+        const previousScore = previous.length ? (previousPositive / previous.length) * 100 : null;
+        setReviewScoreChange(recentScore !== null && previousScore !== null ? Math.round(recentScore - previousScore) : null);
+      } catch { if (!cancelled) { setRecentReviews([]); setReviewScore(null); setReviewScoreChange(null); } }
     }
     void loadReviews();
     return () => { cancelled = true; };
   }, [selected.label]);
+
+  // Fetch sentiment score for a selected civil services officer
+  useEffect(() => {
+    if (!selectedCivilOfficer) {
+      setOfficerReviewScore(null);
+      setOfficerReviewScoreChange(null);
+      return;
+    }
+    let cancelled = false;
+    async function loadOfficerReviews() {
+      try {
+        const profile = encodeURIComponent(selectedCivilOfficer!.full_name);
+        const response = await fetch(`/api/reviews?profile=${profile}`, { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok || cancelled) return;
+        const loaded: ReviewSummary[] = (Array.isArray(data.reviews) ? data.reviews : []).map((review: Record<string, unknown>): ReviewSummary => {
+          const officials = Array.isArray(review.officials) ? review.officials as { name: string; category: string }[] : [];
+          const imageUrls = Array.isArray(review.imageUrls) ? review.imageUrls as string[] : [];
+          return { ...review, profile: officials.map((o) => o.name).join(", "), officials, imageUrls, image: imageUrls[0] } as ReviewSummary;
+        });
+        const relevant = loaded.filter((r) => r.type === "Positive" || r.type === "Concern");
+        const positive = relevant.filter((r) => r.type === "Positive").length;
+        setOfficerReviewScore(relevant.length ? (positive / relevant.length) * 100 : null);
+        const now = Date.now();
+        const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+        const twoWeeksAgo = now - 14 * 24 * 60 * 60 * 1000;
+        const recent = relevant.filter((r) => { const t = new Date(r.date).getTime(); return t >= weekAgo && t <= now; });
+        const previous = relevant.filter((r) => { const t = new Date(r.date).getTime(); return t >= twoWeeksAgo && t < weekAgo; });
+        const recentPositive = recent.filter((r) => r.type === "Positive").length;
+        const previousPositive = previous.filter((r) => r.type === "Positive").length;
+        const recentScore = recent.length ? (recentPositive / recent.length) * 100 : null;
+        const previousScore = previous.length ? (previousPositive / previous.length) * 100 : null;
+        setOfficerReviewScoreChange(recentScore !== null && previousScore !== null ? Math.round(recentScore - previousScore) : null);
+      } catch { if (!cancelled) { setOfficerReviewScore(null); setOfficerReviewScoreChange(null); } }
+    }
+    void loadOfficerReviews();
+    return () => { cancelled = true; };
+  }, [selectedCivilOfficer]);
 
   useEffect(() => {
     if (!profileMenuOpen) return;
@@ -1110,14 +1250,16 @@ export default function Home() {
   }, [mlaRecords, mlaParties, expandedMlaParty, mlaSearch, mlaPartyFilter, filteredMlaRecords]);
 
   const visibleNodes = useMemo(
-    () => category === "MLAs"
-      ? mlaGraphNodes
-      : allNodes
-          .filter((node) => categoryNodes[category].includes(node.id))
-          .map((node) => ({
-            ...node,
-            position: layoutPositions[category][node.id] ?? node.position,
-          })),
+    () => category === "Government"
+      ? governmentHierarchyNodes
+      : category === "MLAs"
+        ? mlaGraphNodes
+        : allNodes
+            .filter((node) => categoryNodes[category].includes(node.id))
+            .map((node) => ({
+              ...node,
+              position: layoutPositions[category][node.id] ?? node.position,
+            })),
     [category, mlaGraphNodes]
   );
   const visibleIds = useMemo(
@@ -1125,6 +1267,7 @@ export default function Home() {
     [visibleNodes]
   );
   const visibleEdges = useMemo(() => {
+    if (category === "Government") return governmentHierarchyEdges;
     if (category === "MLAs") {
       // Keep MLA cards independent; do not draw connecting edges in this view.
       return [];
@@ -1192,8 +1335,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isPerson = selected.isPerson ?? /Chief Minister|Minister profile|IPS officer|DGP|MLA profile|IAS officer/i.test(selected.role);
-
   async function voteHomeReview(id: string, direction: "up" | "down") {
     if (!isAuthenticated) { setAuthMode("Log In"); setAuthModalOpen(true); return; }
     setProfileMenuOpen(false);
@@ -1219,99 +1360,125 @@ export default function Home() {
 
   return (
     <main className="app-shell" style={{ minHeight: "100vh", padding: 24, background: "#f8fafc", color: "#172554" }}>
-      <div className={`app-header aa-home-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
-          <img src="/aa-logo.svg" alt="Arasiyal Arattai logo" style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 10, flexShrink: 0 }} />
-          <h1 className="brand-heading app-title" style={{ fontSize: 27, fontWeight: 650, margin: 0 }}>Arasiyal Arattai</h1>
-        </div>
-        <div className="app-header-actions">
-          <a className="app-share-feedback" href="/reviews?action=write"><span className="share-icon" aria-hidden="true">＋</span><span>Share feedback</span></a>
-        <div ref={profileMenuRef} style={{ position: "relative", flexShrink: 0 }}>
+      <div className={`app-header aa-home-header${mobileHeaderVisible ? " app-header-visible" : " app-header-hidden"}`} style={{ height: 62, minHeight: 62, maxHeight: 62, boxSizing: "border-box", display: "flex", flexWrap: "nowrap", alignItems: "center", overflow: "visible" }}>
+        <a className="aa-brand" href="/" aria-label="Arasiyal Arattai home">
+          <img src="/aa-logo.svg" alt="" width={34} height={34} style={{ width: 34, height: 34, maxWidth: 34, maxHeight: 34, flex: "0 0 34px", objectFit: "contain" }} />
+          <span>Arasiyal Arattai</span>
+        </a>
+
+        <nav className="aa-primary-nav" aria-label="Main navigation">
+          {[
+            { label: "Home" },
+            { label: "Office Bearers" },
+            { label: "Civil Services", dropdown: true },
+            { label: "Result", badge: "New" },
+            { label: "Constituency", dropdown: true },
+          ].map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              className={(item.label === activeMainSection ? "aa-primary-nav-link is-active" : "aa-primary-nav-link")}
+              aria-current={item.label === activeMainSection ? "page" : undefined}
+              onClick={() => {
+                if (item.label === "Home" || item.label === "Civil Services") {
+                  setActiveMainSection(item.label);
+                  setSelected(allNodes[0].data);
+                  if (item.label === "Home") setSelectedCivilOfficer(null);
+                } else {
+                  window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
+                }
+                setMobileNavOpen(false);
+              }}
+            >
+              <span>{item.label}</span>
+              {item.badge && <span className="aa-nav-badge">{item.badge}</span>}
+              {item.dropdown && <ChevronDown aria-hidden="true" className="aa-nav-chevron" />}
+              {item.label === "Home" && <span className="aa-nav-active-dot" />}
+            </button>
+          ))}
+        </nav>
+
+        <div className="app-header-actions aa-header-actions">
+          <a className="aa-feedback-cta" href="/reviews?action=write">
+            <MessageSquareHeart aria-hidden="true" />
+            <span>Share Feedback</span>
+          </a>
+          <div ref={profileMenuRef} className="aa-profile-menu-wrap">
+            <button
+              type="button"
+              className="aa-profile-trigger"
+              aria-label="Open profile menu"
+              aria-haspopup="menu"
+              aria-expanded={profileMenuOpen}
+              onClick={() => {
+                setProfileMenuOpen((open) => !open);
+                setAuthSetupNotice(false);
+                fetch("/api/auth/me", { cache: "no-store" })
+                  .then((response) => setIsAuthenticated(response.ok))
+                  .catch(() => setIsAuthenticated(false));
+              }}
+            >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M4.8 20c.7-3.4 3.2-5.2 7.2-5.2s6.5 1.8 7.2 5.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+            {profileMenuOpen && (
+              <div role="menu" aria-label="Profile menu" className="aa-profile-dropdown">
+                <div className="aa-profile-dropdown-heading">
+                  <div>Your account</div>
+                  <small>{isAuthenticated ? "Signed in with Cognito." : "Sign in to share feedback and vote."}</small>
+                </div>
+                {isAuthenticated ? (
+                  <>
+                    <a href="/profile" role="menuitem">View profile</a>
+                    <a href="/auth/logout" role="menuitem">Sign out</a>
+                  </>
+                ) : (
+                  <>
+                    <button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }}>Sign in</button>
+                    <button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }}>Create account</button>
+                  </>
+                )}
+                {authSetupNotice && <p role="status">Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
+              </div>
+            )}
+          </div>
           <button
             type="button"
-            aria-label="Open profile menu"
-            aria-haspopup="menu"
-            aria-expanded={profileMenuOpen}
-            onClick={() => {
-              setProfileMenuOpen((open) => !open);
-              setAuthSetupNotice(false);
-              fetch("/api/auth/me", { cache: "no-store" })
-                .then((response) => setIsAuthenticated(response.ok))
-                .catch(() => setIsAuthenticated(false));
-            }}
-            style={{ width: 44, height: 44, display: "grid", placeItems: "center", borderRadius: 999, border: "1px solid #cbd5e1", background: "white", color: "#172554", cursor: "pointer", boxShadow: "0 2px 6px #0f172a0a" }}
+            className="aa-mobile-menu-toggle"
+            aria-label={mobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen((open) => !open)}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M4.8 20c.7-3.4 3.2-5.2 7.2-5.2s6.5 1.8 7.2 5.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
+            {mobileNavOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
           </button>
-          {profileMenuOpen && (
-            <div role="menu" aria-label="Profile menu" style={{ position: "absolute", zIndex: 100, top: 52, right: 0, width: 230, padding: 10, border: "1px solid #dbe3ef", borderRadius: 14, background: "white", boxShadow: "0 12px 32px #0f172a1c" }}>
-              <div style={{ padding: "8px 9px 10px", borderBottom: "1px solid #e2e8f0", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#172554" }}>Your account</div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>{isAuthenticated ? "Signed in with Cognito." : "Sign in to share feedback and vote."}</div>
-              </div>
-              {isAuthenticated ? <><a href="/profile" role="menuitem" style={{ display: "block", borderRadius: 9, padding: "10px 9px", color: "#172554", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>View profile</a><a href="/auth/logout" role="menuitem" style={{ display: "block", borderRadius: 9, padding: "10px 9px", color: "#172554", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>Sign out</a></> : <><button type="button" role="menuitem" onClick={() => { setAuthMode("Log In"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Sign in</button><button type="button" role="menuitem" onClick={() => { setAuthMode("Sign Up"); setAuthModalOpen(true); setProfileMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", border: 0, borderRadius: 9, padding: "10px 9px", background: "white", color: "#172554", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Create account</button></>}
-              {authSetupNotice && <p role="status" style={{ margin: "7px 5px 4px", padding: 9, borderRadius: 8, background: "#eff6ff", color: "#1d4ed8", fontSize: 11, lineHeight: 1.5 }}>Authentication is not connected yet. Next, we’ll configure Amazon Cognito and connect these actions.</p>}
-            </div>
-          )}
         </div>
-        </div>
-      </div>
-      <p style={{ color: "#64748b", marginBottom: 16 }}>
-        Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes, and discover the decisions and public feedback shaping the state.
-      </p>
-
-      <div className="mobile-category-select">
-        <button
-          type="button"
-          className="mobile-category-trigger"
-          aria-label="Choose a section"
-          aria-haspopup="listbox"
-          aria-expanded={isCategoryPickerOpen}
-          onClick={() => setIsCategoryPickerOpen((open) => !open)}
-        >
-          <span className="mobile-category-current">
-            <span className="mobile-category-eyebrow">EXPLORE SECTION</span>
-            <span className="mobile-category-value">{category}</span>
-          </span>
-          <svg className={isCategoryPickerOpen ? "mobile-category-chevron is-open" : "mobile-category-chevron"} width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
-        {isCategoryPickerOpen && (
-          <div className="mobile-category-options" role="listbox" aria-label="Explore sections">
-            {categories.map((item) => (
-              <button
-                key={item}
-                type="button"
-                role="option"
-                aria-selected={category === item}
-                className={category === item ? "mobile-category-option is-selected" : "mobile-category-option"}
-                onClick={() => { changeCategory(item); setIsCategoryPickerOpen(false); }}
-              >
-                <span>{item}</span>
-                {category === item && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+        {mobileNavOpen && (
+          <nav className="aa-mobile-nav" aria-label="Mobile navigation">
+            {[
+              { label: "Home" },
+              { label: "Office Bearers" },
+              { label: "Civil Services", dropdown: true },
+              { label: "Result", badge: "New" },
+              { label: "Constituency", dropdown: true },
+            ].map((item) => (
+              <button key={item.label} type="button" className={item.label === "Home" ? "is-active" : ""} onClick={() => {
+                if (item.label !== "Home") window.dispatchEvent(new CustomEvent("aa-section-navigation", { detail: item.label }));
+                setMobileNavOpen(false);
+              }}>
+                <span>{item.label}</span>
+                {item.badge && <span className="aa-nav-badge">{item.badge}</span>}
+                {item.dropdown && <ChevronDown aria-hidden="true" className="aa-nav-chevron" />}
               </button>
             ))}
-          </div>
+            <a href="/reviews?action=write"><MessageSquareHeart aria-hidden="true" /> Share Feedback</a>
+          </nav>
         )}
       </div>
-      <nav className="category-nav" aria-label="Explore government sections">
-        {categories.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => changeCategory(item)}
-            className={category === item ? "category-nav-button is-active" : "category-nav-button"}
-            aria-current={category === item ? "page" : undefined}
-          >
-            {item}
-          </button>
-        ))}
-      </nav>
 
-      <p style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>
-        {categoryDescriptions[category]}
+      <p style={{ color: "#64748b", marginBottom: 16 }}>
+        Explore Tamil Nadu’s government, elected representatives, public officials, departments and schemes, and discover the decisions and public feedback shaping the state.
       </p>
 
       {category === "MLAs" && (
@@ -1372,52 +1539,55 @@ export default function Home() {
 
       <div className="page-with-profile">
         <div className="page-main-column">
-      <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
-        <div key={category} className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
-          <ReactFlow
-            style={{ width: "100%", height: "100%" }}
-            key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
-            nodes={visibleNodes}
-            edges={visibleEdges}
-            nodeTypes={nodeTypes}
-            fitView
-            fitViewOptions={{ padding: 0.12, minZoom: 0.28, maxZoom: 0.9 }}
-            minZoom={0.15}
-            maxZoom={1.5}
-            onNodeClick={(_, node) => {
-              if (node.id === "council-summary") { changeCategory("Ministers"); return; }
-              if (node.id === "mla-summary") {
-                changeCategory("MLAs");
-                setExpandedMlaParty(null);
-                setMlaSearch("");
-                setMlaPartyFilter("All parties");
-                setSelected(node.data as Profile);
-                return;
-              }
-              if (node.id === "tvk") {
-                setCategory("MLAs");
-                setExpandedMlaParty(null);
-                setMlaSearch("");
-                setMlaPartyFilter("TVK");
-                setSelected(node.data as Profile);
-                return;
-              }
-              if (category === "MLAs" && node.id.startsWith("mla-party-")) {
-                const party = (node.data as Profile).mlaParty ?? null;
-                setExpandedMlaParty((current) => current === party ? null : party);
-                setSelected(node.data as Profile);
-                return;
-              }
-              selectProfile(node.data as Profile);
-            }}
-          >
-            <Background />
-            <Controls />
-          </ReactFlow>
+      {activeMainSection === "Civil Services" ? (
+        <CivilServicesDirectory onSelectOfficer={setSelectedCivilOfficer} selectedOfficerId={selectedCivilOfficer?.id ?? null} />
+      ) : (
+        <div className="explorer-layout" style={{ display: "flex", gap: 16, height: "75vh", minHeight: 520, alignItems: "flex-start" }}>
+          <div key={category} className="graph-panel category-view-transition" style={{ flex: 1, minWidth: 0, height: "75vh", border: "1px solid #cbd5e1", borderRadius: 12, overflow: "hidden", background: "#f1f5f9" }}>
+            <ReactFlow
+              style={{ width: "100%", height: "100%" }}
+              key={category === "MLAs" ? `${category}-${expandedMlaParty ?? "all"}-${mlaSearch}-${mlaPartyFilter}` : category}
+              nodes={visibleNodes}
+              edges={visibleEdges}
+              nodeTypes={nodeTypes}
+              fitView
+              fitViewOptions={{ padding: category === "Government" ? 0.08 : 0.12, minZoom: category === "Government" ? 0.34 : 0.28, maxZoom: category === "Government" ? 0.85 : 0.9 }}
+              minZoom={0.15}
+              maxZoom={1.5}
+              defaultEdgeOptions={category === "Government" ? { type: "smoothstep", style: { stroke: "#94a3b8", strokeWidth: 2 }, interactionWidth: 18 } : undefined}
+              onNodeClick={(_, node) => {
+                if (node.id === "council-summary") { changeCategory("Ministers"); return; }
+                if (node.id === "mla-summary") {
+                  changeCategory("MLAs");
+                  setExpandedMlaParty(null);
+                  setMlaSearch("");
+                  setMlaPartyFilter("All parties");
+                  setSelected(node.data as Profile);
+                  return;
+                }
+                if (node.id === "tvk") {
+                  setCategory("MLAs");
+                  setExpandedMlaParty(null);
+                  setMlaSearch("");
+                  setMlaPartyFilter("TVK");
+                  setSelected(node.data as Profile);
+                  return;
+                }
+                if (category === "MLAs" && node.id.startsWith("mla-party-")) {
+                  const party = (node.data as Profile).mlaParty ?? null;
+                  setExpandedMlaParty((current) => current === party ? null : party);
+                  setSelected(node.data as Profile);
+                  return;
+                }
+                selectProfile(node.data as Profile);
+              }}
+            >
+              <Background />
+              <Controls />
+            </ReactFlow>
+          </div>
         </div>
-
-
-      </div>
+      )}
 
       {authModalOpen && (
         <div className="auth-backdrop" role="presentation" onClick={() => setAuthModalOpen(false)}>
@@ -1544,21 +1714,21 @@ export default function Home() {
                     <div className="aa-social-post-header">
                       <div className="aa-social-avatar" style={{ background: getAvatarColors(review.name).background, color: getAvatarColors(review.name).foreground, borderColor: getAvatarColors(review.name).border }}>{getAvatarInitials(review.name)}</div>
                       <div className="aa-social-author"><strong>{review.name || "Community member"}</strong><span>{new Date(review.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
-                      <span className="aa-social-flair" style={{ color: categoryStyle.color, background: categoryStyle.background }}>{review.type}</span>
+                      <span className="aa-social-flair" style={{ color: categoryStyle.color, background: categoryStyle.background }}><span className="aa-social-flair-dot" style={{ background: categoryStyle.color }} />{review.type}</span>
                       <PostActionsMenu postId={review.id} canDelete={!!review.canDelete} onDeleted={(id) => setRecentReviews((current) => current.filter((item) => item.id !== id))} />
                     </div>
                     <h3 className="aa-social-title">{review.title}</h3>
                     <p className="aa-social-body">{review.body}</p>
-                    {review.imageUrls?.length ? null : (review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}</a>)}</div> : null)}
-                    {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <img key={url} src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" />)}</div> : null}
-                    {review.imageUrls?.length && review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}</a>)}</div> : null}
+                    
+                    {review.imageUrls?.length ? <div className={`aa-social-media media-${Math.min(review.imageUrls.length, 4)}`}>{review.imageUrls.slice(0, 4).map((url, index) => <span className="aa-social-media-image-cell" key={url}><img src={url} alt={`Image ${index + 1} attached to discussion: ${review.title}`} loading="lazy" /></span>)}</div> : null}
+                    {review.officials?.length ? <div className="aa-social-officials">{review.officials.map((official, index, officials) => <a key={official.name} href={`/?profile=${encodeURIComponent(official.name)}`} onClick={(event) => { event.preventDefault(); openTaggedOfficial(official.name); }}>{official.name}{index < officials.length - 1 ? " · " : ""}</a>)}</div> : null}
                     <div className="aa-social-actions">
-                      <div className="aa-social-votes">
-                        <button type="button" className={homeVotes[review.id] === "up" ? "is-upvoted" : ""} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><svg aria-hidden="true" className="vote-icon" viewBox="0 0 18 19" width="18" height="19" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g transform={homeVotes[review.id] === "up" ? "rotate(180 9 9.5)" : "none"}><path d={homeVotes[review.id] === "up" ? "M9.00389 19C8.67056 19 8.39056 18.8733 8.16389 18.62L0.283889 9.88C0.137222 9.72 0.0472222 9.53 0.0138889 9.31C-0.0194444 9.09 0.00722223 8.87667 0.0938889 8.67C0.180556 8.46333 0.317222 8.3 0.503889 8.18C0.690556 8.06 0.897222 8 1.12389 8H4.88389V1.12C4.88389 0.813334 4.99389 0.549999 5.21389 0.33C5.43389 0.110001 5.69722 0 6.00389 0H12.0039C12.3106 0 12.5739 0.110001 12.7939 0.33C13.0139 0.549999 13.1239 0.813334 13.1239 1.12V8H16.8839C17.0972 8 17.2972 8.06 17.4839 8.18C17.6706 8.3 17.8106 8.46333 17.9039 8.67C17.9972 8.87667 18.0272 9.09 17.9939 9.31C17.9606 9.53 17.8706 9.72 17.7239 9.88L9.84389 18.62C9.61722 18.8733 9.33722 19 9.00389 19Z" : "M9.00316 0C9.33649 0 9.61649 0.126667 9.84316 0.38L17.7232 9.12C17.8698 9.28 17.9598 9.47 17.9932 9.69C18.0265 9.91 17.9998 10.1233 17.9132 10.33C17.8265 10.5367 17.6898 10.7 17.5032 10.82C17.3165 10.94 17.1098 11 16.8832 11H13.1232L13.1232 17.88C13.1232 18.1867 13.0132 18.45 12.7932 18.67C12.5732 18.89 12.3098 19 12.0032 19L6.00316 19C5.69649 19 5.43316 18.89 5.21316 18.67C4.99316 18.45 4.88316 18.1867 4.88316 17.88L4.88316 11L1.12316 11C0.909826 11 0.709826 10.94 0.523159 10.82C0.336493 10.7 0.196493 10.5367 0.103159 10.33C0.00982666 10.1233 -0.020174 9.91 0.0131588 9.69C0.0464916 9.47 0.136492 9.28 0.283159 9.12L8.16316 0.38C8.38983 0.126667 8.66983 0 9.00316 0ZM16.6032 9.74L9.00316 1.32L1.40316 9.74L6.12316 9.74L6.12316 17.76L11.8832 17.76L11.8832 9.76L16.6032 9.74Z"} /></g></svg><span className="aa-social-vote-count">{review.votes?.up ?? 0}</span></button>
-                        <button type="button" className={homeVotes[review.id] === "down" ? "is-downvoted" : ""} aria-label="Downvote post" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")}><svg aria-hidden="true" className="vote-icon" viewBox="0 0 18 19" width="18" height="19" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g transform={homeVotes[review.id] === "down" ? "none" : "rotate(180 9 9.5)"}><path d={homeVotes[review.id] === "down" ? "M9.00389 19C8.67056 19 8.39056 18.8733 8.16389 18.62L0.283889 9.88C0.137222 9.72 0.0472222 9.53 0.0138889 9.31C-0.0194444 9.09 0.00722223 8.87667 0.0938889 8.67C0.180556 8.46333 0.317222 8.3 0.503889 8.18C0.690556 8.06 0.897222 8 1.12389 8H4.88389V1.12C4.88389 0.813334 4.99389 0.549999 5.21389 0.33C5.43389 0.110001 5.69722 0 6.00389 0H12.0039C12.3106 0 12.5739 0.110001 12.7939 0.33C13.0139 0.549999 13.1239 0.813334 13.1239 1.12V8H16.8839C17.0972 8 17.2972 8.06 17.4839 8.18C17.6706 8.3 17.8106 8.46333 17.9039 8.67C17.9972 8.87667 18.0272 9.09 17.9939 9.31C17.9606 9.53 17.8706 9.72 17.7239 9.88L9.84389 18.62C9.61722 18.8733 9.33722 19 9.00389 19Z" : "M9.00316 0C9.33649 0 9.61649 0.126667 9.84316 0.38L17.7232 9.12C17.8698 9.28 17.9598 9.47 17.9932 9.69C18.0265 9.91 17.9998 10.1233 17.9132 10.33C17.8265 10.5367 17.6898 10.7 17.5032 10.82C17.3165 10.94 17.1098 11 16.8832 11H13.1232L13.1232 17.88C13.1232 18.1867 13.0132 18.45 12.7932 18.67C12.5732 18.89 12.3098 19 12.0032 19L6.00316 19C5.69649 19 5.43316 18.89 5.21316 18.67C4.99316 18.45 4.88316 18.1867 4.88316 17.88L4.88316 11L1.12316 11C0.909826 11 0.709826 10.94 0.523159 10.82C0.336493 10.7 0.196493 10.5367 0.103159 10.33C0.00982666 10.1233 -0.020174 9.91 0.0131588 9.69C0.0464916 9.47 0.136492 9.28 0.283159 9.12L8.16316 0.38C8.38983 0.126667 8.66983 0 9.00316 0ZM16.6032 9.74L9.00316 1.32L1.40316 9.74L6.12316 9.74L6.12316 17.76L11.8832 17.76L11.8832 9.76L16.6032 9.74Z"} /></g></svg><span className="aa-social-vote-count">{review.votes?.down ?? 0}</span></button>
+                      <div className="aa-social-vote-buttons">
+                        <button type="button" className={`aa-post-action-button ${homeVotes[review.id] === "up" ? "is-upvoted" : ""}`} aria-label="Upvote post" aria-pressed={homeVotes[review.id] === "up"} onClick={() => voteHomeReview(review.id, "up")}><ArrowBigUp className="h-4 w-4" /><span className="aa-social-vote-count">{review.votes?.up ?? 0}</span></button>
+                        <button type="button" className={`aa-post-action-button ${homeVotes[review.id] === "down" ? "is-downvoted" : ""}`} aria-label="Downvote post" aria-pressed={homeVotes[review.id] === "down"} onClick={() => voteHomeReview(review.id, "down")}><ArrowBigDown className="h-4 w-4" /><span className="aa-social-vote-count">{review.votes?.down ?? 0}</span></button>
                       </div>
-                      <a href="/reviews" className="aa-social-comment-button" aria-label={`View ${review.commentCount ?? 0} comments`}>
-                        <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M9.6 21.56a.72.72 0 0 1-.51-.21.72.72 0 0 1-.21-.51v-3.16H6.5a3.62 3.62 0 0 1-3.62-3.62V6.06A3.62 3.62 0 0 1 6.5 2.44h11a3.62 3.62 0 0 1 3.62 3.62v8a3.62 3.62 0 0 1-3.62 3.62h-3.26l-4.16 3.7a.8.8 0 0 1-.48.18ZM6.5 3.68a2.38 2.38 0 0 0-2.38 2.38v8a2.38 2.38 0 0 0 2.38 2.38h3.62v3.22l3.64-3.22h3.74a2.38 2.38 0 0 0 2.38-2.38v-8a2.38 2.38 0 0 0-2.38-2.38h-11Z"/></svg>
+                      <a href="/reviews" className="aa-social-comment-button aa-post-action-button" aria-label={`View ${review.commentCount ?? 0} comments`}>
+                        <MessageCircle className="h-4 w-4" />
                         <span className="aa-social-comment-count">{review.commentCount ?? 0}</span>
                       </a>
                     </div>
@@ -1573,39 +1743,22 @@ export default function Home() {
       </section>
         </div>
         <div className="profile-column" style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14, alignSelf: "flex-start" }}>
-        <aside style={{ width: "100%", boxSizing: "border-box", padding: 18, border: "1px solid #dbe3ef", borderRadius: 16, background: "white", boxShadow: "0 8px 24px #0f172a0a" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>Selected profile</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 18 }}>
-            {selected.photoUrl ? (
-              <img src={selected.photoUrl} alt={selected.label} style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, objectFit: "cover", objectPosition: "center", border: "4px solid #e2e8f0" }} />
-            ) : (
-              <div style={{ width: 96, height: 96, flexShrink: 0, borderRadius: 22, background: "#eff6ff", display: "grid", placeItems: "center", color: "#2563eb", fontSize: 28, fontWeight: 800 }}>{selected.label.slice(0, 1)}</div>
-            )}
-            <div style={{ minWidth: 0 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 850, lineHeight: 1.25 }}>{selected.label}</h2>
-              <p style={{ color: "#64748b", fontSize: 13, marginTop: 5 }}>{selected.description?.startsWith("Minister for ") ? "Minister" : selected.role}</p>
-              {isPerson && (selected.xHandle ? (
-                <a href={selected.xHandle.startsWith("http") ? selected.xHandle : `https://x.com/${selected.xHandle.replace(/^@/, "")}`} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, color: "#2563eb", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>View 𝕏 profile ↗</a>
-              ) : <span style={{ display: "block", marginTop: 8, color: "#94a3b8", fontSize: 12 }}>𝕏 Handle not added</span>)}
-            </div>
-          </div>
-          {isPerson && (
-            <div style={{ marginTop: 18, padding: 14, borderRadius: 12, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>Community rating</span>
-              </div>
-              <RatingGauge value={reviewScore} />
-            </div>
+          {activeMainSection === "Civil Services" && selectedCivilOfficer ? (
+            <CivilServicesProfileCard
+              officer={selectedCivilOfficer}
+              onClose={() => setSelectedCivilOfficer(null)}
+              sentimentScore={officerReviewScore}
+              sentimentChange={officerReviewScoreChange}
+            />
+          ) : selected.label === "Chief Minister" ? (
+            <PoliticianDashboard />
+          ) : (
+            <ElectionResultsDashboard
+              isMlaProfile={Boolean(selected.mlaNumber)}
+              sentimentScore={selected.isPerson ? reviewScore : undefined}
+              sentimentChange={selected.isPerson ? reviewScoreChange : undefined}
+            />
           )}
-          <div style={{ marginTop: 18 }}>
-            <h3 style={{ fontWeight: 700, fontSize: 14 }}>About</h3>
-            <p style={{ fontSize: 13, lineHeight: 1.7, color: "#475569", marginTop: 7 }}>{selected.description}</p>
-          </div>
-          </aside>
-
-
         </div>
       </div>
     </main>

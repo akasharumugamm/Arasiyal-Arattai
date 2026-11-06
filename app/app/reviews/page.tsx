@@ -3,6 +3,7 @@
 import Link from "next/link";
 import mlaDirectory from "@/data/tn-mlas.json";
 import { getOfficialIdentityKey } from "@/lib/official-identity";
+import PostActionsMenu from "@/components/PostActionsMenu";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type ReviewType = "Positive" | "Concern" | "Allegation" | "Request";
@@ -11,7 +12,7 @@ type Comment = { id: string; parentCommentId?: string | null; body: string; date
 type Review = {
   id: string; name: string; type: ReviewType; title: string; body: string; date: string;
   officials: Official[]; imageUrls: string[]; votes?: { up: number; down: number };
-  myVote?: "up" | "down" | null; commentCount?: number;
+  myVote?: "up" | "down" | null; commentCount?: number; canDelete?: boolean;
 };
 const TYPE_OPTIONS: { value: ReviewType; label: string; detail: string; color: string; tint: string }[] = [
   { value: "Positive", label: "Positive", detail: "Recognise a positive action or outcome", color: "#15803d", tint: "#dcfce7" },
@@ -47,6 +48,36 @@ const OFFICIALS = [...FEATURED, ...MLA_OFFICIALS]
   .map((item) => ({ ...item, officialId: getOfficialIdentityKey(item.name) }))
   .filter((item, index, all) => all.findIndex((other) => other.officialId === item.officialId) === index)
   .sort((a, b) => a.category === "Chief Minister" ? -1 : b.category === "Chief Minister" ? 1 : a.name.localeCompare(b.name));
+
+const TYPE_STYLES: Record<ReviewType, { color: string; tint: string }> = {
+  Positive: { color: "#059669", tint: "#ecfdf5" },
+  Concern: { color: "#e11d48", tint: "#fff1f2" },
+  Allegation: { color: "#b91c1c", tint: "#fef2f2" },
+  Request: { color: "#2563eb", tint: "#eff6ff" },
+};
+
+const AVATAR_PALETTES = [
+  { background: "#dcfce7", foreground: "#15803d" },
+  { background: "#dbeafe", foreground: "#1d4ed8" },
+  { background: "#fef3c7", foreground: "#b45309" },
+  { background: "#fce7f3", foreground: "#be185d" },
+  { background: "#ede9fe", foreground: "#6d28d9" },
+];
+
+function getInitials(name: string) {
+  return name.split(" ").filter(Boolean).slice(0, 2).map((word) => word[0]).join("").toUpperCase();
+}
+
+function getAvatarColors(name: string) {
+  let hash = 0;
+  for (let index = 0; index < name.length; index += 1) hash = (hash * 31 + name.charCodeAt(index)) >>> 0;
+  return AVATAR_PALETTES[hash % AVATAR_PALETTES.length];
+}
+
+function formatReviewDate(date: string) {
+  const parsed = new Date(date);
+  return Number.isNaN(parsed.getTime()) ? date : parsed.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+}
 
 function CustomDropdown<T extends string>({ value, options, onChange, label }: {
   value: T; options: { value: T; label: string; detail?: string; color?: string; tint?: string }[];
@@ -331,6 +362,107 @@ export default function ReviewsPage() {
       </form>
     </section>
     {notice && <div role="status" className="aa-notice">{notice}<button type="button" onClick={() => setNotice("")} aria-label="Dismiss notice">×</button></div>}
+
+    <section className="aa-feed-section" aria-labelledby="aa-feed-title">
+      <div className="aa-feed-heading">
+        <div>
+          <span className="aa-eyebrow">PUBLIC DISCUSSIONS</span>
+          <h2 id="aa-feed-title">What people are saying</h2>
+        </div>
+        <span className="aa-private-note">{visibleReviews.length} discussion{visibleReviews.length === 1 ? "" : "s"}</span>
+      </div>
+      <div className="aa-feed-controls">
+        <label className="aa-feed-search">
+          <span className="sr-only">Search discussions by official</span>
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by official name…" />
+        </label>
+        <select aria-label="Filter discussions" value={filter} onChange={(event) => setFilter(event.target.value as "All" | ReviewType)}>
+          <option value="All">All categories</option>
+          {TYPE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+        </select>
+      </div>
+      {visibleReviews.length === 0 ? (
+        <div className="aa-empty">
+          <strong>No discussions yet</strong>
+          <span>Be the first to share a specific, respectful view.</span>
+        </div>
+      ) : (
+        <div className="aa-feed">
+          {visibleReviews.map((review) => {
+            const authorName = review.name || "Anonymous participant";
+            const avatar = getAvatarColors(authorName);
+            const style = TYPE_STYLES[review.type];
+            const images = review.imageUrls?.slice(0, 4) ?? [];
+            const remainingImages = (review.imageUrls?.length ?? 0) - images.length;
+            const comments = commentsByPost[review.id] ?? [];
+            const commentsOpen = expandedComments[review.id] === true;
+            return (
+              <article className="aa-social-post" key={review.id}>
+                <div className="aa-social-post-main">
+                  <div className="aa-social-post-header">
+                    <div className="aa-social-avatar" style={{ background: avatar.background, color: avatar.foreground }}>{getInitials(authorName)}</div>
+                    <div className="aa-social-author">
+                      <strong>{authorName}</strong>
+                      <span>{formatReviewDate(review.date)}</span>
+                    </div>
+                    <span className="aa-social-flair" style={{ background: style.tint, color: style.color }}>
+                      <span className="aa-social-flair-dot" style={{ background: style.color }} />
+                      {review.type}
+                    </span>
+                    <PostActionsMenu postId={review.id} canDelete={review.canDelete === true} onDeleted={(postId) => setReviews((current) => current.filter((item) => item.id !== postId))} />
+                  </div>
+                  <h3 className="aa-social-title">{review.title}</h3>
+                  <p className="aa-social-body">{review.body}</p>
+                  {images.length > 0 && (
+                    <div className={`aa-social-media media-${images.length}`}>
+                      {images.map((url, index) => (
+                        <button className="aa-image-zoom" key={url} type="button" onClick={() => setLightbox({ urls: review.imageUrls, index })} aria-label={`View image ${index + 1}`}>
+                          <img src={url} alt={`Discussion attachment: ${review.title}`} loading="lazy" />
+                          {index === 3 && remainingImages > 0 && <span className="aa-media-more">+{remainingImages}</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {review.officials?.length > 0 && (
+                    <div className="aa-social-officials">
+                      {review.officials.map((official, index) => (
+                        <span className="aa-social-official-item" key={official.officialId ?? official.name}>
+                          <Link href={`/?profile=${encodeURIComponent(official.name)}`}>{official.name}</Link>
+                          {index < review.officials.length - 1 && <span className="aa-social-official-separator">·</span>}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="aa-social-actions">
+                    <div className="aa-social-vote-buttons">
+                      <button type="button" className={`aa-post-action-button${review.myVote === "up" ? " is-upvoted" : ""}`} aria-label="Upvote discussion" aria-pressed={review.myVote === "up"} onClick={() => void vote(review, "up")}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="m6 11 6-7 1.5 1.5L13 9h5.5a2 2 0 0 1 2 2l-1 7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7Z" /><path d="M6 11H3v9h3" /></svg>
+                        <span>{review.votes?.up ?? 0}</span>
+                      </button>
+                      <button type="button" className={`aa-post-action-button${review.myVote === "down" ? " is-downvoted" : ""}`} aria-label="Downvote discussion" aria-pressed={review.myVote === "down"} onClick={() => void vote(review, "down")}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="m6 13 6 7 1.5-1.5L13 15h5.5a2 2 0 0 0 2-2l-1-7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v7Z" /><path d="M6 13H3v-9h3" /></svg>
+                        <span>{review.votes?.down ?? 0}</span>
+                      </button>
+                    </div>
+                    <button type="button" className="aa-post-action-button" aria-expanded={commentsOpen} onClick={() => { setExpandedComments((current) => ({ ...current, [review.id]: !commentsOpen })); void loadComments(review.id); }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-3.5-.7L4 20l1.5-3.7A7.4 7.4 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z" /></svg>
+                      <span>{review.commentCount ?? 0}</span>
+                    </button>
+                  </div>
+                  {commentsOpen && <div className="aa-comments">
+                    {comments.map((comment) => <div className="aa-comment" key={comment.id}><strong>{comment.name}</strong><p>{comment.body}</p><button type="button" onClick={() => setReplyTo((current) => ({ ...current, [review.id]: comment.id }))}>Reply</button></div>)}
+                    <form className="aa-comment-form" onSubmit={(event) => { event.preventDefault(); void sendComment(review); }}>
+                      <input value={commentInputs[review.id] ?? ""} onChange={(event) => setCommentInputs((current) => ({ ...current, [review.id]: event.target.value }))} placeholder={replyTo[review.id] ? "Write a reply…" : "Add a comment…"} aria-label="Comment" />
+                      <button type="submit">Send</button>
+                    </form>
+                  </div>}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
 
     <footer className="aa-footer"><Link href="/">← Back to the Government Explorer</Link><span>Public discussion · Verify claims before sharing</span></footer>
     {lightbox && <div className="aa-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" onClick={() => setLightbox(null)}><button className="aa-lightbox-close" type="button" onClick={() => setLightbox(null)} aria-label="Close image viewer">×</button><button className="aa-lightbox-prev" type="button" aria-label="Previous image" onClick={(e) => {e.stopPropagation();setLightbox((current) => current ? {...current,index:(current.index+current.urls.length-1)%current.urls.length}:null);}}>‹</button><img src={lightbox.urls[lightbox.index]} alt={`Full-size attachment ${lightbox.index+1}`} onClick={(e) => e.stopPropagation()} /><button className="aa-lightbox-next" type="button" aria-label="Next image" onClick={(e) => {e.stopPropagation();setLightbox((current) => current ? {...current,index:(current.index+1)%current.urls.length}:null);}}>›</button><span className="aa-lightbox-count">{lightbox.index+1} / {lightbox.urls.length}</span></div>}
